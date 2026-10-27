@@ -1,0 +1,9 @@
+# <type>(<scope>): <subject>
+#
+# type:  feat | fix | docs | refactor | test | chore | perf | build | ci | style | revert
+# scope: recording | transfer | transcription | search | storage | ui | watch | ios | core | docs | build
+#
+# 为什么做这个改动？影响范围是什么？
+# 涉及录音、数据、隐私的改动必须写 body。
+#
+# Refs #

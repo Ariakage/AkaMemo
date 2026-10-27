@@ -1,0 +1,55 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# CocoaPods / Carthage（当前未使用，预防性忽略）
+Pods/
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# 密钥与签名材料（绝不入库）
+Local.xcconfig
+*.xcconfig.local
+*.p12
+*.cer
+*.key
+*.mobileprovision
+Secrets/
+.env
+.env.*
+!.env.example
+
+# 测试与构建产物
+TestResults/
+*.xcresult
+coverage/
+*.generated.swift
+
+# Playground
+timeline.xctimeline
+playground.xcworkspace

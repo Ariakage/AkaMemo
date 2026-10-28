@@ -16,7 +16,7 @@
 
 ## 当前基线
 
-- 2026-10-28，`main` 已包含 PR #1～#4；PR #5 增加 `.parts` 启动恢复与损坏隔离。
+- 2026-10-28，`main` 已包含 PR #1～#4；PR #5 增加 `.parts` 启动恢复与损坏隔离；PR #6 增加 WatchConnectivity 传输与 iPhone inbox。
 - 模拟器已验证：双端构建、单元测试、Watch 录音 UI、M4A 容器（`afinfo` 显示 `m4af`）、60 秒封口、`.parts` 启动恢复与损坏隔离。
 - 模拟器**不能**验证：系统麦克风隐私指示、真实麦克风/后台/中断/断电/热/电量。
 - 模拟器出现的异常短分片与音频停滞不代表真机行为，也不能证明真机不会出现。
@@ -38,12 +38,12 @@
 | D-011 | 存储阈值 | 可用空间 <1 GB 警告、<500 MB 停止新录音并提示；不覆盖未确认分片 | `specs/recording.md` §9.2 | 待实现 |
 | D-012 | 2 MB 提前封口 | 高码率或异常输入下按 2 MB 提前封口；正常输入按 60 秒封口 | `specs/recording.md` §5.2 | 待实测 |
 | D-013 | 音频停滞检测边界 | 静音、风噪、蓝牙切换、系统音频服务重置下不误报；真实停录可检出 | `specs/recording-health.md` §3.3 | 待实测 |
+| D-020 | WatchConnectivity 传输 | `transferFile` 传分片；iPhone inbox 校验/去重/入库；确认回执；重试退避；未确认不清理 | `specs/recording.md` §8、`architecture/data-model.md` | 待实测（PR #6 实现；模拟器配对后 Watch 显示 received，但 iPhone 模拟器未投递文件，需真机） |
 
 ## B. 尚未实现，实现后再真机验证
 
 | ID | 项目 | 期望 / 判定 | 依据 | 状态 |
 | --- | --- | --- | --- | --- |
-| D-020 | WatchConnectivity 传输 | `transferFile` 传分片；iPhone inbox 校验/去重/入库；确认回执；重试退避；未确认不清理 | `specs/recording.md` §8、`architecture/data-model.md` | 待实现 |
 | D-021 | 5% 低电量通知 + Live Activity | 5% 告警一次、去重、3% 安全停止；Live Activity 仅前台/点击启动；不得称警报级 | `specs/battery-alerting.md`、G-003 | 待实现 |
 | D-022 | GPS 轨迹与 GPX | 5 分钟采样、拒绝权限仍录音、轨迹状态 degraded/unavailable、GPX 按会话起止裁剪 | `specs/gps-tracking.md`、G-002 | 待实现 |
 | D-023 | 诊断日志 | 实时、脱敏、7 天/5MB、导出过滤、无音频/转写/坐标/文件名 | `specs/diagnostics.md`、G-005 | 待实现 |

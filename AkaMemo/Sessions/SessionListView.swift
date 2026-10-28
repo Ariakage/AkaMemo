@@ -5,10 +5,13 @@ import SwiftUI
 struct SessionListView: View {
     let transcription: TranscriptionCoordinator?
     let search: SearchCoordinator?
+    let deletion: DeletionCoordinator?
 
     @Query(sort: \ReceivedChunkRecord.startedAt, order: .forward)
     private var chunks: [ReceivedChunkRecord]
     @Query private var transcripts: [TranscriptRecord]
+    @State private var pendingDeletion: PendingDeletion?
+    @State private var deletionError: String?
 
     private var sessions: [SessionSummary] {
         SessionAggregator.group(chunks.map(\.summary))
@@ -24,6 +27,13 @@ struct SessionListView: View {
                 )
             } else {
                 List {
+                    if let deletionError {
+                        Section {
+                            Text(deletionError)
+                                .font(.footnote)
+                                .foregroundStyle(.red)
+                        }
+                    }
                     ForEach(sessions) { session in
                         NavigationLink(value: session.sessionID) {
                             SessionRow(
@@ -34,29 +44,79 @@ struct SessionListView: View {
                                 hasFailure: hasFailure(for: session)
                             )
                         }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                pendingDeletion = .session(session.sessionID)
+                            } label: {
+                                Label(
+                                    "deletion.action",
+                                    systemImage: "trash"
+                                )
+                            }
+                        }
                     }
                 }
                 .navigationTitle("inbox.title")
                 .navigationDestination(for: UUID.self) { sessionID in
                     SessionDetailView(
                         sessionID: sessionID,
-                        transcription: transcription
+                        transcription: transcription,
+                        deletion: deletion
                     )
                 }
             }
         }
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Menu {
+                    Button(role: .destructive) {
+                        pendingDeletion = .all
+                    } label: {
+                        Label("deletion.all", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                }
+                .accessibilityLabel(Text("deletion.menu"))
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink {
                     SearchView(
                         search: search,
-                        transcription: transcription
+                        transcription: transcription,
+                        deletion: deletion
                     )
                 } label: {
                     Image(systemName: "magnifyingglass")
                 }
                 .accessibilityLabel(Text("search.title"))
             }
+        }
+        .alert(item: $pendingDeletion) { pending in
+            Alert(
+                title: Text(pending.titleKey),
+                message: Text(pending.messageKey),
+                primaryButton: .destructive(Text("deletion.confirm")) {
+                    Task {
+                        await performDeletion(pending)
+                    }
+                },
+                secondaryButton: .cancel(Text("deletion.cancel"))
+            )
+        }
+    }
+
+    private func performDeletion(_ pending: PendingDeletion) async {
+        switch pending {
+        case .session(let sessionID):
+            _ = await deletion?.deleteSession(sessionID)
+        case .chunk(let chunkID, _):
+            _ = await deletion?.deleteChunk(chunkID)
+        case .all:
+            _ = await deletion?.deleteAll()
+        }
+        if let message = deletion?.errorMessage {
+            deletionError = message
         }
     }
 

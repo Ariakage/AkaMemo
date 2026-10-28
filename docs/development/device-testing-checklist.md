@@ -16,7 +16,7 @@
 
 ## 当前基线
 
-- 2026-10-28，`main` 已包含 PR #1～#9；PR #5 增加 `.parts` 启动恢复与损坏隔离；PR #6 增加 WatchConnectivity 传输与 iPhone inbox；PR #7 增加 envelope 校验；PR #8 增加 iPhone 会话列表与播放；PR #9 增加模拟器分片注入；PR #10 增加端上转写（FR-009）；PR #11 增加 FTS5 全文检索（FR-010）。
+- 2026-10-28，`main` 已包含 PR #1～#9；PR #5 增加 `.parts` 启动恢复与损坏隔离；PR #6 增加 WatchConnectivity 传输与 iPhone inbox；PR #7 增加 envelope 校验；PR #8 增加 iPhone 会话列表与播放；PR #9 增加模拟器分片注入；PR #10 增加端上转写（FR-009）；PR #11 增加 FTS5 全文检索（FR-010）；PR #12 增加删除与墓碑传播（FR-012 部分）。
 - 模拟器已验证：双端构建、单元测试、Watch 录音 UI、M4A 容器（`afinfo` 显示 `m4af`）、60 秒封口、`.parts` 启动恢复与损坏隔离。
 - 模拟器**不能**验证：系统麦克风隐私指示、真实麦克风/后台/中断/断电/热/电量。
 - 模拟器出现的异常短分片与音频停滞不代表真机行为，也不能证明真机不会出现。
@@ -40,6 +40,7 @@
 | D-013 | 音频停滞检测边界 | 静音、风噪、蓝牙切换、系统音频服务重置下不误报；真实停录可检出 | `specs/recording-health.md` §3.3 | 待实测 |
 | D-014 | 录音列表与播放 | 会话按开始时间聚合；播放/暂停/拖动进度与音频位置一致；切后台停止且不崩溃 | `product/requirements.md` FR-011、Q-018 | 待实测 |
 | D-015 | 端上转写 | 已校验分片串行转写；仅端上（`requiresOnDeviceRecognition`）；降混单声道 16 kHz；时间戳映射正确；失败可见可重试；重启后续跑且幂等 | `specs/transcription-and-search.md` §2–§4、§9、ADR-0009 | 待实测（模拟器已接通权限与失败路径） |
+| D-016 | 删除与墓碑传播 | chunk/session/all 级联删除音频、转写、索引、轨迹/GPX；先写墓碑；离线 Watch 重连后删除并回执；迟到分片拒绝且不复活；删除时转写不写回；新会话不被 delete-all 删除 | FR-012、AC-012、`architecture/data-model.md` | 待实测（模拟器集成测试通过；WatchConnectivity 未真机） |
 | D-031 | 全文检索与规模 | 中文单/双/三字与中英混合查询命中；搜索高亮、时间过滤、排序、跳转播放正确；删除后不可检索；10 万 segment P95 < 200 ms | `specs/transcription-and-search.md` §6、§9、ADR-0010 | 待实测（模拟器功能已用合成转写验证；规模与性能未测） |
 | D-020 | WatchConnectivity 传输 | `transferFile` 传分片；iPhone inbox 校验/去重/入库；确认回执；重试退避；未确认不清理 | `specs/recording.md` §8、`architecture/data-model.md` | 待实测（PR #6 实现；模拟器配对后 Watch 显示 received，但 iPhone 模拟器未投递文件，且 `com.apple.Bridge` 会崩溃；需真机） |
 

@@ -18,12 +18,18 @@ actor PhoneInboxService {
 
     private let store: MemoryStore
     private let applicationSupport: URL
+    private let deletionStore: DeletionStore?
     private let fileManager = FileManager.default
     private let logger = Logger(subsystem: "com.ariakage.AkaMemo", category: "storage")
 
-    init(store: MemoryStore, applicationSupport: URL) {
+    init(
+        store: MemoryStore,
+        applicationSupport: URL,
+        deletionStore: DeletionStore? = nil
+    ) {
         self.store = store
         self.applicationSupport = applicationSupport
+        self.deletionStore = deletionStore
     }
 
     func receive(
@@ -33,6 +39,32 @@ actor PhoneInboxService {
     ) async -> Result {
         guard envelope.isValid else {
             return .rejected("invalidEnvelope")
+        }
+        if let deletionStore {
+            do {
+                switch try await deletionStore.matchForInbox(
+                    chunkID: envelope.chunkID,
+                    sessionID: envelope.sessionID,
+                    sessionStartedAtMs: envelope.sessionStartedAtMs
+                ) {
+                case .none:
+                    break
+                case .chunk:
+                    try? fileManager.removeItem(at: fileURL)
+                    return .rejected("deletedChunk")
+                case .session:
+                    try? fileManager.removeItem(at: fileURL)
+                    return .rejected("deletedSession")
+                case .epoch:
+                    try? fileManager.removeItem(at: fileURL)
+                    return .rejected("deletedEpoch")
+                }
+            } catch {
+                logger.error(
+                    "deletion lookup failed: \(String(describing: error), privacy: .public)"
+                )
+                return .rejected("deletionCheckFailed")
+            }
         }
         do {
             let attributes = try fileManager.attributesOfItem(atPath: fileURL.path)

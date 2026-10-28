@@ -16,14 +16,16 @@ protocol ChunkTransferTransport: AnyObject, Sendable {
 actor WatchTransferQueue {
     private let appSupportRoot: URL
     private let writer: AtomicFileWriter
+    private let deletionStore: WatchDeletionStore?
     private let fileManager = FileManager.default
     private let logger = Logger(subsystem: "com.ariakage.AkaMemo", category: "transfer")
     private var document: ChunkTransferQueueDocument
     private var transport: (any ChunkTransferTransport)?
     private var retryTask: Task<Void, Never>?
 
-    init(appSupportRoot: URL) {
+    init(appSupportRoot: URL, deletionStore: WatchDeletionStore? = nil) {
         self.appSupportRoot = appSupportRoot
+        self.deletionStore = deletionStore
         let directory = appSupportRoot.appending(path: "queue", directoryHint: .isDirectory)
         try? FileManager.default.createDirectory(
             at: directory,
@@ -70,6 +72,15 @@ actor WatchTransferQueue {
             logger.error("rejected invalid transfer envelope")
             return
         }
+        if let deletionStore,
+            await deletionStore.isDeleted(
+                chunkID: envelope.chunkID,
+                sessionID: envelope.sessionID,
+                sessionStartedAtMs: envelope.sessionStartedAtMs
+            )
+        {
+            return
+        }
         let nowMs = TimeMath.epochMs(now)
         if let existing = document.entry(chunkID: envelope.chunkID) {
             guard existing.state != .confirmed else { return }
@@ -109,6 +120,18 @@ actor WatchTransferQueue {
                 continue
             }
             var entry = document.entries[index]
+
+            if let deletionStore,
+                await deletionStore.isDeleted(
+                    chunkID: entry.envelope.chunkID,
+                    sessionID: entry.envelope.sessionID,
+                    sessionStartedAtMs: entry.envelope.sessionStartedAtMs
+                )
+            {
+                document.entries.remove(at: index)
+                didChange = true
+                continue
+            }
 
             if entry.state == .transferring, nowMs - entry.updatedAtMs > 300_000 {
                 entry.state = .queued
@@ -302,6 +325,15 @@ actor WatchTransferQueue {
                 if document.entry(chunkID: metadata.chunkID) != nil {
                     continue
                 }
+                if let deletionStore,
+                    await deletionStore.isDeleted(
+                        chunkID: metadata.chunkID,
+                        sessionID: metadata.sessionID,
+                        sessionStartedAtMs: metadata.sessionStartedAtMs
+                    )
+                {
+                    continue
+                }
                 let envelope = ChunkTransferEnvelope(
                     chunkID: metadata.chunkID,
                     sessionID: metadata.sessionID,
@@ -341,6 +373,35 @@ actor WatchTransferQueue {
 
     func entries() -> [ChunkTransferQueueEntry] {
         document.entries
+    }
+
+    /// Drops queued, transferring, received, and confirmed entries that fall
+    /// inside a deletion command. Returns after persisting the queue.
+    func applyDeletion(_ command: DeletionCommand, now: Date = Date()) async {
+        let before = document.entries.count
+        switch command.scope {
+        case .chunk:
+            if let chunkID = command.entityID {
+                document.entries.removeAll {
+                    $0.envelope.chunkID == chunkID
+                }
+            }
+        case .session:
+            if let sessionID = command.entityID ?? command.sessionID {
+                document.entries.removeAll {
+                    $0.envelope.sessionID == sessionID
+                }
+            }
+        case .all:
+            if let epochMs = command.epochMs {
+                document.entries.removeAll {
+                    $0.envelope.sessionStartedAtMs < epochMs
+                }
+            }
+        }
+        if document.entries.count != before {
+            await persist()
+        }
     }
 
     private func persist() async {

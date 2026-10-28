@@ -6,15 +6,23 @@ import WatchConnectivity
 /// Receives chunk files from the Watch and sends application-level
 /// confirmations. Files are moved out of the system Inbox before any
 /// verification work starts.
-final class PhoneConnectivityService: NSObject, WCSessionDelegate, @unchecked Sendable {
+final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionCommandSending,
+    @unchecked Sendable
+{
     private let inbox: PhoneInboxService
+    private let deletionStore: DeletionStore?
     private let processingDirectory: URL
     private let rejectedDirectory: URL
     private let fileManager = FileManager.default
     private let logger = Logger(subsystem: "com.ariakage.AkaMemo", category: "transfer")
 
-    init(inbox: PhoneInboxService, applicationSupport: URL) {
+    init(
+        inbox: PhoneInboxService,
+        applicationSupport: URL,
+        deletionStore: DeletionStore? = nil
+    ) {
         self.inbox = inbox
+        self.deletionStore = deletionStore
         self.processingDirectory = applicationSupport.appending(
             path: "inbox-processing",
             directoryHint: .isDirectory
@@ -49,10 +57,24 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, @unchecked Se
         activationDidCompleteWith activationState: WCSessionActivationState,
         error: Error?
     ) {
+        if activationState == .activated {
+            Task {
+                await resendDeletions()
+            }
+        }
         if let error {
             logger.error(
                 "WCSession activation failed: \(String(describing: error), privacy: .public)"
             )
+        }
+    }
+
+    nonisolated func sessionReachabilityDidChange(_ session: WCSession) {
+        guard session.isReachable else {
+            return
+        }
+        Task {
+            await resendDeletions()
         }
     }
 
@@ -99,7 +121,17 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, @unchecked Se
             )
         case .rejected(let reason):
             logger.error("chunk rejected: \(reason, privacy: .public)")
-            quarantine(processingURL)
+            if reason.hasPrefix("deleted") {
+                try? fileManager.removeItem(at: processingURL)
+                Task {
+                    await resendDeletionForRejectedChunk(
+                        chunkID: envelope.chunkID,
+                        sessionID: envelope.sessionID
+                    )
+                }
+            } else {
+                quarantine(processingURL)
+            }
         }
     }
 
@@ -123,6 +155,83 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, @unchecked Se
         session.transferUserInfo(info)
         if session.isReachable {
             session.sendMessage(info, replyHandler: nil, errorHandler: nil)
+        }
+    }
+
+    // MARK: - Deletion
+
+    nonisolated func session(
+        _ session: WCSession,
+        didReceiveUserInfo userInfo: [String: Any] = [:]
+    ) {
+        handleIncoming(userInfo)
+    }
+
+    nonisolated func session(
+        _ session: WCSession,
+        didReceiveMessage message: [String: Any]
+    ) {
+        handleIncoming(message)
+    }
+
+    private nonisolated func handleIncoming(_ info: [String: Any]) {
+        guard info["type"] as? String == "deletionAck",
+            let rawID = info["tombstoneID"] as? String,
+            let tombstoneID = UUID(uuidString: rawID)
+        else {
+            return
+        }
+        Task {
+            try? await deletionStore?.markAcknowledged(
+                tombstoneID: tombstoneID
+            )
+        }
+    }
+
+    nonisolated func sendDeletion(_ command: DeletionCommand) -> Bool {
+        guard WCSession.isSupported() else {
+            return false
+        }
+        let session = WCSession.default
+        guard session.activationState == .activated,
+            let payload = try? command.jsonString()
+        else {
+            return false
+        }
+        let info: [String: Any] = [
+            "type": "deletion",
+            DeletionCommand.metadataKey: payload,
+        ]
+        session.transferUserInfo(info)
+        if session.isReachable {
+            session.sendMessage(info, replyHandler: nil, errorHandler: nil)
+        }
+        return true
+    }
+
+    private func resendDeletions() async {
+        guard let deletionStore else {
+            return
+        }
+        let commands =
+            (try? await deletionStore.unacknowledgedCommands()) ?? []
+        for command in commands {
+            _ = sendDeletion(command)
+        }
+    }
+
+    private func resendDeletionForRejectedChunk(
+        chunkID: UUID,
+        sessionID: UUID
+    ) async {
+        guard let deletionStore else {
+            return
+        }
+        if let command = try? await deletionStore.commandForRejectedChunk(
+            chunkID: chunkID,
+            sessionID: sessionID
+        ) {
+            _ = sendDeletion(command)
         }
     }
 }

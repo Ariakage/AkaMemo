@@ -11,10 +11,15 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate, ChunkTransfer
     @unchecked Sendable
 {
     private let queue: WatchTransferQueue
+    private let deletionHandler: WatchDeletionHandler?
     private let logger = Logger(subsystem: "com.ariakage.AkaMemo", category: "transfer")
 
-    init(queue: WatchTransferQueue) {
+    init(
+        queue: WatchTransferQueue,
+        deletionHandler: WatchDeletionHandler? = nil
+    ) {
         self.queue = queue
+        self.deletionHandler = deletionHandler
         super.init()
     }
 
@@ -63,10 +68,12 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate, ChunkTransfer
         _ session: WCSession,
         didReceiveUserInfo userInfo: [String: Any] = [:]
     ) {
+        handleIncoming(userInfo)
         handleAcknowledgement(userInfo)
     }
 
     nonisolated func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
+        handleIncoming(message)
         handleAcknowledgement(message)
     }
 
@@ -83,6 +90,32 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate, ChunkTransfer
         }
         _ = session.transferFile(url, metadata: info)
         return true
+    }
+
+    private nonisolated func handleIncoming(_ info: [String: Any]) {
+        guard info["type"] as? String == "deletion",
+            let payload = info[DeletionCommand.metadataKey] as? String,
+            let command = try? DeletionCommand.decode(fromJSON: payload),
+            let deletionHandler
+        else {
+            return
+        }
+        Task {
+            await deletionHandler.apply(command)
+            sendDeletionAck(tombstoneID: command.tombstoneID)
+        }
+    }
+
+    private nonisolated func sendDeletionAck(tombstoneID: UUID) {
+        let info: [String: Any] = [
+            "type": "deletionAck",
+            "tombstoneID": tombstoneID.uuidString,
+        ]
+        let session = WCSession.default
+        session.transferUserInfo(info)
+        if session.isReachable {
+            session.sendMessage(info, replyHandler: nil, errorHandler: nil)
+        }
     }
 
     private nonisolated func handleAcknowledgement(_ info: [String: Any]) {

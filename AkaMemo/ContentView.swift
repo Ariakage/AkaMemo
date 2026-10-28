@@ -12,7 +12,8 @@ struct ContentView: View {
                 if let container = model.container {
                     SessionListView(
                         transcription: model.transcription,
-                        search: model.search
+                        search: model.search,
+                        deletion: model.deletion
                     )
                     .modelContainer(container)
                 } else {

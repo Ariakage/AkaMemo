@@ -25,11 +25,7 @@ struct ContentView: View {
             .padding(.horizontal, 4)
         }
         .task {
-            #if DEBUG
-                if ProcessInfo.processInfo.arguments.contains("-AkaMemoAutoStartRecording") {
-                    await model.start()
-                }
-            #endif
+            await model.recoverPendingChunks()
             await model.observe()
         }
     }

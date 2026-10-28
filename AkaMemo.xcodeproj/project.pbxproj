@@ -34,6 +34,8 @@
 		AA0200000000000000000003 /* RecordingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000003 /* RecordingViewModel.swift */; };
 		AA0200000000000000000004 /* WatchPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000004 /* WatchPaths.swift */; };
 		AA0200000000000000000005 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000005 /* Localizable.xcstrings */; };
+		AA0200000000000000000006 /* ChunkRecoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000007 /* ChunkRecoveryService.swift */; };
+		AA0200000000000000000007 /* ChunkRecoveryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000008 /* ChunkRecoveryServiceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +101,8 @@
 		AA0100000000000000000003 /* RecordingViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingViewModel.swift; sourceTree = "<group>"; };
 		AA0100000000000000000004 /* WatchPaths.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchPaths.swift; sourceTree = "<group>"; };
 		AA0100000000000000000005 /* Localizable.xcstrings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		AA0100000000000000000007 /* ChunkRecoveryService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChunkRecoveryService.swift; sourceTree = "<group>"; };
+		AA0100000000000000000008 /* ChunkRecoveryServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChunkRecoveryServiceTests.swift; sourceTree = "<group>"; };
 		035009F8ABC8D75D57319119 /* BatteryActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryActivityAttributes.swift; sourceTree = "<group>"; };
 		0FC4CD7E510620FBA8E0CBE9 /* BatteryLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryLiveActivity.swift; sourceTree = "<group>"; };
 		129933E21C58719BC3844183 /* AkaMemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AkaMemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -177,6 +181,7 @@
 				AA0100000000000000000002 /* RecordingTypes.swift */,
 				AA0100000000000000000003 /* RecordingViewModel.swift */,
 				AA0100000000000000000004 /* WatchPaths.swift */,
+				AA0100000000000000000007 /* ChunkRecoveryService.swift */,
 			);
 			path = Recording;
 			sourceTree = "<group>";
@@ -215,6 +220,7 @@
 			isa = PBXGroup;
 			children = (
 				8E0E0E14E0641AEBB86988EF /* AkaMemoWatchTests.swift */,
+				AA0100000000000000000008 /* ChunkRecoveryServiceTests.swift */,
 			);
 			path = AkaMemoWatchTests;
 			sourceTree = "<group>";
@@ -504,6 +510,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EDCD8D0E690F6E7740A89BA /* AkaMemoWatchTests.swift in Sources */,
+				AA0200000000000000000007 /* ChunkRecoveryServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,6 +524,7 @@
 				AA0200000000000000000002 /* RecordingTypes.swift in Sources */,
 				AA0200000000000000000003 /* RecordingViewModel.swift in Sources */,
 				AA0200000000000000000004 /* WatchPaths.swift in Sources */,
+				AA0200000000000000000006 /* ChunkRecoveryService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

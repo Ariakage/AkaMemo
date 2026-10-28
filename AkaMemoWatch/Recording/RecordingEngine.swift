@@ -62,6 +62,8 @@ actor RecordingEngine {
     private var batteryLevel: Double?
     private var isAudioSessionActive = false
     private var recoveryGeneration = 0
+    private var didRecoverPendingChunks = false
+    private var isRecoveringPendingChunks = false
 
     private var rotationTask: Task<Void, Never>?
     private var healthTask: Task<Void, Never>?
@@ -90,8 +92,32 @@ actor RecordingEngine {
         batteryLevel = level
     }
 
+    /// Scans sessions left by a terminated process before a new recording can
+    /// start. The scan is idempotent; failures are logged, not fatal.
+    func recoverPendingChunks() async {
+        guard !didRecoverPendingChunks, !isRecoveringPendingChunks else { return }
+        didRecoverPendingChunks = true
+        isRecoveringPendingChunks = true
+        defer { isRecoveringPendingChunks = false }
+        do {
+            let root = try WatchPaths.audioRoot()
+            let service = ChunkRecoveryService(audioRoot: root)
+            let summary = await service.recoverAll()
+            if summary.recoveredChunks + summary.rebuiltSidecars + summary.quarantinedChunks > 0 {
+                logger.info(
+                    "recovery: sessions \(summary.sessionsScanned, privacy: .public), recovered \(summary.recoveredChunks, privacy: .public), rebuilt \(summary.rebuiltSidecars, privacy: .public), quarantined \(summary.quarantinedChunks, privacy: .public)"
+                )
+            }
+        } catch {
+            logger.error(
+                "pending chunk recovery failed: \(String(describing: error), privacy: .public)"
+            )
+        }
+    }
+
     /// Starts a new session. Must be called from a visible foreground screen.
     func start(deviceModel: String?, osVersion: String) async {
+        guard !isRecoveringPendingChunks else { return }
         guard state == .idle || state == .failed || state == .interrupted else {
             return
         }

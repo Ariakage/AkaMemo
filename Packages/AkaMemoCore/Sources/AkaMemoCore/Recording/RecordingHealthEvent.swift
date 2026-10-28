@@ -26,6 +26,9 @@ public struct RecordingHealthEvent: Codable, Sendable, Equatable, Identifiable {
     public let locationAuthorization: String?
     public let locationTrackBytes: Int64?
     public let locationSettingUpdatedAtMs: Int64?
+    public let autoResume: Bool?
+    public let silentResume: Bool?
+    public let resumeSettingsUpdatedAtMs: Int64?
 
     public init(
         eventID: UUID = UUID(),
@@ -43,7 +46,10 @@ public struct RecordingHealthEvent: Codable, Sendable, Equatable, Identifiable {
         locationEnabled: Bool? = nil,
         locationAuthorization: String? = nil,
         locationTrackBytes: Int64? = nil,
-        locationSettingUpdatedAtMs: Int64? = nil
+        locationSettingUpdatedAtMs: Int64? = nil,
+        autoResume: Bool? = nil,
+        silentResume: Bool? = nil,
+        resumeSettingsUpdatedAtMs: Int64? = nil
     ) {
         self.eventID = eventID
         self.sessionID = sessionID
@@ -61,6 +67,9 @@ public struct RecordingHealthEvent: Codable, Sendable, Equatable, Identifiable {
         self.locationAuthorization = locationAuthorization
         self.locationTrackBytes = locationTrackBytes
         self.locationSettingUpdatedAtMs = locationSettingUpdatedAtMs
+        self.autoResume = autoResume
+        self.silentResume = silentResume
+        self.resumeSettingsUpdatedAtMs = resumeSettingsUpdatedAtMs
     }
 
     public var isRecording: Bool {

@@ -2,11 +2,13 @@ import AkaMemoCore
 import SwiftData
 import SwiftUI
 
-/// Location privacy controls from FR-024. The Watch owns the actual location
-/// permission; this screen shows its last reported status and total track
-/// usage, and sends the global toggle to the Watch.
+/// Settings from FR-015/FR-024. Resume switches are mirrored to the Watch;
+/// fixed MVP policies are shown as read-only rows.
 struct SettingsView: View {
     let settings: PhoneSettingsModel
+    let diagnostics: AppDiagnostics?
+    let deletion: DeletionCoordinator?
+    let recordingWatchdog: RecordingWatchdog?
 
     @Environment(\.dismiss) private var dismiss
     @Query private var tracks: [LocationTrackRecord]
@@ -16,10 +18,35 @@ struct SettingsView: View {
     @State private var audioBytes: Int64?
     @State private var transcriptBytes: Int64?
     @State private var indexBytes: Int64?
+    @State private var pendingDeletion: PendingDeletion?
+    @State private var deletionError: String?
 
     var body: some View {
         NavigationStack {
             List {
+                Section("settings.recording.title") {
+                    Text("settings.recording.hint")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    Toggle(
+                        "settings.autoResume",
+                        isOn: Binding(
+                            get: { settings.isAutoResumeEnabled },
+                            set: { settings.setAutoResumeEnabled($0) }
+                        )
+                    )
+                    Toggle(
+                        "settings.silentResume",
+                        isOn: Binding(
+                            get: { settings.isSilentResumeEnabled },
+                            set: { settings.setSilentResumeEnabled($0) }
+                        )
+                    )
+                    Text("settings.silentResume.footnote")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+
                 Section("settings.location.title") {
                     Toggle(
                         "settings.location.enabled",
@@ -35,7 +62,7 @@ struct SettingsView: View {
                         Text(authorizationKey)
                     }
                     LabeledContent("settings.location.usage") {
-                        Text(usageText)
+                        Text(byteText(trackUsageBytes))
                     }
                     Text("settings.location.footnote")
                         .font(.footnote)
@@ -53,6 +80,41 @@ struct SettingsView: View {
                         Text(byteText(indexBytes))
                     }
                 }
+
+                Section("settings.options.title") {
+                    LabeledContent("settings.battery.threshold") {
+                        Text("settings.battery.threshold.value")
+                    }
+                    LabeledContent("settings.transfer.conditions") {
+                        Text("settings.transfer.value")
+                    }
+                    LabeledContent("settings.transcription.engine") {
+                        Text("settings.transcription.value")
+                    }
+                    LabeledContent("settings.language") {
+                        Text("settings.language.value")
+                    }
+                    LabeledContent("settings.retention") {
+                        Text("settings.retention.value")
+                    }
+                }
+
+                Section("settings.diagnostics.title") {
+                    NavigationLink("diagnostics.title") {
+                        DiagnosticsView(diagnostics: diagnostics)
+                    }
+                }
+
+                Section {
+                    Button("deletion.all", role: .destructive) {
+                        pendingDeletion = .all
+                    }
+                    if let deletionError {
+                        Text(deletionError)
+                            .font(.footnote)
+                            .foregroundStyle(.red)
+                    }
+                }
             }
             .navigationTitle("settings.title")
             .toolbar {
@@ -64,6 +126,18 @@ struct SettingsView: View {
             }
             .task(id: tracks.count + chunks.count + transcripts.count) {
                 await loadUsage()
+            }
+            .alert(item: $pendingDeletion) { pending in
+                Alert(
+                    title: Text(pending.titleKey),
+                    message: Text(pending.messageKey),
+                    primaryButton: .destructive(Text("deletion.confirm")) {
+                        Task {
+                            await deleteAll()
+                        }
+                    },
+                    secondaryButton: .cancel(Text("deletion.cancel"))
+                )
             }
         }
     }
@@ -90,15 +164,20 @@ struct SettingsView: View {
         }
     }
 
-    private var usageText: String {
-        byteText(trackUsageBytes)
-    }
-
     private func byteText(_ bytes: Int64?) -> String {
         guard let bytes else {
             return "—"
         }
         return bytes.formatted(.byteCount(style: .file))
+    }
+
+    private func deleteAll() async {
+        guard await deletion?.deleteAll() == true else {
+            deletionError = deletion?.errorMessage
+            return
+        }
+        await recordingWatchdog?.clear()
+        dismiss()
     }
 
     @MainActor

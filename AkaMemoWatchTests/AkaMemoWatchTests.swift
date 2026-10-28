@@ -1,3 +1,4 @@
+import AkaMemoCore
 import XCTest
 
 @testable import AkaMemoWatch
@@ -46,5 +47,42 @@ final class AkaMemoWatchTests: XCTestCase {
         let reloaded = WatchRecordingSettings(defaults: defaults)
         XCTAssertFalse(reloaded.autoResume)
         XCTAssertFalse(reloaded.silentResume)
+    }
+
+    @MainActor
+    func testResumeSettingsUseNewestTimestamp() {
+        let suite = "akamemo.watch.resume.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let settings = WatchRecordingSettings(defaults: defaults)
+
+        XCTAssertTrue(
+            settings.apply(
+                ResumeSettingsCommand(
+                    autoResume: false,
+                    silentResume: false,
+                    updatedAtMs: 50
+                )
+            )
+        )
+        XCTAssertFalse(settings.autoResume)
+        XCTAssertFalse(
+            settings.apply(
+                ResumeSettingsCommand(
+                    autoResume: true,
+                    silentResume: true,
+                    updatedAtMs: 40
+                )
+            )
+        )
+        XCTAssertFalse(settings.autoResume)
+
+        settings.setSilentResume(true)
+        XCTAssertTrue(settings.silentResume)
+        XCTAssertGreaterThan(settings.updatedAtMs, 50)
+
+        let reloaded = WatchRecordingSettings(defaults: defaults)
+        XCTAssertFalse(reloaded.autoResume)
+        XCTAssertTrue(reloaded.silentResume)
     }
 }

@@ -58,7 +58,7 @@ struct ContentView: View {
             }
             await model.search?.prepare()
             await model.transcription?.start()
-            model.settings?.publishLocationSetting()
+            model.settings?.publishSettings()
             #if DEBUG
                 if SimulatorFixtureSeeder.openDemoSessionRequested,
                     path.isEmpty,
@@ -75,7 +75,7 @@ struct ContentView: View {
                 await model.battery?.setForeground(active)
                 if active {
                     await model.transcription?.start()
-                    model.settings?.publishLocationSetting()
+                    model.settings?.publishSettings()
                 }
             }
         }

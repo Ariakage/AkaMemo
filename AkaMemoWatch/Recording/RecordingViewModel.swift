@@ -101,6 +101,11 @@ final class RecordingViewModel {
                     self?.applyRemoteLocationSetting(setting)
                 }
             }
+            service.setResumeSettingsHandler { [weak self] command in
+                Task { @MainActor in
+                    self?.applyRemoteResumeSettings(command)
+                }
+            }
             service.activate()
         } catch {
             self.engine = RecordingEngine()
@@ -344,7 +349,10 @@ final class RecordingViewModel {
             locationEnabled: locationRecorder.isEnabled,
             locationAuthorization: locationRecorder.authorizationStatus,
             locationTrackBytes: locationRecorder.trackBytes,
-            locationSettingUpdatedAtMs: locationRecorder.settingUpdatedAtMs
+            locationSettingUpdatedAtMs: locationRecorder.settingUpdatedAtMs,
+            autoResume: settings.autoResume,
+            silentResume: settings.silentResume,
+            resumeSettingsUpdatedAtMs: settings.updatedAtMs
         )
         await healthPublisher.publish(event)
     }
@@ -358,6 +366,21 @@ final class RecordingViewModel {
                 category: .location,
                 message: "location setting received",
                 metadata: ["state": setting.enabled ? "enabled" : "disabled"]
+            )
+        }
+    }
+
+    private func applyRemoteResumeSettings(_ command: ResumeSettingsCommand) {
+        guard settings.apply(command) else {
+            return
+        }
+        Task {
+            await engine.setAutoRecoveryEnabled(settings.autoResume)
+            await diagnostics.log(
+                level: .info,
+                category: .recording,
+                message: "resume settings received",
+                metadata: ["state": settings.autoResume ? "auto" : "manual"]
             )
         }
     }

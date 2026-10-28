@@ -23,6 +23,26 @@ private final class FakeLocationSender: LocationSettingSending,
     }
 }
 
+private final class FakeResumeSender: ResumeSettingsSending,
+    @unchecked Sendable
+{
+    private let lock = NSLock()
+    private var stored: [ResumeSettingsCommand] = []
+
+    var sentCommands: [ResumeSettingsCommand] {
+        lock.lock()
+        defer { lock.unlock() }
+        return stored
+    }
+
+    func sendResumeSettings(_ command: ResumeSettingsCommand) -> Bool {
+        lock.lock()
+        stored.append(command)
+        lock.unlock()
+        return true
+    }
+}
+
 @MainActor
 final class PhoneSettingsModelTests: XCTestCase {
     private var suiteName: String!
@@ -107,5 +127,62 @@ final class PhoneSettingsModelTests: XCTestCase {
         model.handle(event(enabled: false, updatedAtMs: 1))
 
         XCTAssertTrue(model.isLocationEnabled)
+    }
+
+    func testResumeDefaultsAndLocalChangesPersistAndSend() {
+        let sender = FakeResumeSender()
+        let model = PhoneSettingsModel(defaults: defaults)
+        model.attachResumeSender(sender)
+
+        XCTAssertTrue(model.isAutoResumeEnabled)
+        XCTAssertTrue(model.isSilentResumeEnabled)
+
+        model.setAutoResumeEnabled(false)
+        model.setSilentResumeEnabled(false)
+
+        XCTAssertEqual(sender.sentCommands.count, 2)
+        XCTAssertEqual(sender.sentCommands.last?.autoResume, false)
+        XCTAssertEqual(sender.sentCommands.last?.silentResume, false)
+        let reloaded = PhoneSettingsModel(defaults: defaults)
+        XCTAssertFalse(reloaded.isAutoResumeEnabled)
+        XCTAssertFalse(reloaded.isSilentResumeEnabled)
+    }
+
+    func testWatchResumeSettingsUseNewestTimestamp() {
+        let model = PhoneSettingsModel(defaults: defaults)
+        model.handle(
+            resumeEvent(autoResume: false, silentResume: false, updatedAtMs: 9_000)
+        )
+        XCTAssertFalse(model.isAutoResumeEnabled)
+        XCTAssertEqual(model.watchAutoResume, false)
+
+        model.setAutoResumeEnabled(true)
+        model.handle(
+            resumeEvent(autoResume: false, silentResume: false, updatedAtMs: 1)
+        )
+        XCTAssertTrue(model.isAutoResumeEnabled)
+    }
+
+    private func resumeEvent(
+        autoResume: Bool,
+        silentResume: Bool,
+        updatedAtMs: Int64
+    ) -> RecordingHealthEvent {
+        RecordingHealthEvent(
+            sessionID: UUID(),
+            stateVersion: 1,
+            state: "idle",
+            recordingStartedAtMs: nil,
+            recordedAtMs: updatedAtMs,
+            lastAudioBufferAtMs: nil,
+            chunkSequence: nil,
+            bytesWritten: 0,
+            batteryLevel: nil,
+            storageAvailableBytes: nil,
+            audioSessionActive: false,
+            autoResume: autoResume,
+            silentResume: silentResume,
+            resumeSettingsUpdatedAtMs: updatedAtMs
+        )
     }
 }

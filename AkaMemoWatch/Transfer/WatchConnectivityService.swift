@@ -15,6 +15,7 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate,
     private let deletionHandler: WatchDeletionHandler?
     private let handlerLock = NSLock()
     private var locationSettingHandler: (@Sendable (LocationSetting) -> Void)?
+    private var resumeSettingsHandler: (@Sendable (ResumeSettingsCommand) -> Void)?
     private var logHandler: (@Sendable (LogLevel, LogCategory, String, [String: String]) -> Void)?
     private let logger = Logger(subsystem: "com.ariakage.AkaMemo", category: "transfer")
 
@@ -34,6 +35,14 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate,
     ) {
         handlerLock.lock()
         locationSettingHandler = handler
+        handlerLock.unlock()
+    }
+
+    func setResumeSettingsHandler(
+        _ handler: @escaping @Sendable (ResumeSettingsCommand) -> Void
+    ) {
+        handlerLock.lock()
+        resumeSettingsHandler = handler
         handlerLock.unlock()
     }
 
@@ -176,6 +185,19 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate,
             let handler = locationSettingHandler
             handlerLock.unlock()
             handler?(setting)
+        case "resumeSettings":
+            guard
+                let payload = info[ResumeSettingsCommand.metadataKey] as? String,
+                let command = try? ResumeSettingsCommand.decode(
+                    fromJSON: payload
+                )
+            else {
+                return
+            }
+            handlerLock.lock()
+            let handler = resumeSettingsHandler
+            handlerLock.unlock()
+            handler?(command)
         default:
             return
         }

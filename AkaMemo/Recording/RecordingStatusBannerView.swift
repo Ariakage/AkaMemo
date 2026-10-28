@@ -6,25 +6,39 @@ struct RecordingStatusBannerView: View {
     var body: some View {
         if let banner = coordinator.banner {
             HStack(spacing: 8) {
-                Image(
-                    systemName: banner.kind == .storage
-                        ? "internaldrive" : "exclamationmark.triangle"
-                )
+                Image(systemName: iconName)
                 Text(LocalizedStringKey(banner.messageKey))
                 Spacer()
             }
             .font(.caption)
-            .foregroundStyle(
-                banner.kind == .storage ? Color.red : Color.orange
-            )
+            .foregroundStyle(tint)
             .padding(.horizontal)
             .padding(.vertical, 8)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                (banner.kind == .storage ? Color.red : Color.orange)
-                    .opacity(0.12)
-            )
+            .background(tint.opacity(0.12))
             .accessibilityElement(children: .combine)
+        }
+    }
+
+    private var tint: Color {
+        switch coordinator.banner?.kind {
+        case .storage:
+            .red
+        case .paused:
+            .blue
+        case .interrupted, .stale, .none:
+            .orange
+        }
+    }
+
+    private var iconName: String {
+        switch coordinator.banner?.kind {
+        case .storage:
+            "internaldrive"
+        case .paused:
+            "pause.circle"
+        case .interrupted, .stale, .none:
+            "exclamationmark.triangle"
         }
     }
 }

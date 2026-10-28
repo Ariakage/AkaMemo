@@ -12,6 +12,9 @@ final class RecordingViewModel {
     private let locationRecorder: LocationRecorder
     private let healthPublisher: WatchHealthPublisher
     private let settings: WatchRecordingSettings
+    private let diagnostics: WatchDiagnostics
+    private var previousBatteryBand: BatteryBand?
+    private var previousStorageBand: StorageBand?
     private(set) var snapshot = RecordingSnapshot()
     private(set) var storageWarning: String?
     private var lastStorageCheckAt = Date.distantPast
@@ -55,7 +58,27 @@ final class RecordingViewModel {
             self.locationRecorder = LocationRecorder()
             self.healthPublisher = WatchHealthPublisher(transport: service)
             self.settings = WatchRecordingSettings()
+            let diagnostics = WatchDiagnostics(transport: service)
+            self.diagnostics = diagnostics
             self.locationEnabled = self.locationRecorder.isEnabled
+            service.setLogHandler { level, category, message, metadata in
+                Task {
+                    await diagnostics.log(
+                        level: level,
+                        category: category,
+                        message: message,
+                        metadata: metadata
+                    )
+                }
+            }
+            Task { await diagnostics.start() }
+            Task {
+                await diagnostics.log(
+                    level: .info,
+                    category: .diagnostics,
+                    message: "watch app started"
+                )
+            }
             Task {
                 await handler.setStopSessionHandler {
                     [weak self] sessionID, epochMs in
@@ -84,6 +107,7 @@ final class RecordingViewModel {
             self.locationRecorder = LocationRecorder()
             self.healthPublisher = WatchHealthPublisher(transport: nil)
             self.settings = WatchRecordingSettings()
+            self.diagnostics = WatchDiagnostics(transport: nil)
             self.locationEnabled = self.locationRecorder.isEnabled
         }
     }
@@ -188,6 +212,22 @@ final class RecordingViewModel {
                 now: Date()
             )
             batteryWarning = warningKey(for: evaluation.band)
+            if evaluation.band != previousBatteryBand {
+                previousBatteryBand = evaluation.band
+                if let key = warningKey(for: evaluation.band) {
+                    await diagnostics.log(
+                        level: evaluation.band == .critical
+                            || evaluation.band == .shutdown
+                            ? .error : .warning,
+                        category: .battery,
+                        message: "battery band changed",
+                        metadata: [
+                            "state": key,
+                            "batteryPercent": "\(Int(((normalized ?? 0) * 100).rounded()))",
+                        ]
+                    )
+                }
+            }
             if evaluation.shouldPlayAlertHaptic {
                 device.play(.notification)
             }
@@ -197,6 +237,12 @@ final class RecordingViewModel {
                 sendTrackIfAvailable(upload)
                 snapshot = await engine.currentSnapshot()
                 batteryWarning = "battery.warning.3"
+                await diagnostics.log(
+                    level: .error,
+                    category: .battery,
+                    message: "recording stopped by battery",
+                    metadata: ["state": "shutdown"]
+                )
             }
         }
         locationRecorder.updateLowPowerMode(
@@ -212,6 +258,17 @@ final class RecordingViewModel {
         let storageBand = RecordingStoragePolicy.standard.band(
             forAvailableBytes: lastStorageBytes
         )
+        if storageBand != previousStorageBand {
+            previousStorageBand = storageBand
+            if storageBand == .warning || storageBand == .critical {
+                await diagnostics.log(
+                    level: storageBand == .critical ? .error : .warning,
+                    category: .storage,
+                    message: "storage band changed",
+                    metadata: ["state": storageBand.rawValue]
+                )
+            }
+        }
         switch storageBand {
         case .critical:
             storageWarning = "storage.warning.critical"
@@ -220,6 +277,12 @@ final class RecordingViewModel {
                 let upload = await locationRecorder.stopSession()
                 sendTrackIfAvailable(upload)
                 snapshot = await engine.currentSnapshot()
+                await diagnostics.log(
+                    level: .error,
+                    category: .storage,
+                    message: "recording stopped by storage",
+                    metadata: ["state": "critical"]
+                )
             }
         case .warning:
             storageWarning = "storage.warning.1gb"
@@ -240,6 +303,16 @@ final class RecordingViewModel {
             previousState != .interrupted
         {
             device.play(.notification)
+        }
+        if snapshot.state != previousState {
+            await diagnostics.log(
+                level: snapshot.state == .failed
+                    || snapshot.state == .interrupted
+                    ? .warning : .info,
+                category: .recording,
+                message: "recording state changed",
+                metadata: ["state": recordingStateName(snapshot.state)]
+            )
         }
         previousStateForHaptic = snapshot.state
         await publishHealth(now: referenceNow)
@@ -275,6 +348,14 @@ final class RecordingViewModel {
     private func applyRemoteLocationSetting(_ setting: LocationSetting) {
         locationRecorder.apply(setting)
         syncLocationState()
+        Task {
+            await diagnostics.log(
+                level: .info,
+                category: .location,
+                message: "location setting received",
+                metadata: ["state": setting.enabled ? "enabled" : "disabled"]
+            )
+        }
     }
 
     private func chargeState(
@@ -412,6 +493,14 @@ final class RecordingViewModel {
         }
         pendingRecovery = info
         resumeCountdownCancelled = false
+        Task {
+            await diagnostics.log(
+                level: .warning,
+                category: .recording,
+                message: "interrupted session found",
+                metadata: ["state": "pending"]
+            )
+        }
         if settings.autoResume, isForeground {
             beginResumeCountdown()
         }
@@ -451,6 +540,19 @@ final class RecordingViewModel {
             if !settings.silentResume {
                 WKInterfaceDevice.current().play(.success)
             }
+            await diagnostics.log(
+                level: .info,
+                category: .recording,
+                message: "interrupted session resumed",
+                metadata: ["state": "resumed"]
+            )
+        } else {
+            await diagnostics.log(
+                level: .warning,
+                category: .recording,
+                message: "interrupted session resume failed",
+                metadata: ["state": "failed"]
+            )
         }
         await refresh()
         syncLocationState()
@@ -469,6 +571,12 @@ final class RecordingViewModel {
         }
         resumeCountdownCancelled = false
         pendingRecovery = nil
+        await diagnostics.log(
+            level: .info,
+            category: .recording,
+            message: "interrupted session ignored",
+            metadata: ["state": "ignored"]
+        )
         await refresh()
     }
 
@@ -521,6 +629,14 @@ final class RecordingViewModel {
         locationRecorder.setEnabled(enabled)
         locationEnabled = enabled
         syncLocationState()
+        Task {
+            await diagnostics.log(
+                level: .info,
+                category: .location,
+                message: "location setting changed",
+                metadata: ["state": enabled ? "enabled" : "disabled"]
+            )
+        }
     }
 
     private func syncLocationState() {

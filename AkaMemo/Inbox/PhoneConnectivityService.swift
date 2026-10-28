@@ -14,6 +14,7 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
     private let trackImporter: TrackImporter?
     private let batteryEventHandler: (@Sendable (BatteryEvent) -> Void)?
     private let healthEventHandler: (@Sendable (RecordingHealthEvent) -> Void)?
+    private let diagnosticsBatchHandler: (@Sendable (DiagnosticsBatch) -> Void)?
     private let activationHandler: (@Sendable () -> Void)?
     private let processingDirectory: URL
     private let rejectedDirectory: URL
@@ -27,6 +28,7 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
         trackImporter: TrackImporter? = nil,
         batteryEventHandler: (@Sendable (BatteryEvent) -> Void)? = nil,
         healthEventHandler: (@Sendable (RecordingHealthEvent) -> Void)? = nil,
+        diagnosticsBatchHandler: (@Sendable (DiagnosticsBatch) -> Void)? = nil,
         activationHandler: (@Sendable () -> Void)? = nil
     ) {
         self.inbox = inbox
@@ -34,6 +36,7 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
         self.trackImporter = trackImporter
         self.batteryEventHandler = batteryEventHandler
         self.healthEventHandler = healthEventHandler
+        self.diagnosticsBatchHandler = diagnosticsBatchHandler
         self.activationHandler = activationHandler
         self.processingDirectory = applicationSupport.appending(
             path: "inbox-processing",
@@ -263,6 +266,14 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
     }
 
     private nonisolated func handleIncoming(_ info: [String: Any]) {
+        if info["type"] as? String == "diagnostics",
+            let payload = info[DiagnosticsBatch.metadataKey] as? String,
+            let batch = try? DiagnosticsBatch.decode(fromJSON: payload),
+            batch.isValid
+        {
+            diagnosticsBatchHandler?(batch)
+            return
+        }
         if info["type"] as? String == "health",
             let payload = info[RecordingHealthEvent.metadataKey] as? String,
             let event = try? RecordingHealthEvent.decode(fromJSON: payload)

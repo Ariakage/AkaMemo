@@ -9,12 +9,13 @@ import WatchConnectivity
 /// actor reference, so it is safe to pass the instance to the queue.
 final class WatchConnectivityService: NSObject, WCSessionDelegate,
     ChunkTransferTransport, BatteryEventTransport, HealthEventTransport,
-    @unchecked Sendable
+    DiagnosticsTransport, @unchecked Sendable
 {
     private let queue: WatchTransferQueue
     private let deletionHandler: WatchDeletionHandler?
     private let handlerLock = NSLock()
     private var locationSettingHandler: (@Sendable (LocationSetting) -> Void)?
+    private var logHandler: (@Sendable (LogLevel, LogCategory, String, [String: String]) -> Void)?
     private let logger = Logger(subsystem: "com.ariakage.AkaMemo", category: "transfer")
 
     init(
@@ -36,6 +37,31 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate,
         handlerLock.unlock()
     }
 
+    /// Registered by the view model to forward connection/transfer events to
+    /// the Watch diagnostics buffer.
+    func setLogHandler(
+        _ handler:
+            @escaping @Sendable (
+                LogLevel, LogCategory, String, [String: String]
+            ) -> Void
+    ) {
+        handlerLock.lock()
+        logHandler = handler
+        handlerLock.unlock()
+    }
+
+    private nonisolated func emitLog(
+        _ level: LogLevel,
+        _ category: LogCategory,
+        _ message: String,
+        _ metadata: [String: String] = [:]
+    ) {
+        handlerLock.lock()
+        let handler = logHandler
+        handlerLock.unlock()
+        handler?(level, category, message, metadata)
+    }
+
     func activate() {
         guard WCSession.isSupported() else {
             logger.warning("WatchConnectivity is not supported")
@@ -53,9 +79,16 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate,
     ) {
         if activationState == .activated {
             Task { await queue.activate(with: self) }
+            emitLog(.info, .transfer, "watch session activated")
         } else if let error {
             logger.error(
                 "WCSession activation failed: \(String(describing: error), privacy: .public)"
+            )
+            emitLog(
+                .error,
+                .transfer,
+                "watch session activation failed",
+                ["errorCode": "activationFailed"]
             )
         }
     }
@@ -72,6 +105,12 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate,
             chunkID = UUID(uuidString: rawChunkID)
         }
         let code: String? = error.map { String(describing: $0) }
+        emitLog(
+            error == nil ? .info : .warning,
+            .transfer,
+            "chunk transfer finished",
+            ["errorCode": error == nil ? "none" : "transferFailed"]
+        )
         Task {
             await queue.handleTransferFinished(chunkID: chunkID, errorCode: code)
         }
@@ -208,6 +247,24 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate,
                 TrackTransferEnvelope.metadataKey: payload,
             ]
         )
+        return true
+    }
+
+    nonisolated func sendDiagnostics(_ batch: DiagnosticsBatch) -> Bool {
+        guard WCSession.isSupported() else {
+            return false
+        }
+        let session = WCSession.default
+        guard session.activationState == .activated,
+            batch.isValid,
+            let payload = try? batch.jsonString()
+        else {
+            return false
+        }
+        session.transferUserInfo([
+            "type": "diagnostics",
+            DiagnosticsBatch.metadataKey: payload,
+        ])
         return true
     }
 

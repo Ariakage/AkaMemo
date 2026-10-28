@@ -16,7 +16,7 @@
 
 ## 当前基线
 
-- 2026-10-29，`main` 已包含 PR #1～#23；PR #5 增加 `.parts` 启动恢复与损坏隔离；PR #6 增加 WatchConnectivity 传输与 iPhone inbox；PR #7 增加 envelope 校验；PR #8 增加 iPhone 会话列表与播放；PR #9 增加模拟器分片注入；PR #10 增加端上转写（FR-009）；PR #11 增加 FTS5 全文检索（FR-010）；PR #12 增加删除与墓碑传播（FR-012 部分）；PR #13 增加 iPhone 端实时诊断日志（FR-031 部分）；PR #14 增加低电量告警基础链路（FR-025～027 部分）；PR #15 增加 GPS 轨迹与 GPX 导出基础链路（FR-021/022 部分）；PR #16 增加低存储与录音保活通知基础链路（FR-013/028 部分）；PR #17 增加前台自动恢复与静默恢复（FR-029 部分）；PR #18 增加定位设置页与全局开关同步（FR-024 部分）；PR #19 增加轨迹删除与 `location` 墓碑（FR-024 完成）；PR #20 增加模拟器合成轨迹注入；PR #21 增加音频清理与存储占用（FR-012/014 完成）；PR #22 修复会话详情缺少 modelContext（分片列表为空），并增加 Debug 演示会话入口；PR #23 增加 MapKit 轨迹地图预览（FR-023）。
+- 2026-10-29，`main` 已包含 PR #1～#24；PR #5 增加 `.parts` 启动恢复与损坏隔离；PR #6 增加 WatchConnectivity 传输与 iPhone inbox；PR #7 增加 envelope 校验；PR #8 增加 iPhone 会话列表与播放；PR #9 增加模拟器分片注入；PR #10 增加端上转写（FR-009）；PR #11 增加 FTS5 全文检索（FR-010）；PR #12 增加删除与墓碑传播（FR-012 部分）；PR #13 增加 iPhone 端实时诊断日志（FR-031 部分）；PR #14 增加低电量告警基础链路（FR-025～027 部分）；PR #15 增加 GPS 轨迹与 GPX 导出基础链路（FR-021/022 部分）；PR #16 增加低存储与录音保活通知基础链路（FR-013/028 部分）；PR #17 增加前台自动恢复与静默恢复（FR-029 部分）；PR #18 增加定位设置页与全局开关同步（FR-024 部分）；PR #19 增加轨迹删除与 `location` 墓碑（FR-024 完成）；PR #20 增加模拟器合成轨迹注入；PR #21 增加音频清理与存储占用（FR-012/014 完成）；PR #22 修复会话详情缺少 modelContext（分片列表为空），并增加 Debug 演示会话入口；PR #23 增加 MapKit 轨迹地图预览（FR-023）；PR #24 增加 Watch 诊断日志批量转发（FR-031 完成）。
 - 模拟器已验证：双端构建、单元测试、Watch 录音 UI、M4A 容器（`afinfo` 显示 `m4af`）、60 秒封口、`.parts` 启动恢复与损坏隔离。
 - 模拟器**不能**验证：系统麦克风隐私指示、真实麦克风/后台/中断/断电/热/电量。
 - 模拟器出现的异常短分片与音频停滞不代表真机行为，也不能证明真机不会出现。
@@ -41,7 +41,7 @@
 | D-014 | 录音列表与播放 | 会话按开始时间聚合；播放/暂停/拖动进度与音频位置一致；切后台停止且不崩溃 | `product/requirements.md` FR-011、Q-018 | 待实测 |
 | D-015 | 端上转写 | 已校验分片串行转写；仅端上（`requiresOnDeviceRecognition`）；降混单声道 16 kHz；时间戳映射正确；失败可见可重试；重启后续跑且幂等 | `specs/transcription-and-search.md` §2–§4、§9、ADR-0009 | 待实测（模拟器已接通权限与失败路径） |
 | D-016 | 删除与墓碑传播 | chunk/session/all 级联删除音频、转写、索引、轨迹/GPX；先写墓碑；离线 Watch 重连后删除并回执；迟到分片拒绝且不复活；删除时转写不写回；新会话不被 delete-all 删除 | FR-012、AC-012、`architecture/data-model.md` | 待实测（模拟器集成测试通过；WatchConnectivity 未真机） |
-| D-017 | 诊断日志与 G-005 | 实时滚动/过滤/暂停/清空/导出；日志与导出无音频、转写、坐标、文件名；7 天/5MB 轮转；Release 默认 info；1000 条渲染 P95 <100ms；Watch 批量转发 | FR-031、G-005、`specs/diagnostics.md` | 待实测（iPhone 端已实现；Watch 转发未实现） |
+| D-017 | 诊断日志与 G-005 | 实时滚动/过滤/暂停/清空/导出；日志与导出无音频、转写、坐标、文件名；7 天/5MB 轮转；Release 默认 info；1000 条渲染 P95 <100ms；Watch 批量转发 | FR-031、G-005、`specs/diagnostics.md` | 待实测（iPhone + Watch 批量转发已实现；真机/G-005 待验证） |
 | D-031 | 全文检索与规模 | 中文单/双/三字与中英混合查询命中；搜索高亮、时间过滤、排序、跳转播放正确；删除后不可检索；10 万 segment P95 < 200 ms | `specs/transcription-and-search.md` §6、§9、ADR-0010 | 待实测（模拟器功能已用合成转写验证；规模与性能未测） |
 | D-020 | WatchConnectivity 传输 | `transferFile` 传分片；iPhone inbox 校验/去重/入库；确认回执；重试退避；未确认不清理 | `specs/recording.md` §8、`architecture/data-model.md` | 待实测（PR #6 实现；模拟器配对后 Watch 显示 received，但 iPhone 模拟器未投递文件，且 `com.apple.Bridge` 会崩溃；需真机） |
 | D-032 | 被杀后前台恢复 | 强制退出后重开 Watch App：显示“上次录音中断”与 3 秒倒计时，可取消；取消后手动继续；后台/锁屏不开麦；恢复后新分片序号续接、缺口可见；忽略后不再提示且不删音频 | `specs/recording-health.md` §3.4、G-004 #11、#12 | 待实测（模拟器逻辑已实现；真机待验证） |
@@ -56,7 +56,7 @@
 | --- | --- | --- | --- | --- |
 | D-021 | 5% 低电量通知 + Live Activity | 5% 告警一次、去重、3% 安全停止；Live Activity 仅前台/点击启动；不得称警报级 | `specs/battery-alerting.md`、G-003 | 待实测（模拟器逻辑与权限弹窗已验证；真机/G-003 待验证） |
 | D-022 | GPS 轨迹与 GPX | 5 分钟采样、拒绝权限仍录音、轨迹状态 degraded/unavailable、GPX 按会话起止裁剪 | `specs/gps-tracking.md`、G-002 | 待实测（采样/JSONL/导入/GPX 已实现；后台与功耗未验证） |
-| D-023 | 诊断日志 | 实时、脱敏、7 天/5MB、导出过滤、无音频/转写/坐标/文件名 | `specs/diagnostics.md`、G-005 | 待实现 |
+| D-023 | 诊断日志 | 实时、脱敏、7 天/5MB、导出过滤、无音频/转写/坐标/文件名 | `specs/diagnostics.md`、G-005 | 待实测（与 D-017 合并跟踪） |
 | D-024 | 24 小时连续录音 | 满电开始连续 24h；音频连续；0 丢失/损坏；设备未关机；结束电量 ≥5% | `specs/24h-feasibility.md`、G-001 | 待实现/待实测 |
 | D-025 | 24h + GPS 组合 | 录音与轨迹并行；组合续航按 G-002 判定 | `specs/gps-tracking.md`、G-002 | 待实现 |
 | D-026 | stateVersion 跨重启 | 同一会话跨 Watch 重启继续递增，不归零；新会话从 1；`health.json` 持久化 | `specs/recording-health.md` §3.3.1、G-004 #16 | 待实测（跨重启续录已实现；版本递增待真机确认） |

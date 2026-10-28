@@ -75,6 +75,11 @@ final class PhoneAppModel {
                         settingsModel.handle(event)
                     }
                 },
+                diagnosticsBatchHandler: { batch in
+                    Task {
+                        await diagnostics.ingest(batch.entries)
+                    }
+                },
                 activationHandler: {
                     Task { @MainActor in
                         settingsModel.publishLocationSetting()

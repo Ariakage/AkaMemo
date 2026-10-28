@@ -26,6 +26,7 @@ struct LocationTrackSection: View {
                         value: distanceText(distance)
                     )
                 }
+                LocationTrackMapPreview(track: track)
                 Button("location.export.gpx") {
                     showPrivacyPrompt = true
                 }

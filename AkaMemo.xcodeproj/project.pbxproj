@@ -77,6 +77,7 @@
 		AD0200000000000000000071 /* LocationTrackRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000071 /* LocationTrackRecord.swift */; };
 		AD0200000000000000000072 /* TrackImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000072 /* TrackImporter.swift */; };
 		AD0200000000000000000073 /* LocationTrackSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000073 /* LocationTrackSection.swift */; };
+		AD0200000000000000000096 /* LocationTrackMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000096 /* LocationTrackMapView.swift */; };
 		AD0200000000000000000091 /* RecordingNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000091 /* RecordingNotificationService.swift */; };
 		AD0200000000000000000092 /* RecordingWatchdog.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000092 /* RecordingWatchdog.swift */; };
 		AD0200000000000000000093 /* RecordingStatusBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000093 /* RecordingStatusBannerView.swift */; };
@@ -211,6 +212,7 @@
 		AD0100000000000000000071 /* LocationTrackRecord.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationTrackRecord.swift; sourceTree = "<group>"; };
 		AD0100000000000000000072 /* TrackImporter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TrackImporter.swift; sourceTree = "<group>"; };
 		AD0100000000000000000073 /* LocationTrackSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationTrackSection.swift; sourceTree = "<group>"; };
+		AD0100000000000000000096 /* LocationTrackMapView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationTrackMapView.swift; sourceTree = "<group>"; };
 		AD0100000000000000000091 /* RecordingNotificationService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingNotificationService.swift; sourceTree = "<group>"; };
 		AD0100000000000000000092 /* RecordingWatchdog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingWatchdog.swift; sourceTree = "<group>"; };
 		AD0100000000000000000093 /* RecordingStatusBannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingStatusBannerView.swift; sourceTree = "<group>"; };
@@ -544,6 +546,7 @@
 				AD0100000000000000000071 /* LocationTrackRecord.swift */,
 				AD0100000000000000000072 /* TrackImporter.swift */,
 				AD0100000000000000000073 /* LocationTrackSection.swift */,
+				AD0100000000000000000096 /* LocationTrackMapView.swift */,
 			);
 			path = Location;
 			sourceTree = "<group>";
@@ -857,6 +860,7 @@
 				AD0200000000000000000071 /* LocationTrackRecord.swift in Sources */,
 				AD0200000000000000000072 /* TrackImporter.swift in Sources */,
 				AD0200000000000000000073 /* LocationTrackSection.swift in Sources */,
+				AD0200000000000000000096 /* LocationTrackMapView.swift in Sources */,
 				AD0200000000000000000091 /* RecordingNotificationService.swift in Sources */,
 				AD0200000000000000000092 /* RecordingWatchdog.swift in Sources */,
 				AD0200000000000000000093 /* RecordingStatusBannerView.swift in Sources */,

@@ -3,6 +3,8 @@
 > 状态：活跃 · 最后更新：2026-10-28
 >
 > 本文定义录音期间的位置记录、存储、隐私与 GPX 导出。产品决策见 `../decisions/0005-gps-tracking.md`；24h 组合门禁见 `24h-feasibility.md`。
+>
+> 实现状态（2026-10-28）：Watch 5 分钟采样、JSONL 落盘与启动续写、iPhone 导入校验与 GPX 导出已实现；FR-024 设置页提供全局定位开关（iPhone↔Watch 以 `updatedAtMs` 最后写入优先）、Watch 权限状态与轨迹占用显示；轨迹单独删除与 `location` 墓碑待实现。真机后台定位、G-002 组合续航未验证。
 
 ## 1. 目标与非目标
 

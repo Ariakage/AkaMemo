@@ -65,6 +65,11 @@ final class RecordingViewModel {
                     )
                 }
             }
+            service.setLocationSettingHandler { [weak self] setting in
+                Task { @MainActor in
+                    self?.applyRemoteLocationSetting(setting)
+                }
+            }
             service.activate()
         } catch {
             self.engine = RecordingEngine()
@@ -245,9 +250,18 @@ final class RecordingViewModel {
             batteryLevel: batteryLevel,
             storageAvailableBytes: lastStorageBytes,
             audioSessionActive: snapshot.state == .recording
-                || snapshot.state == .recovering
+                || snapshot.state == .recovering,
+            locationEnabled: locationRecorder.isEnabled,
+            locationAuthorization: locationRecorder.authorizationStatus,
+            locationTrackBytes: locationRecorder.trackBytes,
+            locationSettingUpdatedAtMs: locationRecorder.settingUpdatedAtMs
         )
         await healthPublisher.publish(event)
+    }
+
+    private func applyRemoteLocationSetting(_ setting: LocationSetting) {
+        locationRecorder.apply(setting)
+        syncLocationState()
     }
 
     private func chargeState(

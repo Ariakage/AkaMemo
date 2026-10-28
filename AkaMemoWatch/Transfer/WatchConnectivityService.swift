@@ -13,6 +13,8 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate,
 {
     private let queue: WatchTransferQueue
     private let deletionHandler: WatchDeletionHandler?
+    private let handlerLock = NSLock()
+    private var locationSettingHandler: (@Sendable (LocationSetting) -> Void)?
     private let logger = Logger(subsystem: "com.ariakage.AkaMemo", category: "transfer")
 
     init(
@@ -22,6 +24,16 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate,
         self.queue = queue
         self.deletionHandler = deletionHandler
         super.init()
+    }
+
+    /// Registered by the view model so a phone-side toggle stops or starts
+    /// location collection immediately.
+    func setLocationSettingHandler(
+        _ handler: @escaping @Sendable (LocationSetting) -> Void
+    ) {
+        handlerLock.lock()
+        locationSettingHandler = handler
+        handlerLock.unlock()
     }
 
     func activate() {
@@ -78,6 +90,13 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate,
         handleAcknowledgement(message)
     }
 
+    nonisolated func session(
+        _ session: WCSession,
+        didReceiveApplicationContext applicationContext: [String: Any]
+    ) {
+        handleIncoming(applicationContext)
+    }
+
     nonisolated func transferFile(at url: URL, metadata: [String: String]) -> Bool {
         guard WCSession.isSupported() else {
             return false
@@ -94,16 +113,32 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate,
     }
 
     private nonisolated func handleIncoming(_ info: [String: Any]) {
-        guard info["type"] as? String == "deletion",
-            let payload = info[DeletionCommand.metadataKey] as? String,
-            let command = try? DeletionCommand.decode(fromJSON: payload),
-            let deletionHandler
-        else {
+        switch info["type"] as? String {
+        case "deletion":
+            guard
+                let payload = info[DeletionCommand.metadataKey] as? String,
+                let command = try? DeletionCommand.decode(fromJSON: payload),
+                let deletionHandler
+            else {
+                return
+            }
+            Task {
+                await deletionHandler.apply(command)
+                sendDeletionAck(tombstoneID: command.tombstoneID)
+            }
+        case "locationSetting":
+            guard
+                let payload = info[LocationSetting.metadataKey] as? String,
+                let setting = try? LocationSetting.decode(fromJSON: payload)
+            else {
+                return
+            }
+            handlerLock.lock()
+            let handler = locationSettingHandler
+            handlerLock.unlock()
+            handler?(setting)
+        default:
             return
-        }
-        Task {
-            await deletionHandler.apply(command)
-            sendDeletionAck(tombstoneID: command.tombstoneID)
         }
     }
 

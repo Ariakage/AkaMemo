@@ -20,6 +20,12 @@ public struct RecordingHealthEvent: Codable, Sendable, Equatable, Identifiable {
     public let batteryLevel: Double?
     public let storageAvailableBytes: Int64?
     public let audioSessionActive: Bool
+    /// Location settings/status sent so the iPhone settings screen can show the
+    /// Watch's effective state. Optional so older heartbeats still decode.
+    public let locationEnabled: Bool?
+    public let locationAuthorization: String?
+    public let locationTrackBytes: Int64?
+    public let locationSettingUpdatedAtMs: Int64?
 
     public init(
         eventID: UUID = UUID(),
@@ -33,7 +39,11 @@ public struct RecordingHealthEvent: Codable, Sendable, Equatable, Identifiable {
         bytesWritten: Int64,
         batteryLevel: Double?,
         storageAvailableBytes: Int64?,
-        audioSessionActive: Bool
+        audioSessionActive: Bool,
+        locationEnabled: Bool? = nil,
+        locationAuthorization: String? = nil,
+        locationTrackBytes: Int64? = nil,
+        locationSettingUpdatedAtMs: Int64? = nil
     ) {
         self.eventID = eventID
         self.sessionID = sessionID
@@ -47,6 +57,10 @@ public struct RecordingHealthEvent: Codable, Sendable, Equatable, Identifiable {
         self.batteryLevel = batteryLevel
         self.storageAvailableBytes = storageAvailableBytes
         self.audioSessionActive = audioSessionActive
+        self.locationEnabled = locationEnabled
+        self.locationAuthorization = locationAuthorization
+        self.locationTrackBytes = locationTrackBytes
+        self.locationSettingUpdatedAtMs = locationSettingUpdatedAtMs
     }
 
     public var isRecording: Bool {

@@ -352,6 +352,76 @@ final class DeletionServiceTests: XCTestCase {
         )
     }
 
+    func testPurgeAudioKeepsTranscriptIndexAndMetadata() async throws {
+        let environment = try makeEnvironment()
+        defer { try? FileManager.default.removeItem(at: environment.root) }
+        let sessionID = UUID()
+        let chunk = try insertChunk(
+            in: environment,
+            sessionID: sessionID,
+            sequence: 0,
+            text: "清理音频保留转写",
+            startedAtMs: 1_800_000_000_000
+        )
+        try await index(
+            chunk,
+            text: "清理音频保留转写",
+            in: environment
+        )
+
+        try await environment.service.purgeSessionAudio(sessionID)
+
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: environment.root.appending(
+                    path: chunk.relativePath
+                ).path
+            )
+        )
+        let sidecarURL = environment.root
+            .appending(path: chunk.relativePath)
+            .deletingPathExtension()
+            .appendingPathExtension("json")
+        XCTAssertFalse(
+            FileManager.default.fileExists(atPath: sidecarURL.path)
+        )
+
+        let context = ModelContext(environment.container)
+        let records = try context.fetch(
+            FetchDescriptor<ReceivedChunkRecord>()
+        )
+        XCTAssertEqual(records.count, 1)
+        XCTAssertNotNil(records.first?.audioPurgedAt)
+        XCTAssertEqual(
+            try context.fetchCount(FetchDescriptor<TranscriptRecord>()),
+            1
+        )
+        let hits = try await environment.index.search(
+            SearchQuery(text: "清理音频")
+        )
+        XCTAssertEqual(hits.count, 1)
+        XCTAssertEqual(environment.sender.commands.last?.scope, .audio)
+
+        let match = try await environment.deletionStore.matchForInbox(
+            chunkID: chunk.chunkID,
+            sessionID: sessionID,
+            sessionStartedAtMs: TimeMath.epochMs(chunk.startedAt)
+        )
+        if case .audio = match {
+        } else {
+            XCTFail("expected audio tombstone, got \(match)")
+        }
+        let trackMatch = try await environment.deletionStore.matchForTrack(
+            sessionID: sessionID,
+            sessionStartedAtMs: TimeMath.epochMs(chunk.startedAt)
+        )
+        XCTAssertEqual(trackMatch, .none)
+
+        let second = try await environment.deletionStore
+            .chunkIDsNeedingAudioPurge(sessionID: sessionID)
+        XCTAssertTrue(second.isEmpty)
+    }
+
     private func insertTrack(
         in environment: Environment,
         sessionID: UUID

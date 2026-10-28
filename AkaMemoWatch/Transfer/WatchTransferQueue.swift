@@ -380,7 +380,7 @@ actor WatchTransferQueue {
     func applyDeletion(_ command: DeletionCommand, now: Date = Date()) async {
         let before = document.entries.count
         switch command.scope {
-        case .chunk:
+        case .chunk, .audio:
             if let chunkID = command.entityID {
                 document.entries.removeAll {
                     $0.envelope.chunkID == chunkID

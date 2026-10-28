@@ -18,6 +18,8 @@ final class ReceivedChunkRecord {
     var bitRate: Int
     var relativePath: String
     var receivedAt: Date
+    /// Set when the user purged the audio but kept the transcript and index.
+    var audioPurgedAt: Date?
 
     init(
         chunkID: UUID,
@@ -33,7 +35,8 @@ final class ReceivedChunkRecord {
         channels: Int,
         bitRate: Int,
         relativePath: String,
-        receivedAt: Date
+        receivedAt: Date,
+        audioPurgedAt: Date? = nil
     ) {
         self.chunkID = chunkID
         self.sessionID = sessionID
@@ -49,5 +52,6 @@ final class ReceivedChunkRecord {
         self.bitRate = bitRate
         self.relativePath = relativePath
         self.receivedAt = receivedAt
+        self.audioPurgedAt = audioPurgedAt
     }
 }

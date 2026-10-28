@@ -251,6 +251,77 @@ final class WatchDeletionTests: XCTestCase {
         XCTAssertTrue(deleted)
     }
 
+    func testAudioPurgeRemovesAudioButKeepsSession() async throws {
+        let sessionID = UUID()
+        try makeSessionDirectory(sessionID: sessionID, startedAtMs: 1_000)
+        let audioName = ChunkPath.fileName(
+            sequence: 0,
+            startEpochMs: 1_000,
+            kind: .audio
+        )
+        let audioURL = root.appending(
+            path: "audio/\(sessionID.uuidString)/\(audioName)"
+        )
+        XCTAssertTrue(FileManager.default.fileExists(atPath: audioURL.path))
+
+        let store = WatchDeletionStore(appSupportRoot: root)
+        let queue = WatchTransferQueue(
+            appSupportRoot: root,
+            deletionStore: store
+        )
+        let chunkID = UUID()
+        await queue.enqueue(
+            makeEnvelope(
+                chunkID: chunkID,
+                sessionID: sessionID,
+                startedAtMs: 1_000
+            )
+        )
+        let handler = WatchDeletionHandler(
+            appSupportRoot: root,
+            deletionStore: store,
+            queue: queue
+        )
+
+        await handler.apply(
+            DeletionCommand(
+                scope: .audio,
+                entityID: chunkID,
+                sessionID: sessionID,
+                deletedAtMs: 2_000
+            )
+        )
+
+        XCTAssertFalse(
+            FileManager.default.fileExists(atPath: audioURL.path)
+        )
+        XCTAssertTrue(
+            FileManager.default.fileExists(
+                atPath: root.appending(
+                    path: "audio/\(sessionID.uuidString)"
+                ).path
+            )
+        )
+        let entries = await queue.entries()
+        XCTAssertTrue(entries.isEmpty)
+        let deleted = await store.isDeleted(
+            chunkID: chunkID,
+            sessionID: sessionID,
+            sessionStartedAtMs: 1_000
+        )
+        XCTAssertTrue(deleted)
+
+        let manifestURL = root.appending(
+            path: "audio/\(sessionID.uuidString)/manifest.json"
+        )
+        let data = try Data(contentsOf: manifestURL)
+        let manifest = try JSONDecoder().decode(
+            ChunkManifest.self,
+            from: data
+        )
+        XCTAssertEqual(manifest.entry(sequence: 0)?.localState, .audioPurged)
+    }
+
     func testLocationDeletionRemovesTrackButKeepsAudio() async throws {
         let sessionID = UUID()
         try makeSessionDirectory(sessionID: sessionID, startedAtMs: 1_000)

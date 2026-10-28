@@ -49,10 +49,12 @@ actor WatchDeletionHandler {
         let nowMs = TimeMath.epochMs(now)
 
         switch command.scope {
-        case .chunk:
+        case .chunk, .audio:
             guard let chunkID = command.entityID else {
                 return
             }
+            let localState: AudioChunk.LocalState =
+                command.scope == .audio ? .audioPurged : .deleted
             let entries = await queue.entries()
             let matching = entries.filter {
                 $0.envelope.chunkID == chunkID
@@ -61,7 +63,8 @@ actor WatchDeletionHandler {
                 await deleteChunkByScan(
                     chunkID: chunkID,
                     tombstoneID: command.tombstoneID,
-                    nowMs: nowMs
+                    nowMs: nowMs,
+                    localState: localState
                 )
             } else {
                 for entry in matching {
@@ -75,7 +78,8 @@ actor WatchDeletionHandler {
                         sessionID: entry.envelope.sessionID,
                         sequence: entry.envelope.sequence,
                         tombstoneID: command.tombstoneID,
-                        nowMs: nowMs
+                        nowMs: nowMs,
+                        localState: localState
                     )
                 }
             }
@@ -225,7 +229,8 @@ actor WatchDeletionHandler {
     private func deleteChunkByScan(
         chunkID: UUID,
         tombstoneID: UUID,
-        nowMs: Int64
+        nowMs: Int64,
+        localState: AudioChunk.LocalState
     ) async {
         for directory in sessionDirectories() {
             guard
@@ -261,7 +266,8 @@ actor WatchDeletionHandler {
                     sessionID: directory.sessionID,
                     sequence: metadata.sequence,
                     tombstoneID: tombstoneID,
-                    nowMs: nowMs
+                    nowMs: nowMs,
+                    localState: localState
                 )
                 return
             }
@@ -272,7 +278,8 @@ actor WatchDeletionHandler {
         sessionID: UUID,
         sequence: Int,
         tombstoneID: UUID,
-        nowMs: Int64
+        nowMs: Int64,
+        localState: AudioChunk.LocalState
     ) async {
         let directory = root.appending(
             path: "audio",
@@ -289,7 +296,7 @@ actor WatchDeletionHandler {
         }
         manifest.setLocalState(
             sequence: sequence,
-            localState: .deleted,
+            localState: localState,
             tombstoneID: tombstoneID,
             nowMs: nowMs
         )

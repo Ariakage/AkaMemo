@@ -17,6 +17,86 @@
         }
       }
     },
+    "audioPurge.action": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear audio (keep transcript)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清理音频（保留转写）"
+          }
+        }
+      }
+    },
+    "audioPurge.confirm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear audio"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清理音频"
+          }
+        }
+      }
+    },
+    "audioPurge.done": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Audio cleared; transcripts remain searchable."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音频已清理，转写仍可搜索。"
+          }
+        }
+      }
+    },
+    "audioPurge.message": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deletes this session's audio files and keeps transcripts, search and metadata. Chunks without a transcript can no longer be transcribed. This cannot be undone."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将删除本会话的音频文件，保留转写、索引与元数据；尚未转写的分片将无法再转写。操作无法恢复。"
+          }
+        }
+      }
+    },
+    "audioPurge.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear audio?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清理音频？"
+          }
+        }
+      }
+    },
     "battery.banner.low": {
       "localizations": {
         "en": {
@@ -1137,6 +1217,22 @@
         }
       }
     },
+    "playback.audioPurged": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Audio cleared"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音频已清理"
+          }
+        }
+      }
+    },
     "playback.error.missing": {
       "localizations": {
         "en": {
@@ -1617,6 +1713,22 @@
         }
       }
     },
+    "session.audioUnavailable": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The target audio was cleared; showing the transcript only."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目标音频已清理，仅显示转写。"
+          }
+        }
+      }
+    },
     "session.chunkCount": {
       "localizations": {
         "en": {
@@ -1997,6 +2109,70 @@
           "stringUnit": {
             "state": "translated",
             "value": "Watch 当前状态"
+          }
+        }
+      }
+    },
+    "settings.storage.audio": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Audio"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音频"
+          }
+        }
+      }
+    },
+    "settings.storage.index": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search index"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "索引"
+          }
+        }
+      }
+    },
+    "settings.storage.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Storage"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "存储"
+          }
+        }
+      }
+    },
+    "settings.storage.transcripts": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transcripts"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "转写"
           }
         }
       }

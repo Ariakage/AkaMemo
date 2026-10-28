@@ -10,6 +10,8 @@ public struct ChunkSummary: Sendable, Equatable {
     public let durationMs: Int
     public let byteSize: Int
     public let relativePath: String
+    /// True when the audio file was purged but the transcript was kept.
+    public let audioPurged: Bool
 
     public init(
         chunkID: UUID,
@@ -19,7 +21,8 @@ public struct ChunkSummary: Sendable, Equatable {
         startedAtMs: Int64,
         durationMs: Int,
         byteSize: Int,
-        relativePath: String
+        relativePath: String,
+        audioPurged: Bool = false
     ) {
         self.chunkID = chunkID
         self.sessionID = sessionID
@@ -29,6 +32,7 @@ public struct ChunkSummary: Sendable, Equatable {
         self.durationMs = durationMs
         self.byteSize = byteSize
         self.relativePath = relativePath
+        self.audioPurged = audioPurged
     }
 }
 

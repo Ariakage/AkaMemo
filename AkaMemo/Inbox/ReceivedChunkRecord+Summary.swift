@@ -11,7 +11,8 @@ extension ReceivedChunkRecord {
             startedAtMs: TimeMath.epochMs(startedAt),
             durationMs: durationMs,
             byteSize: byteSize,
-            relativePath: relativePath
+            relativePath: relativePath,
+            audioPurged: audioPurgedAt != nil
         )
     }
 }

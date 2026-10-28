@@ -5,6 +5,7 @@ import SwiftData
 enum InboxDeletionMatch: Sendable, Equatable {
     case none
     case chunk(tombstoneID: UUID)
+    case audio(tombstoneID: UUID)
     case session(tombstoneID: UUID)
     case location(tombstoneID: UUID)
     case epoch(epochMs: Int64)
@@ -43,6 +44,9 @@ actor DeletionStore {
     ) throws -> InboxDeletionMatch {
         if let tombstone = try chunkTombstone(chunkID: chunkID) {
             return .chunk(tombstoneID: tombstone.tombstoneID)
+        }
+        if let tombstone = try audioTombstone(chunkID: chunkID) {
+            return .audio(tombstoneID: tombstone.tombstoneID)
         }
         if let tombstone = try sessionTombstone(sessionID: sessionID) {
             return .session(tombstoneID: tombstone.tombstoneID)
@@ -118,6 +122,22 @@ actor DeletionStore {
                 reason: reason
             )
             modelContext.insert(record)
+        case .audio:
+            guard let entityID else {
+                throw DeletionStoreError.missingEntity
+            }
+            let chunk = try findChunk(id: entityID)
+            resolvedSessionID = chunk?.sessionID ?? sessionID
+            let record = DeletionTombstoneRecord(
+                tombstoneID: tombstoneID,
+                entityTypeRaw: "audio",
+                entityID: entityID,
+                sessionID: resolvedSessionID,
+                deletedAt: now,
+                expiresAt: now.addingTimeInterval(30 * 24 * 60 * 60),
+                reason: reason
+            )
+            modelContext.insert(record)
         case .location:
             guard let entityID else {
                 throw DeletionStoreError.missingEntity
@@ -150,7 +170,7 @@ actor DeletionStore {
 
         let chunks: [ReceivedChunkRecord]
         switch scope {
-        case .chunk:
+        case .chunk, .audio:
             chunks =
                 try entityID.flatMap { try findChunk(id: $0) }.map {
                     [$0]
@@ -187,7 +207,15 @@ actor DeletionStore {
             )
         }
         let chunkIDs = targets.map(\.chunkID)
-        let sessionIDs = Array(Set(targets.map(\.sessionID)))
+        // Audio purge and track deletion must not touch the session's other
+        // files; only chunk/session/all scope cascade by session.
+        let sessionIDs: [UUID]
+        switch scope {
+        case .audio, .location:
+            sessionIDs = []
+        case .chunk, .session, .all:
+            sessionIDs = Array(Set(targets.map(\.sessionID)))
+        }
         let chunkByID = Dictionary(
             uniqueKeysWithValues: chunks.map { ($0.chunkID, $0) }
         )
@@ -196,6 +224,9 @@ actor DeletionStore {
         switch scope {
         case .chunk:
             transcripts = try fetchTranscripts(chunkIDs: chunkIDs)
+        case .audio:
+            // Audio purge keeps transcripts and their files.
+            transcripts = []
         case .session:
             transcripts = try fetchTranscripts(sessionIDs: sessionIDs)
         case .location:
@@ -238,6 +269,18 @@ actor DeletionStore {
 
     func completeDeletion(_ plan: DeletionPlan) throws {
         switch plan.scope {
+        case .audio:
+            for chunkID in plan.chunkIDs {
+                for record in try modelContext.fetch(
+                    FetchDescriptor<ReceivedChunkRecord>(
+                        predicate: #Predicate { record in
+                            record.chunkID == chunkID
+                        }
+                    )
+                ) {
+                    record.audioPurgedAt = Date()
+                }
+            }
         case .chunk:
             for chunkID in plan.chunkIDs {
                 try deleteSegments(chunkID: chunkID)
@@ -360,6 +403,9 @@ actor DeletionStore {
         if let tombstone = try chunkTombstone(chunkID: chunkID) {
             return Self.command(for: tombstone)
         }
+        if let tombstone = try audioTombstone(chunkID: chunkID) {
+            return Self.command(for: tombstone)
+        }
         if let tombstone = try sessionTombstone(sessionID: sessionID) {
             return Self.command(for: tombstone)
         }
@@ -415,6 +461,30 @@ actor DeletionStore {
         )
         descriptor.fetchLimit = 1
         return try modelContext.fetch(descriptor).first
+    }
+
+    private func audioTombstone(
+        chunkID: UUID
+    ) throws -> DeletionTombstoneRecord? {
+        var descriptor = FetchDescriptor<DeletionTombstoneRecord>(
+            predicate: #Predicate { record in
+                record.entityTypeRaw == "audio" && record.entityID == chunkID
+            }
+        )
+        descriptor.fetchLimit = 1
+        return try modelContext.fetch(descriptor).first
+    }
+
+    /// Chunks in a session whose audio still exists (not yet purged).
+    func chunkIDsNeedingAudioPurge(sessionID: UUID) throws -> [UUID] {
+        let chunks = try modelContext.fetch(
+            FetchDescriptor<ReceivedChunkRecord>(
+                predicate: #Predicate { record in
+                    record.sessionID == sessionID
+                }
+            )
+        )
+        return chunks.filter { $0.audioPurgedAt == nil }.map(\.chunkID)
     }
 
     private func sessionTombstone(

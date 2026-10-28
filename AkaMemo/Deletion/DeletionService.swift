@@ -55,6 +55,26 @@ actor DeletionService {
         )
     }
 
+    /// Deletes the session's audio files but keeps transcripts, index entries
+    /// and chunk metadata. Each chunk gets its own `audio` tombstone so a late
+    /// re-upload is rejected by the inbox.
+    func purgeSessionAudio(_ sessionID: UUID) async throws {
+        let chunkIDs = try await store.chunkIDsNeedingAudioPurge(
+            sessionID: sessionID
+        )
+        guard !chunkIDs.isEmpty else {
+            return
+        }
+        for chunkID in chunkIDs {
+            try await execute(
+                scope: .audio,
+                entityID: chunkID,
+                sessionID: sessionID,
+                reason: "userPurgeAudio"
+            )
+        }
+    }
+
     func deleteTrack(_ trackID: UUID, sessionID: UUID) async throws {
         try await execute(
             scope: .location,
@@ -97,7 +117,7 @@ actor DeletionService {
                     if let sessionID {
                         try await index.deleteSession(sessionID)
                     }
-                case .location:
+                case .audio, .location:
                     break
                 case .all:
                     // Scoped per session so an entry that arrived after the

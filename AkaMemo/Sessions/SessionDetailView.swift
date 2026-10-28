@@ -17,6 +17,8 @@ struct SessionDetailView: View {
     @State private var didStartInitialPlayback = false
     @State private var pendingDeletion: PendingDeletion?
     @State private var deletionError: String?
+    @State private var showPurgePrompt = false
+    @State private var jumpAudioUnavailable = false
 
     init(
         sessionID: UUID,
@@ -87,6 +89,28 @@ struct SessionDetailView: View {
                         "session.chunkCount",
                         value: "\(session.chunkCount)"
                     )
+                    if session.chunks.contains(where: { !$0.audioPurged }) {
+                        Button("audioPurge.action", role: .destructive) {
+                            showPurgePrompt = true
+                        }
+                    } else {
+                        Text("audioPurge.done")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .alert(
+                    "audioPurge.title",
+                    isPresented: $showPurgePrompt
+                ) {
+                    Button("audioPurge.confirm", role: .destructive) {
+                        Task {
+                            await purgeAudio()
+                        }
+                    }
+                    Button("deletion.cancel", role: .cancel) {}
+                } message: {
+                    Text("audioPurge.message")
                 }
 
                 LocationTrackSection(track: locationTracks.first) {
@@ -134,6 +158,14 @@ struct SessionDetailView: View {
                                 )
                             }
                         }
+                    }
+                }
+
+                if jumpAudioUnavailable {
+                    Section {
+                        Text("session.audioUnavailable")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
                     }
                 }
 
@@ -213,6 +245,16 @@ struct SessionDetailView: View {
         }
     }
 
+    private func purgeAudio() async {
+        guard await deletion?.purgeAudio(sessionID: sessionID) == true else {
+            if let message = deletion?.errorMessage {
+                deletionError = message
+            }
+            return
+        }
+        playback.stop()
+    }
+
     private func startInitialPlaybackIfNeeded() {
         guard !didStartInitialPlayback, let startChunkID,
             let chunk = session?.chunks.first(where: {
@@ -222,6 +264,10 @@ struct SessionDetailView: View {
             return
         }
         didStartInitialPlayback = true
+        guard !chunk.audioPurged else {
+            jumpAudioUnavailable = true
+            return
+        }
         playback.start(chunk: chunk, atAbsoluteMs: startAtMs)
     }
 }
@@ -257,38 +303,45 @@ private struct ChunkRow: View {
             }
 
             HStack(spacing: 10) {
-                Button {
-                    playback.toggle(chunk: chunk)
-                } label: {
-                    Image(
-                        systemName: isPlayingThisChunk
-                            ? "pause.circle.fill"
-                            : "play.circle.fill"
-                    )
-                    .font(.title2)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(
-                    Text(
-                        LocalizedStringKey(
-                            isPlayingThisChunk ? "playback.pause" : "playback.play"
+                if chunk.audioPurged {
+                    Label("playback.audioPurged", systemImage: "waveform.slash")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Button {
+                        playback.toggle(chunk: chunk)
+                    } label: {
+                        Image(
+                            systemName: isPlayingThisChunk
+                                ? "pause.circle.fill"
+                                : "play.circle.fill"
+                        )
+                        .font(.title2)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(
+                        Text(
+                            LocalizedStringKey(
+                                isPlayingThisChunk
+                                    ? "playback.pause" : "playback.play"
+                            )
                         )
                     )
-                )
 
-                if isCurrent {
-                    Slider(
-                        value: Binding(
-                            get: { playback.progress },
-                            set: { playback.seek(to: $0) }
-                        ),
-                        in: 0...1
-                    )
-                    .accessibilityLabel(Text("playback.progress"))
+                    if isCurrent {
+                        Slider(
+                            value: Binding(
+                                get: { playback.progress },
+                                set: { playback.seek(to: $0) }
+                            ),
+                            in: 0...1
+                        )
+                        .accessibilityLabel(Text("playback.progress"))
 
-                    Text(playback.currentTimeText)
-                        .font(.caption2.monospacedDigit())
-                        .foregroundStyle(.secondary)
+                        Text(playback.currentTimeText)
+                            .font(.caption2.monospacedDigit())
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
 

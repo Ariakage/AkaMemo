@@ -50,6 +50,27 @@ final class DeletionCommandTests: XCTestCase {
         )
     }
 
+    func testAudioScopeRoundTripsAndRequiresChunk() throws {
+        let sessionID = UUID()
+        let chunkID = UUID()
+        let command = DeletionCommand(
+            scope: .audio,
+            entityID: chunkID,
+            sessionID: sessionID,
+            deletedAtMs: 1_700_000_000_000
+        )
+
+        let decoded = try DeletionCommand.decode(
+            fromJSON: try command.jsonString()
+        )
+
+        XCTAssertEqual(decoded, command)
+        XCTAssertTrue(decoded.isValid)
+        XCTAssertFalse(
+            DeletionCommand(scope: .audio, deletedAtMs: 1).isValid
+        )
+    }
+
     func testLocationScopeRoundTripsAndRequiresSession() throws {
         let sessionID = UUID()
         let trackID = UUID()

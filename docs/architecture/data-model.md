@@ -256,6 +256,7 @@ MVP 不做自动标签；保留结构以便后续扩展。
 - 操作**只删除音频文件**，保留 Transcript、索引、元数据；`AudioChunk.audioPurgedAt` 标记。
 - 为每个 chunk 写 `DeletionTombstone(entityType=audio)`；Watch 删除对应音频且不得补传；Inbox 拒绝该 chunk 的音频，但不删除转写。
 - 播放显示“音频不可用”；搜索仍可用。
+- 已实现（2026-10-29）：会话详情“清理音频（保留转写）”逐 chunk 写 `audio` 墓碑并删除音频与 sidecar，保留 `ReceivedChunkRecord`（`audioPurgedAt`）、转写与索引；Watch 删除对应音频并把 manifest 标为 `audioPurged`，传输队列移除；Inbox 以 `audioPurged` 拒绝迟到音频；设置页显示音频/转写/索引占用。
 - 与“删除整个会话”（session tombstone，级联删除转写/索引/位置）和“删除单个分片”（chunk tombstone）区分。
 
 ## 状态机

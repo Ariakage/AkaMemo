@@ -90,6 +90,11 @@ actor WatchDeletionStore {
                 if let chunkID, tombstone.entityID == chunkID {
                     return true
                 }
+            case .audio:
+                // The chunk's audio was purged and must not be re-queued.
+                if let chunkID, tombstone.entityID == chunkID {
+                    return true
+                }
             case .session:
                 if tombstone.entityID == sessionID {
                     return true

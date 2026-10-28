@@ -60,6 +60,10 @@ actor PhoneInboxService {
                     try? fileManager.removeItem(at: fileURL)
                     await logRejection("deletedSession", envelope: envelope)
                     return .rejected("deletedSession")
+                case .audio:
+                    try? fileManager.removeItem(at: fileURL)
+                    await logRejection("audioPurged", envelope: envelope)
+                    return .rejected("audioPurged")
                 case .location:
                     // Only the track was deleted; this session's audio still
                     // belongs in the library.

@@ -1,0 +1,947 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 60;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		01A9B4AF9519119926EF4A93 /* AkaMemoWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C068C51244DADCCF02BA6934 /* AkaMemoWidgets.appex */; };
+		079DD3E7F0D4555664F6DE1C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE09235A2FFA3A686E0D3069 /* Foundation.framework */; };
+		3590BC6CEC768A2FF540245A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E519A4E1A6CFB72988AD77E /* Assets.xcassets */; };
+		4234A700CE131EE63006F470 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4326AA9B406DCEA79207CC9F /* ContentView.swift */; };
+		460407C71537FF7E88A1A946 /* AkaMemoWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542CBFDF032AE73D795B195E /* AkaMemoWidgetsBundle.swift */; };
+		468F44D560E436F9FAEC0BFB /* AkaMemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2530B973040C23AEDCE79B0B /* AkaMemoTests.swift */; };
+		49298A2126B4F1AEAA4822A6 /* BatteryLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FC4CD7E510620FBA8E0CBE9 /* BatteryLiveActivity.swift */; };
+		54B9DC46046EBCDE9E84B871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F290C70C9CA1F3F91F0C1806 /* ContentView.swift */; };
+		550D07B59E308E3A651E97F6 /* AkaMemoCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6FF0448F16BA4510F111987B /* AkaMemoCore */; };
+		67B81798BD0AE7969B216E74 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1F22C4A920E3D53BEBA0A61 /* Assets.xcassets */; };
+		79DD4A2A31389951A512ABF8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DC9C1D39D7FBEE766BDF18A /* Assets.xcassets */; };
+		7B4EDB178C6A65635BE3A01D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D7F45E12213CADC590074BB /* Foundation.framework */; };
+		7C3B1B08FC00040ACEE628B4 /* AkaMemoWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = DDE65A532D5CB95EE74F32FD /* AkaMemoWatch.app */; };
+		8B8E14F7A88DD1E22570308C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D7F45E12213CADC590074BB /* Foundation.framework */; };
+		8DCB9C0938F7868F692271A7 /* AkaMemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32115F4D9BDE2DD944805D7F /* AkaMemoApp.swift */; };
+		8DE6ABA214729569FBBC73E2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE09235A2FFA3A686E0D3069 /* Foundation.framework */; };
+		8EDCD8D0E690F6E7740A89BA /* AkaMemoWatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E0E14E0641AEBB86988EF /* AkaMemoWatchTests.swift */; };
+		AC12BC73AD51EA12159B248A /* BatteryActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035009F8ABC8D75D57319119 /* BatteryActivityAttributes.swift */; };
+		AD29FFF1B598809B216FED68 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D7F45E12213CADC590074BB /* Foundation.framework */; };
+		C17D9F281A4186C40A5D4EFE /* AkaMemoWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0161CC0AAB68F9692BED6EB2 /* AkaMemoWatchApp.swift */; };
+		E7ABD694D9BD4238E7CE4D75 /* BatteryActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035009F8ABC8D75D57319119 /* BatteryActivityAttributes.swift */; };
+		F55B6CA57DAED82E7C9787AF /* AkaMemoCore in Frameworks */ = {isa = PBXBuildFile; productRef = D6FEE4F074C8182595A104D0 /* AkaMemoCore */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		10160974249B99B6BAEF3DCF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37D65E6091E7C7C1186B8E59 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CCDD84BAD1E3B419A1A5121A;
+			remoteInfo = AkaMemo;
+		};
+		3D85380ABDCE838E225968B3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37D65E6091E7C7C1186B8E59 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 20D66E5234277CE6829C35F1;
+			remoteInfo = AkaMemoWidgets;
+		};
+		976DA268DFB9985BB86B3D1F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37D65E6091E7C7C1186B8E59 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4E9B0F777A9A6A3F14907154;
+			remoteInfo = AkaMemoWatch;
+		};
+		B1A0238A5F299CDF4325C6B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37D65E6091E7C7C1186B8E59 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4E9B0F777A9A6A3F14907154;
+			remoteInfo = AkaMemoWatch;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		62D1A0BA139B2D8393445D5A /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				7C3B1B08FC00040ACEE628B4 /* AkaMemoWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		694458492B545DF4C4DEA052 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				01A9B4AF9519119926EF4A93 /* AkaMemoWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0161CC0AAB68F9692BED6EB2 /* AkaMemoWatchApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AkaMemoWatchApp.swift; sourceTree = "<group>"; };
+		035009F8ABC8D75D57319119 /* BatteryActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryActivityAttributes.swift; sourceTree = "<group>"; };
+		0FC4CD7E510620FBA8E0CBE9 /* BatteryLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryLiveActivity.swift; sourceTree = "<group>"; };
+		129933E21C58719BC3844183 /* AkaMemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AkaMemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F4F291D0311513A0F8D0551 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2530B973040C23AEDCE79B0B /* AkaMemoTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AkaMemoTests.swift; sourceTree = "<group>"; };
+		32115F4D9BDE2DD944805D7F /* AkaMemoApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AkaMemoApp.swift; sourceTree = "<group>"; };
+		4326AA9B406DCEA79207CC9F /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4B80987585ED4A2DB88BBF15 /* AkaMemoWatchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AkaMemoWatchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DC9C1D39D7FBEE766BDF18A /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		542CBFDF032AE73D795B195E /* AkaMemoWidgetsBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AkaMemoWidgetsBundle.swift; sourceTree = "<group>"; };
+		66BAF0B7620CAFBE7EE9537E /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8D7F45E12213CADC590074BB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		8E0E0E14E0641AEBB86988EF /* AkaMemoWatchTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AkaMemoWatchTests.swift; sourceTree = "<group>"; };
+		9D276A1DEFC02D6D5AF8CE27 /* Config.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		9E519A4E1A6CFB72988AD77E /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A1B0CB5A4A6D4CC7F527531B /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE09235A2FFA3A686E0D3069 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		B91090CBA3B1742A303B4613 /* AkaMemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AkaMemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C068C51244DADCCF02BA6934 /* AkaMemoWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AkaMemoWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		DDE65A532D5CB95EE74F32FD /* AkaMemoWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AkaMemoWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEAEB04003F7905F64D509B2 /* AkaMemo.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = AkaMemo.entitlements; sourceTree = "<group>"; };
+		E1F22C4A920E3D53BEBA0A61 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F290C70C9CA1F3F91F0C1806 /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		104B8B46EAD10C429700BA8F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DE6ABA214729569FBBC73E2 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		53587792166AA549C540963F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8B8E14F7A88DD1E22570308C /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A015D4273761668174F7720 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD29FFF1B598809B216FED68 /* Foundation.framework in Frameworks */,
+				F55B6CA57DAED82E7C9787AF /* AkaMemoCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9083574E63195D4929889D99 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7B4EDB178C6A65635BE3A01D /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		916C7527645D65D3D80DD7C7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				079DD3E7F0D4555664F6DE1C /* Foundation.framework in Frameworks */,
+				550D07B59E308E3A651E97F6 /* AkaMemoCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		09B8D6ED3BF3763A37B49D6D /* AkaMemoWatch */ = {
+			isa = PBXGroup;
+			children = (
+				0161CC0AAB68F9692BED6EB2 /* AkaMemoWatchApp.swift */,
+				F290C70C9CA1F3F91F0C1806 /* ContentView.swift */,
+				4DC9C1D39D7FBEE766BDF18A /* Assets.xcassets */,
+				66BAF0B7620CAFBE7EE9537E /* Info.plist */,
+			);
+			path = AkaMemoWatch;
+			sourceTree = "<group>";
+		};
+		37836A0CA63CBDD148209088 /* watchOS */ = {
+			isa = PBXGroup;
+			children = (
+				AE09235A2FFA3A686E0D3069 /* Foundation.framework */,
+			);
+			name = watchOS;
+			sourceTree = "<group>";
+		};
+		708C405B6180B83A81B89B2A /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				9D276A1DEFC02D6D5AF8CE27 /* Config.xcconfig */,
+			);
+			name = Config;
+			path = .;
+			sourceTree = "<group>";
+		};
+		78424DEF49D122ED57BECEC6 /* AkaMemoWatchTests */ = {
+			isa = PBXGroup;
+			children = (
+				8E0E0E14E0641AEBB86988EF /* AkaMemoWatchTests.swift */,
+			);
+			path = AkaMemoWatchTests;
+			sourceTree = "<group>";
+		};
+		B58DABE885095C59B5E6949E /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				8D7F45E12213CADC590074BB /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		B6293D7CD8BE694BBBD79C0A /* AkaMemoTests */ = {
+			isa = PBXGroup;
+			children = (
+				2530B973040C23AEDCE79B0B /* AkaMemoTests.swift */,
+			);
+			path = AkaMemoTests;
+			sourceTree = "<group>";
+		};
+		BD6E03FAB6A5309D6FEA1155 /* AkaMemoWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				542CBFDF032AE73D795B195E /* AkaMemoWidgetsBundle.swift */,
+				0FC4CD7E510620FBA8E0CBE9 /* BatteryLiveActivity.swift */,
+				035009F8ABC8D75D57319119 /* BatteryActivityAttributes.swift */,
+				9E519A4E1A6CFB72988AD77E /* Assets.xcassets */,
+				1F4F291D0311513A0F8D0551 /* Info.plist */,
+			);
+			path = AkaMemoWidgets;
+			sourceTree = "<group>";
+		};
+		C68B5D27A30C3ED15561435A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B58DABE885095C59B5E6949E /* iOS */,
+				37836A0CA63CBDD148209088 /* watchOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DD4D2EE5455C3CBD86D02DF2 = {
+			isa = PBXGroup;
+			children = (
+				F63F91830E4FF9C43D486FE0 /* Products */,
+				C68B5D27A30C3ED15561435A /* Frameworks */,
+				E77D0E4D19AC1E93A1A5E2DD /* AkaMemo */,
+				09B8D6ED3BF3763A37B49D6D /* AkaMemoWatch */,
+				BD6E03FAB6A5309D6FEA1155 /* AkaMemoWidgets */,
+				B6293D7CD8BE694BBBD79C0A /* AkaMemoTests */,
+				78424DEF49D122ED57BECEC6 /* AkaMemoWatchTests */,
+				708C405B6180B83A81B89B2A /* Config */,
+			);
+			sourceTree = "<group>";
+		};
+		E77D0E4D19AC1E93A1A5E2DD /* AkaMemo */ = {
+			isa = PBXGroup;
+			children = (
+				32115F4D9BDE2DD944805D7F /* AkaMemoApp.swift */,
+				4326AA9B406DCEA79207CC9F /* ContentView.swift */,
+				E1F22C4A920E3D53BEBA0A61 /* Assets.xcassets */,
+				A1B0CB5A4A6D4CC7F527531B /* Info.plist */,
+				DEAEB04003F7905F64D509B2 /* AkaMemo.entitlements */,
+			);
+			path = AkaMemo;
+			sourceTree = "<group>";
+		};
+		F63F91830E4FF9C43D486FE0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				129933E21C58719BC3844183 /* AkaMemo.app */,
+				DDE65A532D5CB95EE74F32FD /* AkaMemoWatch.app */,
+				C068C51244DADCCF02BA6934 /* AkaMemoWidgets.appex */,
+				B91090CBA3B1742A303B4613 /* AkaMemoTests.xctest */,
+				4B80987585ED4A2DB88BBF15 /* AkaMemoWatchTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		20D66E5234277CE6829C35F1 /* AkaMemoWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 576371AED4483AA2F0648189 /* Build configuration list for PBXNativeTarget "AkaMemoWidgets" */;
+			buildPhases = (
+				50A2E6DC45C180FB7D68FA4A /* Sources */,
+				9083574E63195D4929889D99 /* Frameworks */,
+				9D1D82C85B794B13D11D2CFE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AkaMemoWidgets;
+			productName = AkaMemoWidgets;
+			productReference = C068C51244DADCCF02BA6934 /* AkaMemoWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		4E9B0F777A9A6A3F14907154 /* AkaMemoWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 60D891450E9FF481ACCE7286 /* Build configuration list for PBXNativeTarget "AkaMemoWatch" */;
+			buildPhases = (
+				E86DD9E83A43D612413B1D48 /* Sources */,
+				916C7527645D65D3D80DD7C7 /* Frameworks */,
+				40976631B354CC83A851561E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AkaMemoWatch;
+			packageProductDependencies = (
+				6FF0448F16BA4510F111987B /* AkaMemoCore */,
+			);
+			productName = AkaMemoWatch;
+			productReference = DDE65A532D5CB95EE74F32FD /* AkaMemoWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AD1B2DBF23BD47EE0FBA7336 /* AkaMemoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0F9666068792FA45D3CA9FAC /* Build configuration list for PBXNativeTarget "AkaMemoTests" */;
+			buildPhases = (
+				07C937D9173D03D46DFF8B36 /* Sources */,
+				53587792166AA549C540963F /* Frameworks */,
+				D6E4EFE79CA222C2102CB7E0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EA17546AD03FBDE708B60C95 /* PBXTargetDependency */,
+			);
+			name = AkaMemoTests;
+			productName = AkaMemoTests;
+			productReference = B91090CBA3B1742A303B4613 /* AkaMemoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CCDD84BAD1E3B419A1A5121A /* AkaMemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 55E465E9B5CCEFD7D611438F /* Build configuration list for PBXNativeTarget "AkaMemo" */;
+			buildPhases = (
+				57E5B481D057D9518CB402DE /* Sources */,
+				7A015D4273761668174F7720 /* Frameworks */,
+				8BAA8070E4A90F843317B915 /* Resources */,
+				62D1A0BA139B2D8393445D5A /* Embed Watch Content */,
+				694458492B545DF4C4DEA052 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2D1ACF4CAC79D64330679267 /* PBXTargetDependency */,
+				8F43F6E1FE7227BB3E3D7FDB /* PBXTargetDependency */,
+			);
+			name = AkaMemo;
+			packageProductDependencies = (
+				D6FEE4F074C8182595A104D0 /* AkaMemoCore */,
+			);
+			productName = AkaMemo;
+			productReference = 129933E21C58719BC3844183 /* AkaMemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DD0B17BD9561233C3DC6E209 /* AkaMemoWatchTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0AFDB3C82B5F03521642A8E /* Build configuration list for PBXNativeTarget "AkaMemoWatchTests" */;
+			buildPhases = (
+				76A88BC7CC899B050C2FC9E4 /* Sources */,
+				104B8B46EAD10C429700BA8F /* Frameworks */,
+				C490D92721583D30EC73C1A2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				491FE213D12FE609A9CE7D12 /* PBXTargetDependency */,
+			);
+			name = AkaMemoWatchTests;
+			productName = AkaMemoWatchTests;
+			productReference = 4B80987585ED4A2DB88BBF15 /* AkaMemoWatchTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		37D65E6091E7C7C1186B8E59 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = B1FCB094F1E676869DB265AE /* Build configuration list for PBXProject "AkaMemo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DD4D2EE5455C3CBD86D02DF2;
+			packageReferences = (
+				885C296B74E75FA1D89ECE8D /* XCLocalSwiftPackageReference "Packages/AkaMemoCore" */,
+			);
+			productRefGroup = F63F91830E4FF9C43D486FE0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CCDD84BAD1E3B419A1A5121A /* AkaMemo */,
+				4E9B0F777A9A6A3F14907154 /* AkaMemoWatch */,
+				20D66E5234277CE6829C35F1 /* AkaMemoWidgets */,
+				AD1B2DBF23BD47EE0FBA7336 /* AkaMemoTests */,
+				DD0B17BD9561233C3DC6E209 /* AkaMemoWatchTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		40976631B354CC83A851561E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79DD4A2A31389951A512ABF8 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8BAA8070E4A90F843317B915 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67B81798BD0AE7969B216E74 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9D1D82C85B794B13D11D2CFE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3590BC6CEC768A2FF540245A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C490D92721583D30EC73C1A2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D6E4EFE79CA222C2102CB7E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		07C937D9173D03D46DFF8B36 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				468F44D560E436F9FAEC0BFB /* AkaMemoTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50A2E6DC45C180FB7D68FA4A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				460407C71537FF7E88A1A946 /* AkaMemoWidgetsBundle.swift in Sources */,
+				49298A2126B4F1AEAA4822A6 /* BatteryLiveActivity.swift in Sources */,
+				E7ABD694D9BD4238E7CE4D75 /* BatteryActivityAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		57E5B481D057D9518CB402DE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DCB9C0938F7868F692271A7 /* AkaMemoApp.swift in Sources */,
+				4234A700CE131EE63006F470 /* ContentView.swift in Sources */,
+				AC12BC73AD51EA12159B248A /* BatteryActivityAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		76A88BC7CC899B050C2FC9E4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EDCD8D0E690F6E7740A89BA /* AkaMemoWatchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E86DD9E83A43D612413B1D48 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C17D9F281A4186C40A5D4EFE /* AkaMemoWatchApp.swift in Sources */,
+				54B9DC46046EBCDE9E84B871 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2D1ACF4CAC79D64330679267 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AkaMemoWatch;
+			target = 4E9B0F777A9A6A3F14907154 /* AkaMemoWatch */;
+			targetProxy = 976DA268DFB9985BB86B3D1F /* PBXContainerItemProxy */;
+		};
+		491FE213D12FE609A9CE7D12 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AkaMemoWatch;
+			target = 4E9B0F777A9A6A3F14907154 /* AkaMemoWatch */;
+			targetProxy = B1A0238A5F299CDF4325C6B6 /* PBXContainerItemProxy */;
+		};
+		8F43F6E1FE7227BB3E3D7FDB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AkaMemoWidgets;
+			target = 20D66E5234277CE6829C35F1 /* AkaMemoWidgets */;
+			targetProxy = 3D85380ABDCE838E225968B3 /* PBXContainerItemProxy */;
+		};
+		EA17546AD03FBDE708B60C95 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AkaMemo;
+			target = CCDD84BAD1E3B419A1A5121A /* AkaMemo */;
+			targetProxy = 10160974249B99B6BAEF3DCF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		475A2E911BB23C758E70DF06 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9D276A1DEFC02D6D5AF8CE27 /* Config.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		4BD0CC41A713AF2AA452E4D5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AkaMemoWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ariakage.AkaMemo.widgets;
+				PRODUCT_NAME = AkaMemoWidgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5B29439BC98F683926E2C591 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ariakage.AkaMemo.watchkitapp.tests;
+				PRODUCT_NAME = AkaMemoWatchTests;
+				SDKROOT = watchos;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AkaMemoWatch.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AkaMemoWatch";
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		662E8574B58289B8F9BAA64D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AkaMemoWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ariakage.AkaMemo.widgets;
+				PRODUCT_NAME = AkaMemoWidgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		673572FA723B0B889AA3BE8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ariakage.AkaMemo.tests;
+				PRODUCT_NAME = AkaMemoTests;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AkaMemo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AkaMemo";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		72D59E25F6D4B1E709977DAD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ariakage.AkaMemo.watchkitapp.tests;
+				PRODUCT_NAME = AkaMemoWatchTests;
+				SDKROOT = watchos;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AkaMemoWatch.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AkaMemoWatch";
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		8E099B563ABE14FAC36EE340 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9D276A1DEFC02D6D5AF8CE27 /* Config.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		9F7A4327E99D113E7B211490 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = AkaMemo/AkaMemo.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AkaMemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ariakage.AkaMemo;
+				PRODUCT_NAME = AkaMemo;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9F84A2D44CECB17691425FA4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AkaMemoWatch/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ariakage.AkaMemo.watchkitapp;
+				PRODUCT_NAME = AkaMemoWatch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		B0A78F640DDD5406298826B0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ariakage.AkaMemo.tests;
+				PRODUCT_NAME = AkaMemoTests;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AkaMemo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AkaMemo";
+			};
+			name = Debug;
+		};
+		C6E2C3037A0514DD62C6DFE4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = AkaMemo/AkaMemo.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AkaMemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ariakage.AkaMemo;
+				PRODUCT_NAME = AkaMemo;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		EBCF3B5BCECA457377A4FC2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AkaMemoWatch/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ariakage.AkaMemo.watchkitapp;
+				PRODUCT_NAME = AkaMemoWatch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0F9666068792FA45D3CA9FAC /* Build configuration list for PBXNativeTarget "AkaMemoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				673572FA723B0B889AA3BE8F /* Release */,
+				B0A78F640DDD5406298826B0 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		55E465E9B5CCEFD7D611438F /* Build configuration list for PBXNativeTarget "AkaMemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C6E2C3037A0514DD62C6DFE4 /* Release */,
+				9F7A4327E99D113E7B211490 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		576371AED4483AA2F0648189 /* Build configuration list for PBXNativeTarget "AkaMemoWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				662E8574B58289B8F9BAA64D /* Release */,
+				4BD0CC41A713AF2AA452E4D5 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		60D891450E9FF481ACCE7286 /* Build configuration list for PBXNativeTarget "AkaMemoWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9F84A2D44CECB17691425FA4 /* Release */,
+				EBCF3B5BCECA457377A4FC2F /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B1FCB094F1E676869DB265AE /* Build configuration list for PBXProject "AkaMemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8E099B563ABE14FAC36EE340 /* Debug */,
+				475A2E911BB23C758E70DF06 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E0AFDB3C82B5F03521642A8E /* Build configuration list for PBXNativeTarget "AkaMemoWatchTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				72D59E25F6D4B1E709977DAD /* Release */,
+				5B29439BC98F683926E2C591 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		885C296B74E75FA1D89ECE8D /* XCLocalSwiftPackageReference "Packages/AkaMemoCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/AkaMemoCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6FF0448F16BA4510F111987B /* AkaMemoCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 885C296B74E75FA1D89ECE8D /* XCLocalSwiftPackageReference "Packages/AkaMemoCore" */;
+			productName = AkaMemoCore;
+		};
+		D6FEE4F074C8182595A104D0 /* AkaMemoCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 885C296B74E75FA1D89ECE8D /* XCLocalSwiftPackageReference "Packages/AkaMemoCore" */;
+			productName = AkaMemoCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 37D65E6091E7C7C1186B8E59 /* Project object */;
+}

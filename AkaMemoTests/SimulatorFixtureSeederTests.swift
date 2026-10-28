@@ -10,6 +10,8 @@ final class SimulatorFixtureSeederTests: XCTestCase {
         let container: ModelContainer
         let store: MemoryStore
         let seeder: SimulatorFixtureSeeder
+        let index: SQLiteSearchIndex
+        let indexer: TranscriptIndexer
     }
 
     private func makeEnvironment() throws -> Environment {
@@ -25,17 +27,59 @@ final class SimulatorFixtureSeederTests: XCTestCase {
         let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(
             for: ReceivedChunkRecord.self,
+            TranscriptRecord.self,
+            TranscriptSegmentRecord.self,
+            TranscriptionTaskRecord.self,
             configurations: configuration
         )
         let store = MemoryStore(modelContainer: container)
         let inbox = PhoneInboxService(store: store, applicationSupport: root)
         let seeder = SimulatorFixtureSeeder(inbox: inbox, store: store)
+        let index = try SQLiteSearchIndex(
+            databaseURL: root.appending(path: "index/search.sqlite")
+        )
         return Environment(
             root: root,
             container: container,
             store: store,
-            seeder: seeder
+            seeder: seeder,
+            index: index,
+            indexer: TranscriptIndexer(index: index)
         )
+    }
+
+    func testTranscriptSeedIndexesSyntheticText() async throws {
+        let environment = try makeEnvironment()
+        defer { try? FileManager.default.removeItem(at: environment.root) }
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+
+        _ = await environment.seeder.seedIfNeeded(now: now)
+        let transcriptSeeder = SimulatorTranscriptSeeder(
+            container: environment.container,
+            indexer: environment.indexer
+        )
+        await transcriptSeeder.seedIfNeeded(now: now)
+
+        let context = ModelContext(environment.container)
+        let transcripts = try context.fetch(
+            FetchDescriptor<TranscriptRecord>()
+        )
+        let segments = try context.fetch(
+            FetchDescriptor<TranscriptSegmentRecord>()
+        )
+        XCTAssertEqual(transcripts.count, SimulatorFixtureSeeder.chunkCount)
+        XCTAssertEqual(segments.count, SimulatorFixtureSeeder.chunkCount * 2)
+        XCTAssertTrue(transcripts.allSatisfy { $0.status == .ready })
+
+        let hits = try await environment.index.search(
+            SearchQuery(text: "开会")
+        )
+        XCTAssertEqual(hits.count, 1)
+        XCTAssertTrue(hits.first?.snippet.contains("开会") ?? false)
+
+        await transcriptSeeder.seedIfNeeded(now: now)
+        let after = try context.fetch(FetchDescriptor<TranscriptRecord>())
+        XCTAssertEqual(after.count, SimulatorFixtureSeeder.chunkCount)
     }
 
     func testSeedInsertsSyntheticChunks() async throws {

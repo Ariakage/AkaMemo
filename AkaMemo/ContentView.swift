@@ -10,8 +10,11 @@ struct ContentView: View {
         NavigationStack {
             Group {
                 if let container = model.container {
-                    SessionListView(transcription: model.transcription)
-                        .modelContainer(container)
+                    SessionListView(
+                        transcription: model.transcription,
+                        search: model.search
+                    )
+                    .modelContainer(container)
                 } else {
                     ContentUnavailableView(
                         "inbox.error.title",
@@ -23,6 +26,7 @@ struct ContentView: View {
             .navigationTitle("app.name")
         }
         .task {
+            await model.search?.prepare()
             await model.transcription?.start()
         }
         .onChange(of: scenePhase) { _, phase in

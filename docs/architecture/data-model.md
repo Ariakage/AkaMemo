@@ -390,11 +390,17 @@ protocol SessionRepository: Sendable {
 }
 
 protocol SearchIndexing: Sendable {
-    func index(_ segments: [TranscriptSegment], in chunk: AudioChunk) async throws
+    func replaceChunk(_ chunkID: UUID, with entries: [SearchIndexEntry]) async throws
+    func replaceAll(_ entries: [SearchIndexEntry]) async throws
+    func deleteChunk(_ chunkID: UUID) async throws
+    func deleteSession(_ sessionID: UUID) async throws
     func search(_ query: SearchQuery) async throws -> [SearchHit]
-    func removeChunk(id: UUID) async throws
+    func entryCount() async throws -> Int
+    func deleteAll() async throws
 }
 ```
+
+索引库包含三张表：`segments`（片段元数据）、`segment_fts`（trigram 分词）、`segment_short`（CJK/alnum unigram+bigram）。查询按长度路由：1–2 字符走 `segment_short`，≥3 字符走 `segment_fts`（`specs/transcription-and-search.md` §6.2–6.3）。
 
 这样可以在不改 UI/业务逻辑的前提下替换存储与索引实现。
 

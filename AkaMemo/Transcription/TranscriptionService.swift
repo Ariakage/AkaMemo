@@ -42,6 +42,7 @@ actor TranscriptionService {
     private let store: TranscriptStore
     private let provider: any TranscriptionProvider
     private let applicationSupport: URL
+    private let indexer: TranscriptIndexer?
     private let fileManager = FileManager.default
     private let logger = Logger(
         subsystem: "com.ariakage.AkaMemo",
@@ -52,11 +53,13 @@ actor TranscriptionService {
     init(
         store: TranscriptStore,
         provider: any TranscriptionProvider,
-        applicationSupport: URL
+        applicationSupport: URL,
+        indexer: TranscriptIndexer? = nil
     ) {
         self.store = store
         self.provider = provider
         self.applicationSupport = applicationSupport
+        self.indexer = indexer
     }
 
     func runDueTasks(now: Date = Date()) async -> RunSummary {
@@ -113,6 +116,10 @@ actor TranscriptionService {
                         result: saved,
                         snapshot: snapshot,
                         now: now
+                    )
+                    await indexer?.replaceChunk(
+                        snapshot.chunkID,
+                        entries: saved.entries
                     )
                     summary.succeeded += 1
                 } catch {

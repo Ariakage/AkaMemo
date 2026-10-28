@@ -39,7 +39,7 @@ actor RecordingEngine {
     private let fileManager = FileManager.default
     private let healthEvaluator = RecordingHealthEvaluator.standard
     private let chunkPolicy = ChunkPolicy.standard
-    private let autoRecoveryEnabled = true
+    private var autoRecoveryEnabled = true
     private let transferQueue: WatchTransferQueue?
 
     private var state: RecordingEngineState = .idle
@@ -97,6 +97,13 @@ actor RecordingEngine {
 
     func updateBatteryLevel(_ level: Double?) {
         batteryLevel = level
+    }
+
+    /// Applies the "自动恢复录音" setting. When disabled an interruption stays
+    /// `interrupted` until the user resumes from the foreground.
+    func setAutoRecoveryEnabled(_ enabled: Bool) {
+        autoRecoveryEnabled = enabled
+        session?.autoRecoveryEnabled = enabled
     }
 
     /// Scans sessions left by a terminated process before a new recording can
@@ -185,6 +192,92 @@ actor RecordingEngine {
             state = .failed
             deactivateAudioSession()
             logger.error("start failed: \(String(describing: error), privacy: .public)")
+        }
+    }
+
+    /// Continues a session left behind by a terminated process.
+    ///
+    /// The caller must have shown the visible foreground countdown (or the
+    /// user tapped resume). The engine never calls this from the background,
+    /// never fills the gap with fabricated audio, and continues the chunk
+    /// sequence after the highest manifest entry so nothing is overwritten.
+    func resumePreviousSession(
+        _ info: InterruptedSessionInfo,
+        deviceModel: String?,
+        osVersion: String,
+        autoRecoveryEnabled: Bool
+    ) async -> Bool {
+        guard state == .idle || state == .failed else { return false }
+        self.autoRecoveryEnabled = autoRecoveryEnabled
+        do {
+            guard await Self.requestMicrophonePermission() else {
+                throw RecordingEngineError.microphonePermissionDenied
+            }
+            try activateAudioSession()
+
+            let now = Date()
+            let nowMs = TimeMath.epochMs(now)
+            let directory = try WatchPaths.sessionDirectory(id: info.sessionID)
+            var resumed = RecordingSession(
+                id: info.sessionID,
+                startedAt: TimeMath.date(epochMs: info.sessionStartedAtMs),
+                state: .recording,
+                sourceDeviceModel: deviceModel,
+                sourceOSVersion: osVersion,
+                timeZoneIdentifier: TimeZone.current.identifier,
+                lastHeartbeatAt: now,
+                lastStateVersion: info.lastStateVersion,
+                lastAudioBufferAt: info.lastAudioBufferAtMs.map {
+                    TimeMath.date(epochMs: $0)
+                },
+                interruptionCount: info.interruptionCount,
+                autoRecoveryEnabled: autoRecoveryEnabled,
+                lastRecoveryAt: now,
+                totalGapMs: info.totalGapMs + info.recoveryGapMs(nowMs: nowMs),
+                integrityState: "recovered",
+                updatedAt: now
+            )
+            resumed.lastKnownBatteryLevel = batteryLevel
+
+            session = resumed
+            sessionDirectory = directory
+            partsDirectory = try WatchPaths.partsDirectory(in: directory)
+            manifest =
+                loadSessionManifest(at: directory)
+                ?? ChunkManifest(
+                    sessionID: info.sessionID,
+                    sessionStartedAtMs: info.sessionStartedAtMs
+                )
+            let sessionWriter = AtomicFileWriter(directory: directory)
+            manifestWriter = sessionWriter
+            sidecarWriter = sessionWriter
+            healthWriter = AtomicFileWriter(
+                directory: try WatchPaths.applicationSupport()
+            )
+            nextSequence = info.nextSequence
+            sealedChunkCount = info.sealedChunkCount
+            totalBytes = info.totalBytes
+            totalGapMs = resumed.totalGapMs
+            lastStateVersion = info.lastStateVersion
+            currentChunk = nil
+            lastError = nil
+
+            try startChunk(at: now)
+            state = .recording
+            session?.state = .recording
+            startLoops()
+            observeSystemNotifications()
+            try? await writeHealthFile()
+            logger.info("recording resumed from interrupted session")
+            return true
+        } catch {
+            lastError = map(error)
+            state = .failed
+            deactivateAudioSession()
+            logger.error(
+                "resume from interrupted session failed: \(String(describing: error), privacy: .public)"
+            )
+            return false
         }
     }
 
@@ -728,6 +821,12 @@ actor RecordingEngine {
     }
 
     // MARK: - Persistence
+
+    private func loadSessionManifest(at directory: URL) -> ChunkManifest? {
+        let url = directory.appending(path: "manifest.json")
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        return try? JSONDecoder().decode(ChunkManifest.self, from: data)
+    }
 
     private func persistManifest() async throws {
         guard let manifest, let manifestWriter else { return }

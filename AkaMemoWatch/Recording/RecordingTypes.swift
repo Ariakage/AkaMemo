@@ -1,3 +1,4 @@
+import AkaMemoCore
 import Foundation
 
 enum RecordingEngineState: String, Sendable, Equatable {
@@ -37,18 +38,4 @@ struct RecordingSnapshot: Sendable, Equatable {
 }
 
 /// The on-disk heartbeat described by `docs/specs/recording-health.md` §3.1.
-struct WatchHealthSnapshot: Codable, Sendable, Equatable {
-    let sessionID: UUID
-    let sessionStartedAtMs: Int64
-    let endedAtMs: Int64?
-    let lastAudioBufferAtMs: Int64?
-    let lastHeartbeatAtMs: Int64
-    let chunkSequence: Int?
-    let bytesWritten: Int64
-    let audioSessionActive: Bool
-    let batteryLevel: Double?
-    let state: String
-    let stateVersion: Int64
-    let totalGapMs: Int64
-    let interruptionCount: Int
-}
+typealias WatchHealthSnapshot = RecordingHealthSnapshot

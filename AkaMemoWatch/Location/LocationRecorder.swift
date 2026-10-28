@@ -83,7 +83,11 @@ final class LocationRecorder: NSObject, CLLocationManagerDelegate {
             lowPower ? kCLLocationAccuracyHundredMeters : kCLLocationAccuracyBest
     }
 
-    func start(sessionID: UUID, sessionStartedAt: Date) {
+    func start(
+        sessionID: UUID,
+        sessionStartedAt: Date,
+        continuingExisting: Bool = false
+    ) {
         guard isEnabled else {
             status = .disabled
             return
@@ -99,7 +103,8 @@ final class LocationRecorder: NSObject, CLLocationManagerDelegate {
         self.isSessionActive = true
         do {
             writer = try LocationFileWriter(
-                fileURL: WatchPaths.locationFileURL(sessionID: sessionID)
+                fileURL: WatchPaths.locationFileURL(sessionID: sessionID),
+                continuingExisting: continuingExisting
             )
         } catch {
             status = .failed
@@ -309,18 +314,48 @@ actor LocationFileWriter {
     private let partURL: URL
     private let finalURL: URL
     private var handle: FileHandle?
-    private var pointCount = 0
+    private var pointCount: Int
 
-    init(fileURL: URL) throws {
-        self.finalURL = fileURL
-        self.partURL = fileURL.appendingPathExtension("part")
+    /// - Parameter continuingExisting: When resuming a session that a
+    ///   terminated process left behind, keep the points already written. The
+    ///   unfinished `.part` wins over the finalized file because it holds the
+    ///   most recent locations; `finalize()` then replaces the file with the
+    ///   merged track.
+    init(fileURL: URL, continuingExisting: Bool = false) throws {
+        let partURL = fileURL.appendingPathExtension("part")
         try FileManager.default.createDirectory(
             at: fileURL.deletingLastPathComponent(),
             withIntermediateDirectories: true
         )
-        try? FileManager.default.removeItem(at: partURL)
-        FileManager.default.createFile(atPath: partURL.path, contents: nil)
-        self.handle = try FileHandle(forWritingTo: partURL)
+        var initialPointCount = 0
+        if continuingExisting {
+            let existing =
+                (try? Data(contentsOf: partURL)).flatMap {
+                    $0.isEmpty ? nil : $0
+                }
+                ?? (try? Data(contentsOf: fileURL)).flatMap {
+                    $0.isEmpty ? nil : $0
+                }
+            if let existing {
+                try existing.write(to: partURL, options: [.atomic])
+                initialPointCount = existing.reduce(0) { count, byte in
+                    byte == 0x0A ? count + 1 : count
+                }
+            } else {
+                FileManager.default.createFile(
+                    atPath: partURL.path,
+                    contents: nil
+                )
+            }
+        } else {
+            try? FileManager.default.removeItem(at: partURL)
+            FileManager.default.createFile(atPath: partURL.path, contents: nil)
+        }
+        let handle = try FileHandle(forWritingTo: partURL)
+        self.finalURL = fileURL
+        self.partURL = partURL
+        self.handle = handle
+        self.pointCount = initialPointCount
     }
 
     func append(_ point: LocationPoint) throws {

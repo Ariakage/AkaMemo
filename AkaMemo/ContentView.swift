@@ -16,7 +16,8 @@ struct ContentView: View {
                         deletion: model.deletion,
                         diagnostics: model.diagnostics,
                         battery: model.battery,
-                        recordingWatchdog: model.recordingWatchdog
+                        recordingWatchdog: model.recordingWatchdog,
+                        settings: model.settings
                     )
                     .modelContainer(container)
                 } else {
@@ -34,6 +35,7 @@ struct ContentView: View {
             await model.battery?.requestAuthorizationIfNeeded()
             await model.search?.prepare()
             await model.transcription?.start()
+            model.settings?.publishLocationSetting()
         }
         .onChange(of: scenePhase) { _, phase in
             let active = phase == .active
@@ -41,6 +43,7 @@ struct ContentView: View {
                 await model.battery?.setForeground(active)
                 if active {
                     await model.transcription?.start()
+                    model.settings?.publishLocationSetting()
                 }
             }
         }

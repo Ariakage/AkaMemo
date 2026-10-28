@@ -28,9 +28,11 @@ final class LocationRecorder: NSObject, CLLocationManagerDelegate {
     }
 
     static let enabledKey = "location.enabled"
+    static let enabledUpdatedAtKey = "location.enabledUpdatedAt"
 
     private(set) var status: Status = .idle
     private(set) var isEnabled: Bool
+    private(set) var settingUpdatedAtMs: Int64
     private(set) var recordedPointCount = 0
     private(set) var lowConfidencePointCount = 0
 
@@ -54,6 +56,9 @@ final class LocationRecorder: NSObject, CLLocationManagerDelegate {
         self.defaults = defaults
         self.isEnabled =
             defaults.object(forKey: Self.enabledKey) as? Bool ?? true
+        self.settingUpdatedAtMs =
+            (defaults.object(forKey: Self.enabledUpdatedAtKey) as? NSNumber)?
+            .int64Value ?? 0
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
@@ -65,10 +70,59 @@ final class LocationRecorder: NSObject, CLLocationManagerDelegate {
         isSessionActive
     }
 
+    var currentSetting: LocationSetting {
+        LocationSetting(
+            enabled: isEnabled,
+            updatedAtMs: settingUpdatedAtMs
+        )
+    }
+
+    var authorizationStatus: String {
+        switch manager.authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse:
+            return "authorized"
+        case .denied:
+            return "denied"
+        case .restricted:
+            return "restricted"
+        case .notDetermined:
+            return "notDetermined"
+        @unknown default:
+            return "unknown"
+        }
+    }
+
+    /// Bytes of the current session's JSONL (finalized + in-progress).
+    var trackBytes: Int64 {
+        guard let sessionID,
+            let base = try? WatchPaths.locationFileURL(sessionID: sessionID)
+        else {
+            return 0
+        }
+        return fileBytes(at: base) + fileBytes(at: base.appendingPathExtension("part"))
+    }
+
+    /// Applies a local toggle, always producing a newer timestamp.
     func setEnabled(_ enabled: Bool) {
-        isEnabled = enabled
-        defaults.set(enabled, forKey: Self.enabledKey)
-        if !enabled {
+        let now = TimeMath.epochMs(Date())
+        apply(
+            LocationSetting(
+                enabled: enabled,
+                updatedAtMs: max(now, settingUpdatedAtMs + 1)
+            )
+        )
+    }
+
+    /// Applies a setting received from the iPhone. Older writes are ignored.
+    func apply(_ setting: LocationSetting) {
+        guard setting.isNewer(than: currentSetting) else {
+            return
+        }
+        isEnabled = setting.enabled
+        settingUpdatedAtMs = setting.updatedAtMs
+        defaults.set(setting.enabled, forKey: Self.enabledKey)
+        defaults.set(setting.updatedAtMs, forKey: Self.enabledUpdatedAtKey)
+        if !setting.enabled {
             manager.stopUpdatingLocation()
             if isSessionActive {
                 status = .disabled
@@ -76,6 +130,18 @@ final class LocationRecorder: NSObject, CLLocationManagerDelegate {
         } else if isSessionActive, !isPaused {
             beginUpdates()
         }
+    }
+
+    private func fileBytes(at url: URL) -> Int64 {
+        guard
+            let attributes = try? FileManager.default.attributesOfItem(
+                atPath: url.path
+            ),
+            let number = attributes[.size] as? NSNumber
+        else {
+            return 0
+        }
+        return number.int64Value
     }
 
     func updateLowPowerMode(_ lowPower: Bool) {

@@ -7,13 +7,14 @@ import WatchConnectivity
 /// confirmations. Files are moved out of the system Inbox before any
 /// verification work starts.
 final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionCommandSending,
-    @unchecked Sendable
+    LocationSettingSending, @unchecked Sendable
 {
     private let inbox: PhoneInboxService
     private let deletionStore: DeletionStore?
     private let trackImporter: TrackImporter?
     private let batteryEventHandler: (@Sendable (BatteryEvent) -> Void)?
     private let healthEventHandler: (@Sendable (RecordingHealthEvent) -> Void)?
+    private let activationHandler: (@Sendable () -> Void)?
     private let processingDirectory: URL
     private let rejectedDirectory: URL
     private let fileManager = FileManager.default
@@ -25,13 +26,15 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
         deletionStore: DeletionStore? = nil,
         trackImporter: TrackImporter? = nil,
         batteryEventHandler: (@Sendable (BatteryEvent) -> Void)? = nil,
-        healthEventHandler: (@Sendable (RecordingHealthEvent) -> Void)? = nil
+        healthEventHandler: (@Sendable (RecordingHealthEvent) -> Void)? = nil,
+        activationHandler: (@Sendable () -> Void)? = nil
     ) {
         self.inbox = inbox
         self.deletionStore = deletionStore
         self.trackImporter = trackImporter
         self.batteryEventHandler = batteryEventHandler
         self.healthEventHandler = healthEventHandler
+        self.activationHandler = activationHandler
         self.processingDirectory = applicationSupport.appending(
             path: "inbox-processing",
             directoryHint: .isDirectory
@@ -70,6 +73,7 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
             Task {
                 await resendDeletions()
             }
+            activationHandler?()
         }
         if let error {
             logger.error(
@@ -300,6 +304,30 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
             session.sendMessage(info, replyHandler: nil, errorHandler: nil)
         }
         return true
+    }
+
+    nonisolated func sendLocationSetting(_ setting: LocationSetting) -> Bool {
+        guard WCSession.isSupported() else {
+            return false
+        }
+        let session = WCSession.default
+        guard session.activationState == .activated,
+            let payload = try? setting.jsonString()
+        else {
+            return false
+        }
+        do {
+            try session.updateApplicationContext([
+                "type": "locationSetting",
+                LocationSetting.metadataKey: payload,
+            ])
+            return true
+        } catch {
+            logger.error(
+                "location setting context failed: \(String(describing: error), privacy: .public)"
+            )
+            return false
+        }
     }
 
     private func resendDeletions() async {

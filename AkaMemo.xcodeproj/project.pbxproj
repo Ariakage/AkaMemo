@@ -80,6 +80,9 @@
 		AD0200000000000000000091 /* RecordingNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000091 /* RecordingNotificationService.swift */; };
 		AD0200000000000000000092 /* RecordingWatchdog.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000092 /* RecordingWatchdog.swift */; };
 		AD0200000000000000000093 /* RecordingStatusBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000093 /* RecordingStatusBannerView.swift */; };
+		AD0200000000000000000094 /* PhoneSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000094 /* PhoneSettingsModel.swift */; };
+		AD0200000000000000000095 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000095 /* SettingsView.swift */; };
+		AB0200000000000000000010 /* PhoneSettingsModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000011 /* PhoneSettingsModelTests.swift */; };
 		AA0200000000000000000016 /* WatchStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000016 /* WatchStorage.swift */; };
 		AA0200000000000000000017 /* WatchHealthPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000017 /* WatchHealthPublisher.swift */; };
 		AA0200000000000000000018 /* WatchRecordingSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000018 /* WatchRecordingSettings.swift */; };
@@ -211,6 +214,9 @@
 		AD0100000000000000000091 /* RecordingNotificationService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingNotificationService.swift; sourceTree = "<group>"; };
 		AD0100000000000000000092 /* RecordingWatchdog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingWatchdog.swift; sourceTree = "<group>"; };
 		AD0100000000000000000093 /* RecordingStatusBannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingStatusBannerView.swift; sourceTree = "<group>"; };
+		AD0100000000000000000094 /* PhoneSettingsModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhoneSettingsModel.swift; sourceTree = "<group>"; };
+		AD0100000000000000000095 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		AB0100000000000000000011 /* PhoneSettingsModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhoneSettingsModelTests.swift; sourceTree = "<group>"; };
 		AA0100000000000000000016 /* WatchStorage.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchStorage.swift; sourceTree = "<group>"; };
 		AA0100000000000000000017 /* WatchHealthPublisher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchHealthPublisher.swift; sourceTree = "<group>"; };
 		AA0100000000000000000018 /* WatchRecordingSettings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchRecordingSettings.swift; sourceTree = "<group>"; };
@@ -412,6 +418,7 @@
 				AB010000000000000000000E /* BatteryAlertCoordinatorTests.swift */,
 				AB010000000000000000000F /* TrackImporterTests.swift */,
 				AB0100000000000000000010 /* RecordingWatchdogTests.swift */,
+				AB0100000000000000000011 /* PhoneSettingsModelTests.swift */,
 			);
 			path = AkaMemoTests;
 			sourceTree = "<group>";
@@ -551,6 +558,15 @@
 			path = Recording;
 			sourceTree = "<group>";
 		};
+		AD0300000000000000000094 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				AD0100000000000000000094 /* PhoneSettingsModel.swift */,
+				AD0100000000000000000095 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		E77D0E4D19AC1E93A1A5E2DD /* AkaMemo */ = {
 			isa = PBXGroup;
 			children = (
@@ -566,6 +582,7 @@
 				AD0100000000000000000060 /* Battery */,
 				AD0100000000000000000070 /* Location */,
 				AD0100000000000000000090 /* Recording */,
+				AD0300000000000000000094 /* Settings */,
 				E1F22C4A920E3D53BEBA0A61 /* Assets.xcassets */,
 				AB0100000000000000000006 /* Localizable.xcstrings */,
 				A1B0CB5A4A6D4CC7F527531B /* Info.plist */,
@@ -784,6 +801,7 @@
 				AB020000000000000000000D /* BatteryAlertCoordinatorTests.swift in Sources */,
 				AB020000000000000000000E /* TrackImporterTests.swift in Sources */,
 				AB020000000000000000000F /* RecordingWatchdogTests.swift in Sources */,
+				AB0200000000000000000010 /* PhoneSettingsModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -842,6 +860,8 @@
 				AD0200000000000000000091 /* RecordingNotificationService.swift in Sources */,
 				AD0200000000000000000092 /* RecordingWatchdog.swift in Sources */,
 				AD0200000000000000000093 /* RecordingStatusBannerView.swift in Sources */,
+				AD0200000000000000000094 /* PhoneSettingsModel.swift in Sources */,
+				AD0200000000000000000095 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

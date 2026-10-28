@@ -9,6 +9,7 @@ struct SessionListView: View {
     let diagnostics: AppDiagnostics?
     let battery: BatteryAlertCoordinator?
     let recordingWatchdog: RecordingWatchdog?
+    let settings: PhoneSettingsModel?
 
     @Query(sort: \ReceivedChunkRecord.startedAt, order: .forward)
     private var chunks: [ReceivedChunkRecord]
@@ -16,6 +17,7 @@ struct SessionListView: View {
     @State private var pendingDeletion: PendingDeletion?
     @State private var deletionError: String?
     @State private var showDiagnostics = false
+    @State private var showSettings = false
 
     private var sessions: [SessionSummary] {
         SessionAggregator.group(chunks.map(\.summary))
@@ -104,6 +106,14 @@ struct SessionListView: View {
                 .accessibilityLabel(Text("deletion.menu"))
             }
             ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showSettings = true
+                } label: {
+                    Image(systemName: "gearshape")
+                }
+                .accessibilityLabel(Text("settings.title"))
+            }
+            ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink {
                     SearchView(
                         search: search,
@@ -127,6 +137,11 @@ struct SessionListView: View {
                 },
                 secondaryButton: .cancel(Text("deletion.cancel"))
             )
+        }
+        .sheet(isPresented: $showSettings) {
+            if let settings {
+                SettingsView(settings: settings)
+            }
         }
         .sheet(isPresented: $showDiagnostics) {
             NavigationStack {

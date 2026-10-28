@@ -13,6 +13,7 @@ final class PhoneAppModel {
     let diagnostics: AppDiagnostics?
     let battery: BatteryAlertCoordinator?
     let recordingWatchdog: RecordingWatchdog?
+    let settings: PhoneSettingsModel?
     private let connectivity: PhoneConnectivityService?
     #if DEBUG
         private let store: MemoryStore?
@@ -48,6 +49,7 @@ final class PhoneAppModel {
             let recordingWatchdog = RecordingWatchdog(
                 notifier: RecordingNotificationService()
             )
+            let settingsModel = PhoneSettingsModel()
             let locationTrackStore = LocationTrackStore(
                 modelContainer: container
             )
@@ -70,9 +72,16 @@ final class PhoneAppModel {
                 healthEventHandler: { event in
                     Task { @MainActor in
                         await recordingWatchdog.handle(event)
+                        settingsModel.handle(event)
+                    }
+                },
+                activationHandler: {
+                    Task { @MainActor in
+                        settingsModel.publishLocationSetting()
                     }
                 }
             )
+            settingsModel.attach(sender: service)
             let transcriptStore = TranscriptStore(modelContainer: container)
             let searchIndex = try? SQLiteSearchIndex(
                 databaseURL: root.appending(path: "index/search.sqlite")
@@ -107,6 +116,7 @@ final class PhoneAppModel {
             self.diagnostics = diagnostics
             self.battery = batteryCoordinator
             self.recordingWatchdog = recordingWatchdog
+            self.settings = settingsModel
             self.connectivity = service
             #if DEBUG
                 self.store = store
@@ -133,6 +143,7 @@ final class PhoneAppModel {
             self.diagnostics = nil
             self.battery = nil
             self.recordingWatchdog = nil
+            self.settings = nil
             self.connectivity = nil
             #if DEBUG
                 self.store = nil

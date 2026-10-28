@@ -23,6 +23,19 @@ struct SessionListView: View {
         SessionAggregator.group(chunks.map(\.summary))
     }
 
+    #if DEBUG
+        /// The seeded demo session, when its chunks are present. Used by the
+        /// debug-only shortcut that opens the chunk list directly.
+        private var demoSessionID: UUID? {
+            let ids = Set(
+                SimulatorFixtureSeeder.demoSessionIDs.compactMap {
+                    UUID(uuidString: $0)
+                }
+            )
+            return sessions.first { ids.contains($0.sessionID) }?.sessionID
+        }
+    #endif
+
     var body: some View {
         Group {
             if sessions.isEmpty {
@@ -85,6 +98,18 @@ struct SessionListView: View {
             }
         }
         .toolbar {
+            #if DEBUG
+                if let demoSessionID {
+                    ToolbarItem(placement: .topBarLeading) {
+                        NavigationLink(value: demoSessionID) {
+                            Image(systemName: "ladybug")
+                        }
+                        .accessibilityLabel(
+                            Text("debug.openDemoSession")
+                        )
+                    }
+                }
+            #endif
             ToolbarItem(placement: .topBarLeading) {
                 Menu {
                     Button {

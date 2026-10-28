@@ -190,6 +190,7 @@ xcrun simctl launch <UDID> com.ariakage.AkaMemo -AkaMemoSeedDemoChunks
 ```
 
 - 分片、会话与轨迹使用固定 UUID；带参数重复启动只会跳过已存在的分片/轨迹，不会重复入库。
+- Debug 构建的会话列表左上角有虫子按钮，可直接打开演示会话的分片页；无窗口模拟器可用 `-AkaMemoOpenDemoSession` 启动参数自动打开同一页面，便于截图与无点击验证。
 - 需要重置时删除模拟器上的 App（或抹掉模拟器数据）后重新安装。
 - 该参数与代码仅在 Debug 构建存在，Release/TestFlight 不包含。
 

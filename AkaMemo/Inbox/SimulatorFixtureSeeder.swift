@@ -33,6 +33,14 @@
             ProcessInfo.processInfo.arguments.contains("-AkaMemoSeedDemoChunks")
         }
 
+        /// Debug-only shortcut for headless simulator runs: opens the first
+        /// demo session's chunk list without tapping.
+        static var openDemoSessionRequested: Bool {
+            ProcessInfo.processInfo.arguments.contains(
+                "-AkaMemoOpenDemoSession"
+            )
+        }
+
         /// Synthetic transcript lines for the demo chunks, in seed order.
         /// `SimulatorTranscriptSeeder` turns them into ready transcripts so the
         /// search UI can be exercised without a Watch recording.

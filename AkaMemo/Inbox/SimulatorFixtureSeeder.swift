@@ -3,6 +3,7 @@
     import AkaMemoCore
     import Foundation
     import OSLog
+    import SwiftData
 
     /// Seeds the iPhone app with synthetic chunks for simulator UI testing.
     ///
@@ -155,6 +156,10 @@
             sessions.reduce(0) { $0 + $1.chunks.count }
         }
 
+        static var demoSessionIDs: [String] {
+            sessions.map(\.sessionID)
+        }
+
         private let inbox: PhoneInboxService
         private let store: MemoryStore
         private let logger = Logger(subsystem: "com.ariakage.AkaMemo", category: "storage")
@@ -289,6 +294,168 @@
             }
             try file.write(from: buffer)
             return url
+        }
+    }
+
+    /// Adds one synthetic track per demo session so the location section,
+    /// GPX export and track-usage row can be exercised without a Watch.
+    ///
+    /// Points are generated around Null Island and follow a small synthetic
+    /// arc; no real location is used. Tracks go through `TrackImporter`, so
+    /// checksum, point count, monotonic timestamps and SwiftData insertion use
+    /// the same path as a Watch upload.
+    actor SimulatorTrackSeeder {
+        struct Report: Sendable, Equatable {
+            var accepted = 0
+            var duplicates = 0
+            var skipped = 0
+            var rejected = 0
+        }
+
+        private static let trackIDs: [String] = [
+            "4A5B6C7D-8E9F-4A1B-9C2D-3E4F5A6B7101",
+            "4A5B6C7D-8E9F-4A1B-9C2D-3E4F5A6B7102",
+            "4A5B6C7D-8E9F-4A1B-9C2D-3E4F5A6B7103",
+        ]
+
+        private let container: ModelContainer
+        private let importer: TrackImporter
+        private let logger = Logger(
+            subsystem: "com.ariakage.AkaMemo",
+            category: "location"
+        )
+
+        init(container: ModelContainer, importer: TrackImporter) {
+            self.container = container
+            self.importer = importer
+        }
+
+        func seedIfNeeded(now: Date = Date()) async -> Report {
+            var report = Report()
+            let context = ModelContext(container)
+            let chunks: [ReceivedChunkRecord]
+            let existing: [LocationTrackRecord]
+            do {
+                chunks = try context.fetch(
+                    FetchDescriptor<ReceivedChunkRecord>()
+                )
+                existing = try context.fetch(
+                    FetchDescriptor<LocationTrackRecord>()
+                )
+            } catch {
+                logger.error(
+                    "simulator track seed read failed: \(String(describing: error), privacy: .public)"
+                )
+                return report
+            }
+
+            let existingTrackIDs = Set(existing.map(\.trackID))
+            for (index, rawSessionID) in SimulatorFixtureSeeder.demoSessionIDs.enumerated() {
+                guard index < Self.trackIDs.count,
+                    let sessionID = UUID(uuidString: rawSessionID),
+                    let trackID = UUID(uuidString: Self.trackIDs[index])
+                else {
+                    continue
+                }
+                if existingTrackIDs.contains(trackID) {
+                    report.skipped += 1
+                    continue
+                }
+                let sessionChunks = chunks.filter {
+                    $0.sessionID == sessionID
+                }
+                guard
+                    let start = sessionChunks.map(\.startedAt).min(),
+                    let end = sessionChunks.map({
+                        $0.startedAt.addingTimeInterval(
+                            Double($0.durationMs) / 1000
+                        )
+                    }).max()
+                else {
+                    continue
+                }
+                switch await seedTrack(
+                    trackID: trackID,
+                    sessionID: sessionID,
+                    start: start,
+                    end: end,
+                    routeIndex: index,
+                    now: now
+                ) {
+                case .accepted:
+                    report.accepted += 1
+                case .duplicate:
+                    report.duplicates += 1
+                case .rejected(let reason):
+                    report.rejected += 1
+                    logger.error(
+                        "simulator track rejected: \(reason, privacy: .public)"
+                    )
+                }
+            }
+            logger.info(
+                "simulator track seed complete: accepted \(report.accepted, privacy: .public), duplicates \(report.duplicates, privacy: .public), skipped \(report.skipped, privacy: .public), rejected \(report.rejected, privacy: .public)"
+            )
+            return report
+        }
+
+        private func seedTrack(
+            trackID: UUID,
+            sessionID: UUID,
+            start: Date,
+            end: Date,
+            routeIndex: Int,
+            now: Date
+        ) async -> TrackImporter.Result {
+            let startMs = TimeMath.epochMs(start)
+            let endMs = max(TimeMath.epochMs(end), startMs + 1_000)
+            let durationMs = endMs - startMs
+            let pointCount = max(2, min(20, Int(durationMs / 5_000) + 1))
+            let base = 0.001 * Double(routeIndex + 1)
+            let points = (0..<pointCount).map { index -> LocationPoint in
+                let fraction =
+                    Double(index) / Double(max(1, pointCount - 1))
+                let timestampMs =
+                    startMs + Int64((Double(durationMs) * fraction).rounded())
+                return LocationPoint(
+                    timestampMs: timestampMs,
+                    latitude: base + fraction * 0.002,
+                    longitude: base + sin(fraction * .pi) * 0.001,
+                    altitude: 10,
+                    horizontalAccuracy: 8
+                )
+            }
+            var data = Data()
+            do {
+                for point in points {
+                    data.append(try LocationTrackCodec.encodeLine(point))
+                }
+            } catch {
+                return .rejected("encodeFailed")
+            }
+            let url = FileManager.default.temporaryDirectory.appending(
+                path: "seed-track-\(trackID.uuidString).jsonl"
+            )
+            do {
+                try data.write(to: url)
+            } catch {
+                return .rejected("writeFailed")
+            }
+            let envelope = TrackTransferEnvelope(
+                trackID: trackID,
+                sessionID: sessionID,
+                sessionStartedAtMs: startMs,
+                startedAtMs: points.first?.timestampMs ?? startMs,
+                endedAtMs: points.last?.timestampMs ?? startMs,
+                pointCount: points.count,
+                checksumSHA256: AtomicFileWriter.sha256Hex(data),
+                relativePath: "location/\(sessionID.uuidString).jsonl"
+            )
+            return await importer.importFile(
+                at: url,
+                envelope: envelope,
+                now: now
+            )
         }
     }
 #endif

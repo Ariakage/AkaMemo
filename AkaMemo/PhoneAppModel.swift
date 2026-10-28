@@ -126,11 +126,17 @@ final class PhoneAppModel {
             #if DEBUG
                 if SimulatorFixtureSeeder.isRequested {
                     Task {
-                        _ = await SimulatorFixtureSeeder(inbox: inbox, store: store)
-                            .seedIfNeeded()
+                        _ = await SimulatorFixtureSeeder(
+                            inbox: inbox,
+                            store: store
+                        ).seedIfNeeded()
                         await SimulatorTranscriptSeeder(
                             container: container,
                             indexer: indexer
+                        ).seedIfNeeded()
+                        await SimulatorTrackSeeder(
+                            container: container,
+                            importer: trackImporter
                         ).seedIfNeeded()
                     }
                 }

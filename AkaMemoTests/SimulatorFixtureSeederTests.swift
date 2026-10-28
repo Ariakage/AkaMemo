@@ -10,6 +10,7 @@ final class SimulatorFixtureSeederTests: XCTestCase {
         let container: ModelContainer
         let store: MemoryStore
         let seeder: SimulatorFixtureSeeder
+        let trackImporter: TrackImporter
         let index: SQLiteSearchIndex
         let indexer: TranscriptIndexer
     }
@@ -30,11 +31,21 @@ final class SimulatorFixtureSeederTests: XCTestCase {
             TranscriptRecord.self,
             TranscriptSegmentRecord.self,
             TranscriptionTaskRecord.self,
+            DeletionTombstoneRecord.self,
+            DataEpochRecord.self,
+            LocationTrackRecord.self,
             configurations: configuration
         )
         let store = MemoryStore(modelContainer: container)
         let inbox = PhoneInboxService(store: store, applicationSupport: root)
         let seeder = SimulatorFixtureSeeder(inbox: inbox, store: store)
+        let trackStore = LocationTrackStore(modelContainer: container)
+        let trackImporter = TrackImporter(
+            store: trackStore,
+            applicationSupport: root,
+            deletionStore: nil,
+            diagnostics: nil
+        )
         let index = try SQLiteSearchIndex(
             databaseURL: root.appending(path: "index/search.sqlite")
         )
@@ -43,6 +54,7 @@ final class SimulatorFixtureSeederTests: XCTestCase {
             container: container,
             store: store,
             seeder: seeder,
+            trackImporter: trackImporter,
             index: index,
             indexer: TranscriptIndexer(index: index)
         )
@@ -80,6 +92,44 @@ final class SimulatorFixtureSeederTests: XCTestCase {
         await transcriptSeeder.seedIfNeeded(now: now)
         let after = try context.fetch(FetchDescriptor<TranscriptRecord>())
         XCTAssertEqual(after.count, SimulatorFixtureSeeder.chunkCount)
+    }
+
+    func testTrackSeedInsertsOneTrackPerSession() async throws {
+        let environment = try makeEnvironment()
+        defer { try? FileManager.default.removeItem(at: environment.root) }
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        _ = await environment.seeder.seedIfNeeded(now: now)
+        let trackSeeder = SimulatorTrackSeeder(
+            container: environment.container,
+            importer: environment.trackImporter
+        )
+
+        let first = await trackSeeder.seedIfNeeded(now: now)
+        XCTAssertEqual(
+            first.accepted,
+            SimulatorFixtureSeeder.demoSessionIDs.count
+        )
+        XCTAssertEqual(first.rejected, 0)
+
+        let context = ModelContext(environment.container)
+        let tracks = try context.fetch(FetchDescriptor<LocationTrackRecord>())
+        XCTAssertEqual(
+            tracks.count,
+            SimulatorFixtureSeeder.demoSessionIDs.count
+        )
+        for track in tracks {
+            XCTAssertGreaterThanOrEqual(track.pointCount, 2)
+            XCTAssertNotNil(track.distanceMeters)
+            let url = environment.root.appending(path: track.relativePath)
+            XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
+        }
+
+        let second = await trackSeeder.seedIfNeeded(now: now)
+        XCTAssertEqual(second.accepted, 0)
+        XCTAssertEqual(
+            second.skipped,
+            SimulatorFixtureSeeder.demoSessionIDs.count
+        )
     }
 
     func testSeedInsertsSyntheticChunks() async throws {

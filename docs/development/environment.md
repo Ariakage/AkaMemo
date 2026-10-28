@@ -182,14 +182,14 @@ GPS：开 / 关；定位权限：<>
 
 ### 7.1 模拟分片数据（仅 Debug）
 
-为了让 iPhone 会话列表/播放/搜索界面在没有配对 Watch 时也能测试，Debug 构建提供启动参数 `-AkaMemoSeedDemoChunks`。它会在启动后注入 3 个合成会话（共 9 个分片，6–12 秒正弦音），每个分片都走 `PhoneInboxService.receive` 的真实校验、去重、归档与 SwiftData 入库路径，等同于一次传输落地；随后为这些分片写入**合成转写文本**并建立 FTS5 索引，用于测试搜索与跳转播放。不含任何真实录音或真实转写。
+为了让 iPhone 会话列表/播放/搜索/定位界面在没有配对 Watch 时也能测试，Debug 构建提供启动参数 `-AkaMemoSeedDemoChunks`。它会在启动后注入 3 个合成会话（共 9 个分片，6–12 秒正弦音），每个分片都走 `PhoneInboxService.receive` 的真实校验、去重、归档与 SwiftData 入库路径，等同于一次传输落地；随后为这些分片写入**合成转写文本**并建立 FTS5 索引，用于测试搜索与跳转播放；再为每个会话注入一条**合成 GPS 轨迹**（Null Island 附近的小弧线，2–10 个点），走 `TrackImporter` 的校验、校验和与入库路径，用于测试轨迹区、GPX 导出与设置页轨迹占用。不含任何真实录音、真实转写或真实位置。
 
 ```bash
 xcrun simctl install <UDID> <构建产物>/AkaMemo.app
 xcrun simctl launch <UDID> com.ariakage.AkaMemo -AkaMemoSeedDemoChunks
 ```
 
-- 分片与会话使用固定 UUID；带参数重复启动只会跳过已存在的分片，不会重复入库。
+- 分片、会话与轨迹使用固定 UUID；带参数重复启动只会跳过已存在的分片/轨迹，不会重复入库。
 - 需要重置时删除模拟器上的 App（或抹掉模拟器数据）后重新安装。
 - 该参数与代码仅在 Debug 构建存在，Release/TestFlight 不包含。
 

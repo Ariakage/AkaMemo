@@ -3,6 +3,9 @@ import Foundation
 public enum DeletionScope: String, Codable, Sendable, Equatable {
     case chunk
     case session
+    /// Deletes one chunk's audio file while keeping its transcript, metadata
+    /// and search index entries.
+    case audio
     /// Deletes the location track of `sessionID` only; audio and transcripts
     /// stay intact.
     case location
@@ -45,6 +48,8 @@ public struct DeletionCommand: Codable, Sendable, Equatable, Identifiable {
         case .chunk:
             return entityID != nil
         case .session:
+            return entityID != nil
+        case .audio:
             return entityID != nil
         case .location:
             return sessionID != nil

@@ -10,7 +10,12 @@ struct SettingsView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Query private var tracks: [LocationTrackRecord]
+    @Query private var chunks: [ReceivedChunkRecord]
+    @Query private var transcripts: [TranscriptRecord]
     @State private var trackUsageBytes: Int64?
+    @State private var audioBytes: Int64?
+    @State private var transcriptBytes: Int64?
+    @State private var indexBytes: Int64?
 
     var body: some View {
         NavigationStack {
@@ -36,6 +41,18 @@ struct SettingsView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
+
+                Section("settings.storage.title") {
+                    LabeledContent("settings.storage.audio") {
+                        Text(byteText(audioBytes))
+                    }
+                    LabeledContent("settings.storage.transcripts") {
+                        Text(byteText(transcriptBytes))
+                    }
+                    LabeledContent("settings.storage.index") {
+                        Text(byteText(indexBytes))
+                    }
+                }
             }
             .navigationTitle("settings.title")
             .toolbar {
@@ -45,8 +62,8 @@ struct SettingsView: View {
                     }
                 }
             }
-            .task(id: tracks.count) {
-                await loadTrackUsage()
+            .task(id: tracks.count + chunks.count + transcripts.count) {
+                await loadUsage()
             }
         }
     }
@@ -74,30 +91,57 @@ struct SettingsView: View {
     }
 
     private var usageText: String {
-        guard let trackUsageBytes else {
+        byteText(trackUsageBytes)
+    }
+
+    private func byteText(_ bytes: Int64?) -> String {
+        guard let bytes else {
             return "—"
         }
-        return trackUsageBytes.formatted(.byteCount(style: .file))
+        return bytes.formatted(.byteCount(style: .file))
     }
 
     @MainActor
-    private func loadTrackUsage() async {
+    private func loadUsage() async {
         guard let root = try? PhonePaths.applicationSupport() else {
             return
         }
-        var total: Int64 = 0
+        var trackTotal: Int64 = 0
         for track in tracks {
-            let url = root.appending(path: track.relativePath)
-            guard
-                let attributes = try? FileManager.default.attributesOfItem(
-                    atPath: url.path
-                ),
-                let size = attributes[.size] as? NSNumber
-            else {
-                continue
-            }
-            total += size.int64Value
+            trackTotal += fileBytes(
+                at: root.appending(path: track.relativePath)
+            )
         }
-        trackUsageBytes = total
+        trackUsageBytes = trackTotal
+
+        audioBytes =
+            chunks
+            .filter { $0.audioPurgedAt == nil }
+            .reduce(Int64(0)) { total, chunk in
+                total + Int64(chunk.byteSize)
+            }
+        transcriptBytes =
+            transcripts
+            .filter { $0.status == .ready }
+            .reduce(Int64(0)) { total, transcript in
+                total + Int64(transcript.text.utf8.count)
+            }
+        let indexURL = root.appending(path: "index/search.sqlite")
+        indexBytes =
+            fileBytes(at: indexURL)
+            + fileBytes(at: URL(fileURLWithPath: indexURL.path + "-wal"))
+            + fileBytes(at: URL(fileURLWithPath: indexURL.path + "-shm"))
+    }
+
+    private func fileBytes(at url: URL) -> Int64 {
+        guard
+            let attributes = try? FileManager.default.attributesOfItem(
+                atPath: url.path
+            ),
+            let size = attributes[.size] as? NSNumber
+        else {
+            return 0
+        }
+        return size.int64Value
     }
 }

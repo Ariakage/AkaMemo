@@ -94,7 +94,8 @@ actor TrackImporter {
                     sessionID: envelope.sessionID,
                     sessionStartedAtMs: envelope.sessionStartedAtMs
                 ) {
-                case .none:
+                case .none, .audio:
+                    // An audio purge does not touch location tracks.
                     break
                 case .session, .chunk, .location, .epoch:
                     try? fileManager.removeItem(at: fileURL)

@@ -14,8 +14,16 @@ final class TranscriptionCoordinator {
         self.service = service
     }
 
+    /// Unit tests run inside the app and share its container. Starting a
+    /// transcription there can raise the system speech prompt and block the
+    /// test host, so the queue stays idle under XCTest.
+    private var isSuppressedForTesting: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"]
+            != nil
+    }
+
     func start() async {
-        guard !isRunning else {
+        guard !isSuppressedForTesting, !isRunning else {
             return
         }
         isRunning = true

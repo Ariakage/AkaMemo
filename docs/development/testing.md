@@ -92,12 +92,12 @@
 ## 7. 命令
 
 ```bash
-# 共享包
-swift test --package-path Packages/AkaMemoCore
+# 共享包（产物放本地磁盘，避开 iCloud 扩展属性）
+swift test --package-path Packages/AkaMemoCore --scratch-path /tmp/AkaMemoCoreBuild
 
-# iOS
+# iOS（统一使用 iPhone 18 Pro；同名设备有多个时改用 UDID）
 xcodebuild test -project AkaMemo.xcodeproj -scheme AkaMemo \
-  -destination 'platform=iOS Simulator,name=<可用设备名>'
+  -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
 
 # watchOS
 xcodebuild test -project AkaMemo.xcodeproj -scheme AkaMemoWatch \

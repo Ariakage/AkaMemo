@@ -218,6 +218,8 @@ private struct SessionRow: View {
     let transcribedCount: Int
     let hasFailure: Bool
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(
@@ -226,25 +228,23 @@ private struct SessionRow: View {
             )
             .font(.headline)
 
-            HStack(spacing: 10) {
-                Label(
-                    SessionFormatting.durationText(session.totalDurationMs),
-                    systemImage: "clock"
-                )
-                Label {
-                    Text("\(session.chunkCount)")
-                } icon: {
-                    Image(systemName: "square.stack.3d.up")
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 2) {
+                    durationLabel
+                    chunkLabel
+                    sizeLabel
                 }
-                .accessibilityLabel(Text("session.chunkCount"))
-                .accessibilityValue(Text("\(session.chunkCount)"))
-                Label(
-                    SessionFormatting.byteText(session.totalBytes),
-                    systemImage: "internaldrive"
-                )
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            } else {
+                HStack(spacing: 10) {
+                    durationLabel
+                    chunkLabel
+                    sizeLabel
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
             }
-            .font(.caption)
-            .foregroundStyle(.secondary)
 
             HStack(spacing: 8) {
                 Text("session.transfer.received")
@@ -263,5 +263,31 @@ private struct SessionRow: View {
             .font(.caption2)
         }
         .padding(.vertical, 2)
+        .accessibilityElement(children: .combine)
+        .accessibilityHint(Text("session.openHint"))
+    }
+
+    private var durationLabel: some View {
+        Label(
+            SessionFormatting.durationText(session.totalDurationMs),
+            systemImage: "clock"
+        )
+    }
+
+    private var chunkLabel: some View {
+        Label {
+            Text("\(session.chunkCount)")
+        } icon: {
+            Image(systemName: "square.stack.3d.up")
+        }
+        .accessibilityLabel(Text("session.chunkCount"))
+        .accessibilityValue(Text("\(session.chunkCount)"))
+    }
+
+    private var sizeLabel: some View {
+        Label(
+            SessionFormatting.byteText(session.totalBytes),
+            systemImage: "internaldrive"
+        )
     }
 }

@@ -286,6 +286,11 @@ private struct ChunkRow: View {
         isCurrent && playback.isPlaying
     }
 
+    private var chunkStartText: String {
+        TimeMath.date(epochMs: chunk.startedAtMs)
+            .formatted(date: .omitted, time: .standard)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
@@ -317,16 +322,21 @@ private struct ChunkRow: View {
                                 : "play.circle.fill"
                         )
                         .font(.title2)
+                        .frame(minWidth: 44, minHeight: 44)
+                        .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(
                         Text(
                             LocalizedStringKey(
                                 isPlayingThisChunk
-                                    ? "playback.pause" : "playback.play"
+                                    ? "playback.pauseChunk"
+                                    : "playback.playChunk"
                             )
                         )
                     )
+                    .accessibilityValue(Text(chunkStartText))
+                    .accessibilityHint(Text("playback.chunkHint"))
 
                     if isCurrent {
                         Slider(
@@ -337,6 +347,7 @@ private struct ChunkRow: View {
                             in: 0...1
                         )
                         .accessibilityLabel(Text("playback.progress"))
+                        .accessibilityValue(Text(playback.currentTimeText))
 
                         Text(playback.currentTimeText)
                             .font(.caption2.monospacedDigit())

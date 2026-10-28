@@ -33,6 +33,7 @@ struct BatteryBannerView: View {
                 (banner.kind == .stopped ? Color.red : Color.orange)
                     .opacity(0.12)
             )
+            .accessibilityElement(children: .combine)
         }
     }
 }

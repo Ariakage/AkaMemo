@@ -24,6 +24,7 @@ struct RecordingStatusBannerView: View {
                 (banner.kind == .storage ? Color.red : Color.orange)
                     .opacity(0.12)
             )
+            .accessibilityElement(children: .combine)
         }
     }
 }

@@ -1185,6 +1185,22 @@
         }
       }
     },
+    "location.map.pointsValue %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld location points"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 个位置点"
+          }
+        }
+      }
+    },
     "location.map.start": {
       "localizations": {
         "en": {
@@ -1313,6 +1329,22 @@
         }
       }
     },
+    "playback.chunkHint": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starts playback from this chunk"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从该分片开始播放"
+          }
+        }
+      }
+    },
     "playback.error.missing": {
       "localizations": {
         "en": {
@@ -1361,6 +1393,22 @@
         }
       }
     },
+    "playback.pauseChunk": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause chunk"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂停分片"
+          }
+        }
+      }
+    },
     "playback.play": {
       "localizations": {
         "en": {
@@ -1373,6 +1421,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "播放"
+          }
+        }
+      }
+    },
+    "playback.playChunk": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play chunk"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "播放分片"
           }
         }
       }
@@ -1613,6 +1677,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "搜索录音"
+          }
+        }
+      }
+    },
+    "search.openHint": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens the session at the matched time"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开会话并定位到命中时间"
           }
         }
       }
@@ -1869,6 +1949,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "没有分片"
+          }
+        }
+      }
+    },
+    "session.openHint": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens the session details"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开会话详情"
           }
         }
       }

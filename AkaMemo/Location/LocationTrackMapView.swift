@@ -47,6 +47,9 @@ struct LocationTrackMapPreview: View {
                 .frame(height: 180)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .accessibilityLabel(Text("location.map.title"))
+                .accessibilityValue(
+                    Text("location.map.pointsValue \(coordinates.count)")
+                )
 
                 Text("location.map.footnote")
                     .font(.caption2)

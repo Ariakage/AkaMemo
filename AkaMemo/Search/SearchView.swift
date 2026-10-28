@@ -239,6 +239,8 @@ private struct SearchResultRow: View {
             .foregroundStyle(.secondary)
         }
         .padding(.vertical, 2)
+        .accessibilityElement(children: .combine)
+        .accessibilityHint(Text("search.openHint"))
     }
 
     private func highlighted(

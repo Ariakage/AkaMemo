@@ -4,6 +4,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var model = RecordingViewModel()
     @Environment(\.scenePhase) private var scenePhase
+    @ScaledMetric(relativeTo: .largeTitle) private var timerFontSize: CGFloat = 30
 
     var body: some View {
         ScrollView {
@@ -45,6 +46,7 @@ struct ContentView: View {
                 }
                 .font(.caption2)
                 .foregroundStyle(.secondary)
+                .accessibilityElement(children: .combine)
                 Toggle(
                     "location.enabled",
                     isOn: Binding(
@@ -136,7 +138,7 @@ struct ContentView: View {
                 )
             )
             Text("settings.silentResume.footnote")
-                .font(.system(size: 10))
+                .font(.caption2)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
@@ -152,6 +154,7 @@ struct ContentView: View {
                     Circle()
                         .fill(.red)
                         .frame(width: 6, height: 6)
+                        .accessibilityHidden(true)
                 }
                 Text(LocalizedStringKey(model.stateKey))
                     .font(.caption2)
@@ -179,7 +182,13 @@ struct ContentView: View {
     private var timer: some View {
         VStack(spacing: 4) {
             Text(model.elapsedText)
-                .font(.system(size: 30, weight: .semibold, design: .rounded))
+                .font(
+                    .system(
+                        size: timerFontSize,
+                        weight: .semibold,
+                        design: .rounded
+                    )
+                )
                 .monospacedDigit()
                 .accessibilityLabel(Text("recording.elapsed"))
                 .accessibilityValue(Text(model.elapsedText))

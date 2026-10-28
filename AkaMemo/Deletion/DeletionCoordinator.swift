@@ -24,6 +24,12 @@ final class DeletionCoordinator {
         }
     }
 
+    func deleteTrack(_ trackID: UUID, sessionID: UUID) async -> Bool {
+        await perform {
+            try await service?.deleteTrack(trackID, sessionID: sessionID)
+        }
+    }
+
     func deleteAll() async -> Bool {
         await perform {
             try await service?.deleteAll()

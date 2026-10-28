@@ -251,6 +251,77 @@ final class WatchDeletionTests: XCTestCase {
         XCTAssertTrue(deleted)
     }
 
+    func testLocationDeletionRemovesTrackButKeepsAudio() async throws {
+        let sessionID = UUID()
+        try makeSessionDirectory(sessionID: sessionID, startedAtMs: 1_000)
+        let locationDirectory = root.appending(
+            path: "location/2026/10/28",
+            directoryHint: .isDirectory
+        )
+        try FileManager.default.createDirectory(
+            at: locationDirectory,
+            withIntermediateDirectories: true
+        )
+        let trackURL = locationDirectory.appending(
+            path: sessionID.uuidString + ".jsonl"
+        )
+        let partURL = locationDirectory.appending(
+            path: sessionID.uuidString + ".jsonl.part"
+        )
+        try Data("{}".utf8).write(to: trackURL)
+        try Data("{}".utf8).write(to: partURL)
+
+        let store = WatchDeletionStore(appSupportRoot: root)
+        let queue = WatchTransferQueue(
+            appSupportRoot: root,
+            deletionStore: store
+        )
+        let chunkID = UUID()
+        await queue.enqueue(
+            makeEnvelope(
+                chunkID: chunkID,
+                sessionID: sessionID,
+                startedAtMs: 1_000
+            )
+        )
+        let handler = WatchDeletionHandler(
+            appSupportRoot: root,
+            deletionStore: store,
+            queue: queue
+        )
+
+        await handler.apply(
+            DeletionCommand(
+                scope: .location,
+                entityID: UUID(),
+                sessionID: sessionID,
+                deletedAtMs: 2_000
+            )
+        )
+
+        XCTAssertTrue(
+            FileManager.default.fileExists(
+                atPath: root.appending(
+                    path: "audio/\(sessionID.uuidString)"
+                ).path
+            )
+        )
+        XCTAssertFalse(
+            FileManager.default.fileExists(atPath: trackURL.path)
+        )
+        XCTAssertFalse(
+            FileManager.default.fileExists(atPath: partURL.path)
+        )
+        let entries = await queue.entries()
+        XCTAssertEqual(entries.map(\.envelope.chunkID), [chunkID])
+        let audioDeleted = await store.isDeleted(
+            chunkID: nil,
+            sessionID: sessionID,
+            sessionStartedAtMs: 1_000
+        )
+        XCTAssertFalse(audioDeleted)
+    }
+
     func testDeleteAllKeepsSessionStartedAfterEpoch() async throws {
         let oldSession = UUID()
         let newSession = UUID()

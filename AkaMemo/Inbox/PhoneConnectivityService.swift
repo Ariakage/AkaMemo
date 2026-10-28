@@ -196,6 +196,11 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
             if fileManager.fileExists(atPath: processingURL.path) {
                 quarantine(processingURL)
             }
+            Task {
+                await resendDeletionForRejectedTrack(
+                    sessionID: envelope.sessionID
+                )
+            }
         }
     }
 
@@ -350,6 +355,17 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
         }
         if let command = try? await deletionStore.commandForRejectedChunk(
             chunkID: chunkID,
+            sessionID: sessionID
+        ) {
+            _ = sendDeletion(command)
+        }
+    }
+
+    private func resendDeletionForRejectedTrack(sessionID: UUID) async {
+        guard let deletionStore else {
+            return
+        }
+        if let command = try? await deletionStore.commandForRejectedTrack(
             sessionID: sessionID
         ) {
             _ = sendDeletion(command)

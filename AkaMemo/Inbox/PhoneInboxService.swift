@@ -60,6 +60,10 @@ actor PhoneInboxService {
                     try? fileManager.removeItem(at: fileURL)
                     await logRejection("deletedSession", envelope: envelope)
                     return .rejected("deletedSession")
+                case .location:
+                    // Only the track was deleted; this session's audio still
+                    // belongs in the library.
+                    break
                 case .epoch:
                     try? fileManager.removeItem(at: fileURL)
                     await logRejection("deletedEpoch", envelope: envelope)

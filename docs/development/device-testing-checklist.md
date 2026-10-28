@@ -16,7 +16,7 @@
 
 ## 当前基线
 
-- 2026-10-28，`main` 已包含 PR #1～#18；PR #5 增加 `.parts` 启动恢复与损坏隔离；PR #6 增加 WatchConnectivity 传输与 iPhone inbox；PR #7 增加 envelope 校验；PR #8 增加 iPhone 会话列表与播放；PR #9 增加模拟器分片注入；PR #10 增加端上转写（FR-009）；PR #11 增加 FTS5 全文检索（FR-010）；PR #12 增加删除与墓碑传播（FR-012 部分）；PR #13 增加 iPhone 端实时诊断日志（FR-031 部分）；PR #14 增加低电量告警基础链路（FR-025～027 部分）；PR #15 增加 GPS 轨迹与 GPX 导出基础链路（FR-021/022 部分）；PR #16 增加低存储与录音保活通知基础链路（FR-013/028 部分）；PR #17 增加前台自动恢复与静默恢复（FR-029 部分）；PR #18 增加定位设置页与全局开关同步（FR-024 部分）。
+- 2026-10-28，`main` 已包含 PR #1～#19；PR #5 增加 `.parts` 启动恢复与损坏隔离；PR #6 增加 WatchConnectivity 传输与 iPhone inbox；PR #7 增加 envelope 校验；PR #8 增加 iPhone 会话列表与播放；PR #9 增加模拟器分片注入；PR #10 增加端上转写（FR-009）；PR #11 增加 FTS5 全文检索（FR-010）；PR #12 增加删除与墓碑传播（FR-012 部分）；PR #13 增加 iPhone 端实时诊断日志（FR-031 部分）；PR #14 增加低电量告警基础链路（FR-025～027 部分）；PR #15 增加 GPS 轨迹与 GPX 导出基础链路（FR-021/022 部分）；PR #16 增加低存储与录音保活通知基础链路（FR-013/028 部分）；PR #17 增加前台自动恢复与静默恢复（FR-029 部分）；PR #18 增加定位设置页与全局开关同步（FR-024 部分）；PR #19 增加轨迹删除与 `location` 墓碑（FR-024 完成）。
 - 模拟器已验证：双端构建、单元测试、Watch 录音 UI、M4A 容器（`afinfo` 显示 `m4af`）、60 秒封口、`.parts` 启动恢复与损坏隔离。
 - 模拟器**不能**验证：系统麦克风隐私指示、真实麦克风/后台/中断/断电/热/电量。
 - 模拟器出现的异常短分片与音频停滞不代表真机行为，也不能证明真机不会出现。
@@ -46,6 +46,7 @@
 | D-020 | WatchConnectivity 传输 | `transferFile` 传分片；iPhone inbox 校验/去重/入库；确认回执；重试退避；未确认不清理 | `specs/recording.md` §8、`architecture/data-model.md` | 待实测（PR #6 实现；模拟器配对后 Watch 显示 received，但 iPhone 模拟器未投递文件，且 `com.apple.Bridge` 会崩溃；需真机） |
 | D-032 | 被杀后前台恢复 | 强制退出后重开 Watch App：显示“上次录音中断”与 3 秒倒计时，可取消；取消后手动继续；后台/锁屏不开麦；恢复后新分片序号续接、缺口可见；忽略后不再提示且不删音频 | `specs/recording-health.md` §3.4、G-004 #11、#12 | 待实测（模拟器逻辑已实现；真机待验证） |
 | D-033 | 定位全局开关与状态 | iPhone 设置页关闭定位后 Watch 立即停止采集、新会话不采集；Watch 权限状态与轨迹占用显示正确；双端时间戳冲突以最后操作为准；同步消息不含坐标 | FR-024、`specs/gps-tracking.md` | 待实测（模拟器逻辑已实现；WatchConnectivity 待真机） |
+| D-034 | 轨迹删除与 location 墓碑 | 删除轨迹后音频/转写/索引仍可用；Watch 停止定位写入并删除 `.jsonl`/`.jsonl.part`，音频队列不中断；重连补传的轨迹被拒绝并回执；location 墓碑不拒绝音频 | FR-024、`architecture/data-model.md`「删除轨迹」 | 待实测（模拟器单测通过；WatchConnectivity 待真机） |
 
 ## B. 尚未实现，实现后再真机验证
 

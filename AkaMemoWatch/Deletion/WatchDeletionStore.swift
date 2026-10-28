@@ -94,6 +94,9 @@ actor WatchDeletionStore {
                 if tombstone.entityID == sessionID {
                     return true
                 }
+            case .location:
+                // The track is gone but the session's audio still uploads.
+                continue
             case .all:
                 continue
             }

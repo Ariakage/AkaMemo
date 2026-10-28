@@ -57,6 +57,11 @@ final class RecordingViewModel {
         return Self.message(for: error)
     }
 
+    func recoverPendingChunks() async {
+        await engine.recoverPendingChunks()
+        await refresh()
+    }
+
     func observe() async {
         while !Task.isCancelled {
             await refresh()

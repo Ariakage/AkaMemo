@@ -143,7 +143,7 @@ xcrun swift-format format --in-place --recursive AkaMemo AkaMemoWatch Packages
 
 ## 6. 真机调试
 
-录音相关的验收必须在真机完成：
+录音相关的验收必须在真机完成。待测项与门禁状态集中维护在 [`device-testing-checklist.md`](device-testing-checklist.md)：
 
 1. iPhone 开启 Developer Mode（设置 → 隐私与安全性 → 开发者模式）。
 2. Apple Watch 开启 Developer Mode（Watch 设置 → 隐私与安全性 → 开发者模式），重启生效。

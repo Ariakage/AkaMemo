@@ -79,7 +79,9 @@
 
 ## 6. 真机验证
 
-录音链路引用 `../specs/recording.md` 的验证矩阵；24h 续航引用 `../specs/24h-feasibility.md` 的 G-001；GPS 引用 `../specs/gps-tracking.md` 的 G-002；低电量告警引用 `../specs/battery-alerting.md` 的 G-003；保活/完整性引用 `../specs/recording-health.md` 的 G-004；诊断日志引用 `../specs/diagnostics.md` 的 G-005。每次涉及以下改动，必须重跑 P0 场景：
+录音链路引用 `../specs/recording.md` 的验证矩阵；24h 续航引用 `../specs/24h-feasibility.md` 的 G-001；GPS 引用 `../specs/gps-tracking.md` 的 G-002；低电量告警引用 `../specs/battery-alerting.md` 的 G-003；保活/完整性引用 `../specs/recording-health.md` 的 G-004；诊断日志引用 `../specs/diagnostics.md` 的 G-005。
+
+**待真机项集中维护在 [`device-testing-checklist.md`](device-testing-checklist.md)**；每次相关改动更新对应行，模拟器结果不得写成“通过”。每次涉及以下改动，必须重跑 P0 场景：
 
 - 音频会话配置、格式、分片时长；
 - 后台模式、Info.plist；

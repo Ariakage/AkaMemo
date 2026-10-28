@@ -22,6 +22,7 @@
 | `development/workflow.md` | 分支、提交、PR、review、发布 | 所有人 | 活跃 |
 | `development/coding-style.md` | Swift / SwiftUI / 并发 / 日志 / 本地化规范 | 开发 | 活跃 |
 | `development/testing.md` | 测试策略、测试夹具、完成定义 | 开发、测试 | 活跃 |
+| `development/device-testing-checklist.md` | 待真机实测项、门禁状态与记录 | 开发、测试 | 活跃 |
 | `decisions/README.md` | ADR 流程、已确认决策索引、待决策清单 | 所有人 | 活跃 |
 | `decisions/0001-xcode-project.md` | 采用纯 Xcode 工程 | 开发 | 已接受 |
 | `decisions/0002-mvp-scope.md` | MVP 范围 | 所有人 | 已接受 |

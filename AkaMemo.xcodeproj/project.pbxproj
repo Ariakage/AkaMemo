@@ -52,7 +52,13 @@
 		AD0200000000000000000005 /* SessionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000005 /* SessionListView.swift */; };
 		AD0200000000000000000006 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000006 /* SessionDetailView.swift */; };
 		AD0200000000000000000007 /* SimulatorFixtureSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000008 /* SimulatorFixtureSeeder.swift */; };
+		AD0200000000000000000011 /* TranscriptionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000011 /* TranscriptionModels.swift */; };
+		AD0200000000000000000012 /* TranscriptStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000012 /* TranscriptStore.swift */; };
+		AD0200000000000000000013 /* AppleSpeechTranscriptionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000013 /* AppleSpeechTranscriptionProvider.swift */; };
+		AD0200000000000000000014 /* TranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000014 /* TranscriptionService.swift */; };
+		AD0200000000000000000015 /* TranscriptionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000015 /* TranscriptionCoordinator.swift */; };
 		AB0200000000000000000008 /* SimulatorFixtureSeederTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000009 /* SimulatorFixtureSeederTests.swift */; };
+		AB0200000000000000000009 /* TranscriptionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB010000000000000000000A /* TranscriptionServiceTests.swift */; };
 		AB0400000000000000000001 /* AkaMemoCore in Frameworks */ = {isa = PBXBuildFile; productRef = AB0300000000000000000001 /* AkaMemoCore */; };
 		AB0400000000000000000002 /* AkaMemoCore in Frameworks */ = {isa = PBXBuildFile; productRef = AB0300000000000000000002 /* AkaMemoCore */; };
 		AC0200000000000000000001 /* WatchTransferQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0100000000000000000001 /* WatchTransferQueueTests.swift */; };
@@ -139,7 +145,13 @@
 		AD0100000000000000000005 /* SessionListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SessionListView.swift; sourceTree = "<group>"; };
 		AD0100000000000000000006 /* SessionDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
 		AD0100000000000000000008 /* SimulatorFixtureSeeder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SimulatorFixtureSeeder.swift; sourceTree = "<group>"; };
+		AD0100000000000000000011 /* TranscriptionModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TranscriptionModels.swift; sourceTree = "<group>"; };
+		AD0100000000000000000012 /* TranscriptStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TranscriptStore.swift; sourceTree = "<group>"; };
+		AD0100000000000000000013 /* AppleSpeechTranscriptionProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppleSpeechTranscriptionProvider.swift; sourceTree = "<group>"; };
+		AD0100000000000000000014 /* TranscriptionService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TranscriptionService.swift; sourceTree = "<group>"; };
+		AD0100000000000000000015 /* TranscriptionCoordinator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TranscriptionCoordinator.swift; sourceTree = "<group>"; };
 		AB0100000000000000000009 /* SimulatorFixtureSeederTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SimulatorFixtureSeederTests.swift; sourceTree = "<group>"; };
+		AB010000000000000000000A /* TranscriptionServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TranscriptionServiceTests.swift; sourceTree = "<group>"; };
 		AC0100000000000000000001 /* WatchTransferQueueTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchTransferQueueTests.swift; sourceTree = "<group>"; };
 		035009F8ABC8D75D57319119 /* BatteryActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryActivityAttributes.swift; sourceTree = "<group>"; };
 		0FC4CD7E510620FBA8E0CBE9 /* BatteryLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryLiveActivity.swift; sourceTree = "<group>"; };
@@ -290,6 +302,7 @@
 				2530B973040C23AEDCE79B0B /* AkaMemoTests.swift */,
 				AB0100000000000000000008 /* PhoneInboxServiceTests.swift */,
 				AB0100000000000000000009 /* SimulatorFixtureSeederTests.swift */,
+				AB010000000000000000000A /* TranscriptionServiceTests.swift */,
 			);
 			path = AkaMemoTests;
 			sourceTree = "<group>";
@@ -354,6 +367,18 @@
 			path = Sessions;
 			sourceTree = "<group>";
 		};
+		AD0100000000000000000010 /* Transcription */ = {
+			isa = PBXGroup;
+			children = (
+				AD0100000000000000000011 /* TranscriptionModels.swift */,
+				AD0100000000000000000012 /* TranscriptStore.swift */,
+				AD0100000000000000000013 /* AppleSpeechTranscriptionProvider.swift */,
+				AD0100000000000000000014 /* TranscriptionService.swift */,
+				AD0100000000000000000015 /* TranscriptionCoordinator.swift */,
+			);
+			path = Transcription;
+			sourceTree = "<group>";
+		};
 		E77D0E4D19AC1E93A1A5E2DD /* AkaMemo */ = {
 			isa = PBXGroup;
 			children = (
@@ -362,6 +387,7 @@
 				AB0100000000000000000005 /* PhoneAppModel.swift */,
 				AB0100000000000000000007 /* Inbox */,
 				AD0100000000000000000007 /* Sessions */,
+				AD0100000000000000000010 /* Transcription */,
 				E1F22C4A920E3D53BEBA0A61 /* Assets.xcassets */,
 				AB0100000000000000000006 /* Localizable.xcstrings */,
 				A1B0CB5A4A6D4CC7F527531B /* Info.plist */,
@@ -573,6 +599,7 @@
 				468F44D560E436F9FAEC0BFB /* AkaMemoTests.swift in Sources */,
 				AB0200000000000000000007 /* PhoneInboxServiceTests.swift in Sources */,
 				AB0200000000000000000008 /* SimulatorFixtureSeederTests.swift in Sources */,
+				AB0200000000000000000009 /* TranscriptionServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -605,6 +632,11 @@
 				AD0200000000000000000005 /* SessionListView.swift in Sources */,
 				AD0200000000000000000006 /* SessionDetailView.swift in Sources */,
 				AD0200000000000000000007 /* SimulatorFixtureSeeder.swift in Sources */,
+				AD0200000000000000000011 /* TranscriptionModels.swift in Sources */,
+				AD0200000000000000000012 /* TranscriptStore.swift in Sources */,
+				AD0200000000000000000013 /* AppleSpeechTranscriptionProvider.swift in Sources */,
+				AD0200000000000000000014 /* TranscriptionService.swift in Sources */,
+				AD0200000000000000000015 /* TranscriptionCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

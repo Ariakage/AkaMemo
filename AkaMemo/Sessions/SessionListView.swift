@@ -3,8 +3,11 @@ import SwiftData
 import SwiftUI
 
 struct SessionListView: View {
+    let transcription: TranscriptionCoordinator?
+
     @Query(sort: \ReceivedChunkRecord.startedAt, order: .forward)
     private var chunks: [ReceivedChunkRecord]
+    @Query private var transcripts: [TranscriptRecord]
 
     private var sessions: [SessionSummary] {
         SessionAggregator.group(chunks.map(\.summary))
@@ -22,21 +25,46 @@ struct SessionListView: View {
                 List {
                     ForEach(sessions) { session in
                         NavigationLink(value: session.sessionID) {
-                            SessionRow(session: session)
+                            SessionRow(
+                                session: session,
+                                transcribedCount: transcribedCount(
+                                    for: session
+                                ),
+                                hasFailure: hasFailure(for: session)
+                            )
                         }
                     }
                 }
                 .navigationTitle("inbox.title")
                 .navigationDestination(for: UUID.self) { sessionID in
-                    SessionDetailView(sessionID: sessionID)
+                    SessionDetailView(
+                        sessionID: sessionID,
+                        transcription: transcription
+                    )
                 }
             }
+        }
+    }
+
+    private func transcribedCount(for session: SessionSummary) -> Int {
+        let chunkIDs = Set(session.chunks.map(\.chunkID))
+        return transcripts.filter {
+            chunkIDs.contains($0.chunkID) && $0.status == .ready
+        }.count
+    }
+
+    private func hasFailure(for session: SessionSummary) -> Bool {
+        let chunkIDs = Set(session.chunks.map(\.chunkID))
+        return transcripts.contains {
+            chunkIDs.contains($0.chunkID) && $0.status == .failed
         }
     }
 }
 
 private struct SessionRow: View {
     let session: SessionSummary
+    let transcribedCount: Int
+    let hasFailure: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -69,8 +97,16 @@ private struct SessionRow: View {
             HStack(spacing: 8) {
                 Text("session.transfer.received")
                     .foregroundStyle(.green)
-                Text("session.transcription.pending")
-                    .foregroundStyle(.secondary)
+                if transcribedCount == session.chunkCount {
+                    Text("session.transcription.ready")
+                        .foregroundStyle(.green)
+                } else if hasFailure {
+                    Text("session.transcription.failed")
+                        .foregroundStyle(.red)
+                } else {
+                    Text("session.transcription.pending")
+                        .foregroundStyle(.secondary)
+                }
             }
             .font(.caption2)
         }

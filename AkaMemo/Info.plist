@@ -26,6 +26,8 @@
 	<string>AkaMemo 在录音期间记录位置，用于按地点回忆。位置默认只存本机。</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>AkaMemo 使用麦克风录制你主动开始的音频，用于在你的设备上生成可搜索的个人记忆。录音默认不会上传。</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>AkaMemo 使用 Apple 的端上语音识别把录音转成可搜索的文字。音频与转写文本不会离开你的设备。</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

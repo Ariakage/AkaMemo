@@ -1,14 +1,16 @@
+import Combine
 import SwiftData
 import SwiftUI
 
 struct ContentView: View {
     @State private var model = PhoneAppModel()
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         NavigationStack {
             Group {
                 if let container = model.container {
-                    SessionListView()
+                    SessionListView(transcription: model.transcription)
                         .modelContainer(container)
                 } else {
                     ContentUnavailableView(
@@ -19,6 +21,25 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("app.name")
+        }
+        .task {
+            await model.transcription?.start()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                Task {
+                    await model.transcription?.start()
+                }
+            }
+        }
+        .onReceive(
+            NotificationCenter.default.publisher(
+                for: .akamemoInboxAcceptedChunk
+            )
+        ) { _ in
+            Task {
+                await model.transcription?.start()
+            }
         }
     }
 }

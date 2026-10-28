@@ -214,10 +214,14 @@ MVP 不做自动标签；保留结构以便后续扩展。
 
 | 字段 | 类型 | 说明 |
 | --- | --- | --- |
+| `tombstoneID` | UUID | 删除指令与回执的关联键 |
 | `epoch` | Int64 | 删除截止时间（UTC ms） |
 | `createdAt` | Date | 创建时间 |
 | `source` | String | `iphone` |
 | `watchAckAt` | Date? | Watch 应用时间 |
+
+- iPhone 端墓碑与 DataEpoch 均为 SwiftData 实体；`acknowledgedAt` / `watchAckAt` 由 Watch 的 `deletionAck` 回执写入。
+- 删除指令通过 WatchConnectivity `transferUserInfo` 持久发送，`sendMessage` 在可达时即时补发；未回执的指令在激活/可达变化时重发。
 
 规则：
 

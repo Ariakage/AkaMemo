@@ -1,3 +1,4 @@
+import AkaMemoCore
 import Foundation
 import Observation
 import WatchKit
@@ -14,15 +15,52 @@ final class RecordingViewModel {
     init() {
         do {
             let root = try WatchPaths.applicationSupport()
-            let queue = WatchTransferQueue(appSupportRoot: root)
-            let service = WatchConnectivityService(queue: queue)
+            let deletionStore = WatchDeletionStore(appSupportRoot: root)
+            let queue = WatchTransferQueue(
+                appSupportRoot: root,
+                deletionStore: deletionStore
+            )
+            let handler = WatchDeletionHandler(
+                appSupportRoot: root,
+                deletionStore: deletionStore,
+                queue: queue
+            )
+            let service = WatchConnectivityService(
+                queue: queue,
+                deletionHandler: handler
+            )
             self.engine = RecordingEngine(transferQueue: queue)
             self.connectivity = service
+            Task {
+                await handler.setStopSessionHandler {
+                    [weak self] sessionID, epochMs in
+                    await self?.stopIfDeleted(
+                        sessionID: sessionID,
+                        epochMs: epochMs
+                    )
+                }
+            }
             service.activate()
         } catch {
             self.engine = RecordingEngine()
             self.connectivity = nil
         }
+    }
+
+    /// Stops the recorder only when the deleted session is the one currently
+    /// being recorded. A session started after the epoch keeps running.
+    private func stopIfDeleted(sessionID: UUID?, epochMs: Int64?) async {
+        guard let startedAt = snapshot.sessionStartedAt else {
+            return
+        }
+        let isCurrentSession =
+            sessionID != nil && sessionID == snapshot.sessionID
+        let startedBeforeEpoch =
+            epochMs.map { TimeMath.epochMs(startedAt) < $0 } ?? false
+        guard isCurrentSession || startedBeforeEpoch else {
+            return
+        }
+        await stop()
     }
 
     var elapsed: TimeInterval {

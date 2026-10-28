@@ -9,6 +9,7 @@ final class PhoneAppModel {
     let container: ModelContainer?
     let transcription: TranscriptionCoordinator?
     let search: SearchCoordinator?
+    let deletion: DeletionCoordinator?
     private let connectivity: PhoneConnectivityService?
     #if DEBUG
         private let store: MemoryStore?
@@ -22,14 +23,22 @@ final class PhoneAppModel {
                 for: ReceivedChunkRecord.self,
                 TranscriptRecord.self,
                 TranscriptSegmentRecord.self,
-                TranscriptionTaskRecord.self
+                TranscriptionTaskRecord.self,
+                DeletionTombstoneRecord.self,
+                DataEpochRecord.self
             )
             let root = try PhonePaths.applicationSupport()
             let store = MemoryStore(modelContainer: container)
-            let inbox = PhoneInboxService(store: store, applicationSupport: root)
+            let deletionStore = DeletionStore(modelContainer: container)
+            let inbox = PhoneInboxService(
+                store: store,
+                applicationSupport: root,
+                deletionStore: deletionStore
+            )
             let service = PhoneConnectivityService(
                 inbox: inbox,
-                applicationSupport: root
+                applicationSupport: root,
+                deletionStore: deletionStore
             )
             let transcriptStore = TranscriptStore(modelContainer: container)
             let searchIndex = try? SQLiteSearchIndex(
@@ -42,6 +51,12 @@ final class PhoneAppModel {
                 applicationSupport: root,
                 indexer: indexer
             )
+            let deletionService = DeletionService(
+                store: deletionStore,
+                applicationSupport: root,
+                index: searchIndex,
+                sender: service
+            )
             self.container = container
             self.transcription = TranscriptionCoordinator(
                 service: transcriptionService
@@ -51,6 +66,7 @@ final class PhoneAppModel {
                 indexer: indexer,
                 store: transcriptStore
             )
+            self.deletion = DeletionCoordinator(service: deletionService)
             self.connectivity = service
             #if DEBUG
                 self.store = store
@@ -73,6 +89,7 @@ final class PhoneAppModel {
             self.container = nil
             self.transcription = nil
             self.search = nil
+            self.deletion = nil
             self.connectivity = nil
             #if DEBUG
                 self.store = nil

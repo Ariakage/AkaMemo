@@ -4,6 +4,7 @@ import SwiftUI
 struct SearchView: View {
     let search: SearchCoordinator?
     let transcription: TranscriptionCoordinator?
+    let deletion: DeletionCoordinator?
 
     @State private var query = ""
     @State private var timeRange: SearchTimeRange = .all
@@ -79,6 +80,7 @@ struct SearchView: View {
                             SessionDetailView(
                                 sessionID: hit.sessionID,
                                 transcription: transcription,
+                                deletion: deletion,
                                 startChunkID: hit.chunkID,
                                 startAtMs: hit.startMs
                             )

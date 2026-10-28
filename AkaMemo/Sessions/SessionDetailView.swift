@@ -5,22 +5,28 @@ import SwiftUI
 struct SessionDetailView: View {
     let sessionID: UUID
     let transcription: TranscriptionCoordinator?
+    let deletion: DeletionCoordinator?
     let startChunkID: UUID?
     let startAtMs: Int64?
 
+    @Environment(\.dismiss) private var dismiss
     @Query private var chunks: [ReceivedChunkRecord]
     @Query private var transcripts: [TranscriptRecord]
     @State private var playback = PlaybackController()
     @State private var didStartInitialPlayback = false
+    @State private var pendingDeletion: PendingDeletion?
+    @State private var deletionError: String?
 
     init(
         sessionID: UUID,
         transcription: TranscriptionCoordinator?,
+        deletion: DeletionCoordinator? = nil,
         startChunkID: UUID? = nil,
         startAtMs: Int64? = nil
     ) {
         self.sessionID = sessionID
         self.transcription = transcription
+        self.deletion = deletion
         self.startChunkID = startChunkID
         self.startAtMs = startAtMs
         _chunks = Query(
@@ -91,12 +97,36 @@ struct SessionDetailView: View {
                                 }
                             }
                         )
+                        .swipeActions(
+                            edge: .trailing,
+                            allowsFullSwipe: false
+                        ) {
+                            Button(role: .destructive) {
+                                pendingDeletion = .chunk(
+                                    chunk.chunkID,
+                                    sessionID: sessionID
+                                )
+                            } label: {
+                                Label(
+                                    "deletion.action",
+                                    systemImage: "trash"
+                                )
+                            }
+                        }
                     }
                 }
 
                 if let error = playback.errorMessage {
                     Section {
                         Text(error)
+                            .font(.footnote)
+                            .foregroundStyle(.red)
+                    }
+                }
+
+                if let deletionError {
+                    Section {
+                        Text(deletionError)
                             .font(.footnote)
                             .foregroundStyle(.red)
                     }
@@ -109,11 +139,57 @@ struct SessionDetailView: View {
             }
         }
         .navigationTitle("session.title")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(role: .destructive) {
+                    pendingDeletion = .session(sessionID)
+                } label: {
+                    Image(systemName: "trash")
+                }
+                .accessibilityLabel(Text("deletion.action"))
+            }
+        }
+        .alert(item: $pendingDeletion) { pending in
+            Alert(
+                title: Text(pending.titleKey),
+                message: Text(pending.messageKey),
+                primaryButton: .destructive(Text("deletion.confirm")) {
+                    Task {
+                        await performDeletion(pending)
+                    }
+                },
+                secondaryButton: .cancel(Text("deletion.cancel"))
+            )
+        }
         .onAppear { startInitialPlaybackIfNeeded() }
         .onChange(of: chunks.count) { _, _ in
             startInitialPlaybackIfNeeded()
         }
         .onDisappear { playback.stop() }
+    }
+
+    private func performDeletion(_ pending: PendingDeletion) async {
+        switch pending {
+        case .session:
+            if await deletion?.deleteSession(sessionID) == true {
+                playback.stop()
+                dismiss()
+            }
+        case .chunk(let chunkID, _):
+            if await deletion?.deleteChunk(chunkID) == true {
+                if playback.currentChunkID == chunkID {
+                    playback.stop()
+                }
+            }
+        case .all:
+            if await deletion?.deleteAll() == true {
+                playback.stop()
+                dismiss()
+            }
+        }
+        if let message = deletion?.errorMessage {
+            deletionError = message
+        }
     }
 
     private func startInitialPlaybackIfNeeded() {

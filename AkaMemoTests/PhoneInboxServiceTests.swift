@@ -131,6 +131,23 @@ final class PhoneInboxServiceTests: XCTestCase {
         XCTAssertEqual(storedCount, 1)
     }
 
+    func testReceiveRejectsInvalidEnvelope() async throws {
+        let environment = try makeEnvironment()
+        defer { try? FileManager.default.removeItem(at: environment.root) }
+        let incoming = try makeIncomingAudio(in: environment.root)
+        let envelope = makeEnvelope(for: incoming.data, sequence: -1)
+
+        let result = await environment.inbox.receive(
+            fileURL: incoming.url,
+            envelope: envelope
+        )
+
+        XCTAssertEqual(result, .rejected("invalidEnvelope"))
+        let storedCount = try await environment.store.count()
+        XCTAssertEqual(storedCount, 0)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: incoming.url.path))
+    }
+
     func testReceiveRejectsChunkIDReuseWithDifferentChecksum() async throws {
         let environment = try makeEnvironment()
         defer { try? FileManager.default.removeItem(at: environment.root) }
@@ -169,7 +186,10 @@ final class PhoneInboxServiceTests: XCTestCase {
         let environment = try makeEnvironment()
         defer { try? FileManager.default.removeItem(at: environment.root) }
         let incoming = try makeIncomingAudio(in: environment.root)
-        let envelope = makeEnvelope(for: incoming.data, checksumOverride: "bad")
+        let envelope = makeEnvelope(
+            for: incoming.data,
+            checksumOverride: String(repeating: "b", count: 64)
+        )
 
         let result = await environment.inbox.receive(
             fileURL: incoming.url,

@@ -66,6 +66,10 @@ actor WatchTransferQueue {
     }
 
     func enqueue(_ envelope: ChunkTransferEnvelope, now: Date = Date()) async {
+        guard envelope.isValid else {
+            logger.error("rejected invalid transfer envelope")
+            return
+        }
         let nowMs = TimeMath.epochMs(now)
         if let existing = document.entry(chunkID: envelope.chunkID) {
             guard existing.state != .confirmed else { return }
@@ -122,6 +126,16 @@ actor WatchTransferQueue {
                     entry.state = .queued
                 }
             @unknown default:
+                continue
+            }
+
+            guard entry.envelope.isValid else {
+                entry.state = .corrupt
+                entry.lastErrorCode = "invalidEnvelope"
+                entry.nextAttemptAtMs = 0
+                entry.updatedAtMs = nowMs
+                document.entries[index] = entry
+                didChange = true
                 continue
             }
 
@@ -268,6 +282,9 @@ actor WatchTransferQueue {
             }
 
             for entry in manifest.entries where entry.localState == .present {
+                guard entry.sequence >= 0, entry.startedAtMs > 0 else {
+                    continue
+                }
                 let sidecarName = ChunkPath.fileName(
                     sequence: entry.sequence,
                     startEpochMs: entry.startedAtMs,
@@ -300,6 +317,9 @@ actor WatchTransferQueue {
                     bitRate: metadata.bitRate,
                     relativePath: metadata.relativePath
                 )
+                guard envelope.isValid else {
+                    continue
+                }
                 document.upsert(
                     ChunkTransferQueueEntry(
                         envelope: envelope,

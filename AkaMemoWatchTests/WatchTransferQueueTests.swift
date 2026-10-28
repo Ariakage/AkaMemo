@@ -38,7 +38,7 @@ final class WatchTransferQueueTests: XCTestCase {
             startedAtMs: startMs,
             durationMs: 60_000,
             byteSize: 5,
-            checksumSHA256: "checksum",
+            checksumSHA256: String(repeating: "a", count: 64),
             formatVersion: 1,
             sampleRate: 44_100,
             channels: 2,
@@ -180,7 +180,7 @@ final class WatchTransferQueueTests: XCTestCase {
             startedAtMs: startMs,
             durationMs: 60_000,
             byteSize: 5,
-            checksumSHA256: "checksum",
+            checksumSHA256: String(repeating: "a", count: 64),
             relativePath: "audio/\(sessionID.uuidString)/0000-\(startMs).m4a",
             createdAtMs: startMs
         )

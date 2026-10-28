@@ -3,7 +3,11 @@ import XCTest
 @testable import AkaMemoCore
 
 final class ChunkTransferEnvelopeTests: XCTestCase {
-    private func makeEnvelope(sequence: Int = 0) -> ChunkTransferEnvelope {
+    private func makeEnvelope(
+        sequence: Int = 0,
+        checksum: String = String(repeating: "a", count: 64),
+        relativePath: String = "audio/session/0000-1700000000000.m4a"
+    ) -> ChunkTransferEnvelope {
         ChunkTransferEnvelope(
             chunkID: UUID(),
             sessionID: UUID(),
@@ -12,13 +16,21 @@ final class ChunkTransferEnvelopeTests: XCTestCase {
             startedAtMs: 1_700_000_000_000,
             durationMs: 60_000,
             byteSize: 1_440_000,
-            checksumSHA256: String(repeating: "a", count: 64),
+            checksumSHA256: checksum,
             formatVersion: 1,
             sampleRate: 44_100,
             channels: 2,
             bitRate: 96_000,
-            relativePath: "audio/session/0000-1700000000000.m4a"
+            relativePath: relativePath
         )
+    }
+
+    func testValidityRejectsUnsafeMetadata() {
+        XCTAssertTrue(makeEnvelope().isValid)
+        XCTAssertFalse(makeEnvelope(sequence: -1).isValid)
+        XCTAssertFalse(makeEnvelope(checksum: "abc").isValid)
+        XCTAssertFalse(makeEnvelope(checksum: String(repeating: "z", count: 64)).isValid)
+        XCTAssertFalse(makeEnvelope(relativePath: "../secret.m4a").isValid)
     }
 
     func testJSONRoundTrip() throws {

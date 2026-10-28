@@ -51,6 +51,25 @@ public struct ChunkTransferEnvelope: Codable, Sendable, Equatable {
         self.relativePath = relativePath
     }
 
+    /// Defensive validation for watch/phone input. `ChunkPath` uses
+    /// preconditions for programmer errors, so untrusted metadata must be
+    /// rejected before it reaches those APIs.
+    public var isValid: Bool {
+        guard sequence >= 0,
+            sessionStartedAtMs > 0,
+            startedAtMs > 0,
+            durationMs > 0,
+            byteSize > 0,
+            checksumSHA256.count == 64,
+            checksumSHA256.allSatisfy({ $0.isHexDigit }),
+            relativePath.hasPrefix("audio/"),
+            !relativePath.contains("..")
+        else {
+            return false
+        }
+        return true
+    }
+
     public func jsonString() throws -> String {
         let data = try JSONEncoder().encode(self)
         guard let string = String(data: data, encoding: .utf8) else {

@@ -38,7 +38,7 @@
 | D-011 | 存储阈值 | 可用空间 <1 GB 警告、<500 MB 停止新录音并提示；不覆盖未确认分片 | `specs/recording.md` §9.2 | 待实现 |
 | D-012 | 2 MB 提前封口 | 高码率或异常输入下按 2 MB 提前封口；正常输入按 60 秒封口 | `specs/recording.md` §5.2 | 待实测 |
 | D-013 | 音频停滞检测边界 | 静音、风噪、蓝牙切换、系统音频服务重置下不误报；真实停录可检出 | `specs/recording-health.md` §3.3 | 待实测 |
-| D-020 | WatchConnectivity 传输 | `transferFile` 传分片；iPhone inbox 校验/去重/入库；确认回执；重试退避；未确认不清理 | `specs/recording.md` §8、`architecture/data-model.md` | 待实测（PR #6 实现；模拟器配对后 Watch 显示 received，但 iPhone 模拟器未投递文件，需真机） |
+| D-020 | WatchConnectivity 传输 | `transferFile` 传分片；iPhone inbox 校验/去重/入库；确认回执；重试退避；未确认不清理 | `specs/recording.md` §8、`architecture/data-model.md` | 待实测（PR #6 实现；模拟器配对后 Watch 显示 received，但 iPhone 模拟器未投递文件，且 `com.apple.Bridge` 会崩溃；需真机） |
 
 ## B. 尚未实现，实现后再真机验证
 

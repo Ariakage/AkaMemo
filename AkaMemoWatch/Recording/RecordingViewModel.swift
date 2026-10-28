@@ -9,9 +9,13 @@ final class RecordingViewModel {
     private let engine: RecordingEngine
     private let connectivity: WatchConnectivityService?
     private let batteryMonitor: WatchBatteryMonitor?
+    private let locationRecorder: LocationRecorder
     private(set) var snapshot = RecordingSnapshot()
     private(set) var batteryWarning: String?
     private(set) var batteryMonitoringUnavailable = false
+    private(set) var locationStatus: LocationRecorder.Status = .idle
+    private(set) var locationEnabled: Bool
+    private(set) var locationPointCount = 0
     private(set) var now = Date()
     private(set) var batteryLevel: Double?
 
@@ -35,6 +39,8 @@ final class RecordingViewModel {
             self.engine = RecordingEngine(transferQueue: queue)
             self.connectivity = service
             self.batteryMonitor = WatchBatteryMonitor(transport: service)
+            self.locationRecorder = LocationRecorder()
+            self.locationEnabled = self.locationRecorder.isEnabled
             Task {
                 await handler.setStopSessionHandler {
                     [weak self] sessionID, epochMs in
@@ -49,6 +55,8 @@ final class RecordingViewModel {
             self.engine = RecordingEngine()
             self.connectivity = nil
             self.batteryMonitor = nil
+            self.locationRecorder = LocationRecorder()
+            self.locationEnabled = self.locationRecorder.isEnabled
         }
     }
 
@@ -65,7 +73,9 @@ final class RecordingViewModel {
         guard isCurrentSession || startedBeforeEpoch else {
             return
         }
-        await stop()
+        await engine.stop()
+        await locationRecorder.cancelSession()
+        await refresh()
     }
 
     var elapsed: TimeInterval {
@@ -148,10 +158,16 @@ final class RecordingViewModel {
             }
             if evaluation.shouldStopRecording {
                 await engine.stop()
+                let upload = await locationRecorder.stopSession()
+                sendTrackIfAvailable(upload)
                 snapshot = await engine.currentSnapshot()
                 batteryWarning = "battery.warning.3"
             }
         }
+        locationRecorder.updateLowPowerMode(
+            ProcessInfo.processInfo.isLowPowerModeEnabled
+        )
+        syncLocationState()
         now = Date()
     }
 
@@ -194,21 +210,57 @@ final class RecordingViewModel {
         let osVersion = ProcessInfo.processInfo.operatingSystemVersionString
         await engine.start(deviceModel: device.model, osVersion: osVersion)
         await refresh()
+        if let sessionID = snapshot.sessionID,
+            let startedAt = snapshot.sessionStartedAt
+        {
+            locationRecorder.start(
+                sessionID: sessionID,
+                sessionStartedAt: startedAt
+            )
+            syncLocationState()
+        }
     }
 
     func stop() async {
         await engine.stop()
+        let upload = await locationRecorder.stopSession()
+        sendTrackIfAvailable(upload)
         await refresh()
+        syncLocationState()
     }
 
     func pause() async {
         await engine.pause()
+        locationRecorder.pause()
         await refresh()
     }
 
     func resume() async {
         await engine.resume()
+        locationRecorder.resume()
         await refresh()
+    }
+
+    func setLocationEnabled(_ enabled: Bool) {
+        locationRecorder.setEnabled(enabled)
+        locationEnabled = enabled
+        syncLocationState()
+    }
+
+    private func syncLocationState() {
+        locationStatus = locationRecorder.status
+        locationEnabled = locationRecorder.isEnabled
+        locationPointCount = locationRecorder.recordedPointCount
+    }
+
+    private func sendTrackIfAvailable(_ upload: LocationTrackUpload?) {
+        guard let upload, let connectivity else {
+            return
+        }
+        _ = connectivity.sendTrack(
+            fileURL: upload.fileURL,
+            envelope: upload.envelope
+        )
     }
 
     private static func message(for error: RecordingEngineError) -> String {

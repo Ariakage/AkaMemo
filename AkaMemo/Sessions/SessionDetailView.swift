@@ -12,6 +12,7 @@ struct SessionDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Query private var chunks: [ReceivedChunkRecord]
     @Query private var transcripts: [TranscriptRecord]
+    @Query private var locationTracks: [LocationTrackRecord]
     @State private var playback = PlaybackController()
     @State private var didStartInitialPlayback = false
     @State private var pendingDeletion: PendingDeletion?
@@ -37,6 +38,11 @@ struct SessionDetailView: View {
         )
         _transcripts = Query(
             filter: #Predicate<TranscriptRecord> { record in
+                record.sessionID == sessionID
+            }
+        )
+        _locationTracks = Query(
+            filter: #Predicate<LocationTrackRecord> { record in
                 record.sessionID == sessionID
             }
         )
@@ -82,6 +88,8 @@ struct SessionDetailView: View {
                         value: "\(session.chunkCount)"
                     )
                 }
+
+                LocationTrackSection(track: locationTracks.first)
 
                 Section("session.chunks.title") {
                     ForEach(session.chunks, id: \.chunkID) { chunk in

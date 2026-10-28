@@ -11,6 +11,7 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
 {
     private let inbox: PhoneInboxService
     private let deletionStore: DeletionStore?
+    private let trackImporter: TrackImporter?
     private let batteryEventHandler: (@Sendable (BatteryEvent) -> Void)?
     private let processingDirectory: URL
     private let rejectedDirectory: URL
@@ -21,10 +22,12 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
         inbox: PhoneInboxService,
         applicationSupport: URL,
         deletionStore: DeletionStore? = nil,
+        trackImporter: TrackImporter? = nil,
         batteryEventHandler: (@Sendable (BatteryEvent) -> Void)? = nil
     ) {
         self.inbox = inbox
         self.deletionStore = deletionStore
+        self.trackImporter = trackImporter
         self.batteryEventHandler = batteryEventHandler
         self.processingDirectory = applicationSupport.appending(
             path: "inbox-processing",
@@ -89,6 +92,17 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
 
     nonisolated func session(_ session: WCSession, didReceive file: WCSessionFile) {
         let sourceURL = file.fileURL
+        if let trackPayload = file.metadata?[
+            TrackTransferEnvelope.metadataKey
+        ] as? String {
+            Task {
+                await handleReceivedTrackFile(
+                    sourceURL: sourceURL,
+                    payload: trackPayload
+                )
+            }
+            return
+        }
         let payload = file.metadata?[ChunkTransferEnvelope.metadataKey] as? String
         Task {
             await handleReceivedFile(sourceURL: sourceURL, payload: payload)
@@ -135,6 +149,58 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
             } else {
                 quarantine(processingURL)
             }
+        }
+    }
+
+    private func handleReceivedTrackFile(
+        sourceURL: URL,
+        payload: String
+    ) async {
+        guard let trackImporter else {
+            return
+        }
+        let processingURL = processingDirectory.appending(
+            path: UUID().uuidString + ".jsonl"
+        )
+        do {
+            try fileManager.moveItem(at: sourceURL, to: processingURL)
+        } catch {
+            return
+        }
+        guard
+            let envelope = try? TrackTransferEnvelope.decode(
+                fromJSON: payload
+            )
+        else {
+            quarantine(processingURL)
+            return
+        }
+        let result = await trackImporter.importFile(
+            at: processingURL,
+            envelope: envelope
+        )
+        switch result {
+        case .accepted, .duplicate:
+            sendTrackAcknowledgement(trackID: envelope.trackID)
+        case .rejected(let reason):
+            logger.error(
+                "track rejected: \(reason, privacy: .public)"
+            )
+            if fileManager.fileExists(atPath: processingURL.path) {
+                quarantine(processingURL)
+            }
+        }
+    }
+
+    private func sendTrackAcknowledgement(trackID: UUID) {
+        let info: [String: Any] = [
+            "type": "trackImported",
+            "trackID": trackID.uuidString,
+        ]
+        let session = WCSession.default
+        session.transferUserInfo(info)
+        if session.isReachable {
+            session.sendMessage(info, replyHandler: nil, errorHandler: nil)
         }
     }
 

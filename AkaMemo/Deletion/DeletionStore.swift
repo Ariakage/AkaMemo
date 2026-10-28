@@ -50,6 +50,21 @@ actor DeletionStore {
         return .none
     }
 
+    /// Track imports are rejected by session tombstone or DataEpoch; a chunk
+    /// tombstone does not apply to the session track.
+    func matchForTrack(
+        sessionID: UUID,
+        sessionStartedAtMs: Int64
+    ) throws -> InboxDeletionMatch {
+        if let tombstone = try sessionTombstone(sessionID: sessionID) {
+            return .session(tombstoneID: tombstone.tombstoneID)
+        }
+        if let epoch = try latestEpoch(), sessionStartedAtMs < epoch.epochMs {
+            return .epoch(epochMs: epoch.epochMs)
+        }
+        return .none
+    }
+
     /// Writes the tombstone (or epoch) first and returns what must be removed.
     /// SwiftData rows are left in place until `completeDeletion`.
     func prepareDeletion(
@@ -209,6 +224,7 @@ actor DeletionStore {
                 try deleteSegments(sessionID: sessionID)
                 try deleteTranscripts(sessionID: sessionID)
                 try deleteTasks(sessionID: sessionID)
+                try deleteTracks(sessionID: sessionID)
                 for record in try modelContext.fetch(
                     FetchDescriptor<ReceivedChunkRecord>(
                         predicate: #Predicate { record in
@@ -227,6 +243,7 @@ actor DeletionStore {
                 try deleteSegments(sessionID: sessionID)
                 try deleteTranscripts(sessionID: sessionID)
                 try deleteTasks(sessionID: sessionID)
+                try deleteTracks(sessionID: sessionID)
             }
             let chunkIDs = Set(plan.chunkIDs)
             for record in try modelContext.fetch(
@@ -446,6 +463,18 @@ actor DeletionStore {
             FetchDescriptor<TranscriptionTaskRecord>(
                 predicate: #Predicate { record in
                     record.chunkID == chunkID
+                }
+            )
+        ) {
+            modelContext.delete(record)
+        }
+    }
+
+    private func deleteTracks(sessionID: UUID) throws {
+        for record in try modelContext.fetch(
+            FetchDescriptor<LocationTrackRecord>(
+                predicate: #Predicate { record in
+                    record.sessionID == sessionID
                 }
             )
         ) {

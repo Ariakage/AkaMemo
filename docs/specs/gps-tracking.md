@@ -4,7 +4,7 @@
 >
 > 本文定义录音期间的位置记录、存储、隐私与 GPX 导出。产品决策见 `../decisions/0005-gps-tracking.md`；24h 组合门禁见 `24h-feasibility.md`。
 >
-> 实现状态（2026-10-28）：Watch 5 分钟采样、JSONL 落盘与启动续写、iPhone 导入校验与 GPX 导出已实现；FR-024 设置页提供全局定位开关（iPhone↔Watch 以 `updatedAtMs` 最后写入优先）、Watch 权限状态与轨迹占用显示；轨迹可单独删除，写 `location` 墓碑并经 WatchConnectivity 让 Watch 停止定位写入、删除轨迹文件，音频不受影响；`TrackImporter` 同时检查 session/location 墓碑与 DataEpoch。真机后台定位、G-002 组合续航未验证。
+> 实现状态（2026-10-29）：Watch 5 分钟采样、JSONL 落盘与启动续写、iPhone 导入校验与 GPX 导出已实现；FR-024 设置页提供全局定位开关（iPhone↔Watch 以 `updatedAtMs` 最后写入优先）、Watch 权限状态与轨迹占用显示；轨迹可单独删除，写 `location` 墓碑并经 WatchConnectivity 让 Watch 停止定位写入、删除轨迹文件，音频不受影响；`TrackImporter` 同时检查 session/location 墓碑与 DataEpoch；会话详情内嵌系统 MapKit 轨迹预览（折线 + 起终点，自动取景），坐标仅在本地读取。真机后台定位、离线地图瓦片、G-002 组合续航未验证。
 
 ## 1. 目标与非目标
 

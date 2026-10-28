@@ -1,3 +1,4 @@
+import AkaMemoCore
 import Foundation
 import Observation
 import SwiftData
@@ -7,6 +8,7 @@ import SwiftData
 final class PhoneAppModel {
     let container: ModelContainer?
     let transcription: TranscriptionCoordinator?
+    let search: SearchCoordinator?
     private let connectivity: PhoneConnectivityService?
     #if DEBUG
         private let store: MemoryStore?
@@ -30,14 +32,24 @@ final class PhoneAppModel {
                 applicationSupport: root
             )
             let transcriptStore = TranscriptStore(modelContainer: container)
+            let searchIndex = try? SQLiteSearchIndex(
+                databaseURL: root.appending(path: "index/search.sqlite")
+            )
+            let indexer = searchIndex.map { TranscriptIndexer(index: $0) }
             let transcriptionService = TranscriptionService(
                 store: transcriptStore,
                 provider: AppleSpeechTranscriptionProvider(),
-                applicationSupport: root
+                applicationSupport: root,
+                indexer: indexer
             )
             self.container = container
             self.transcription = TranscriptionCoordinator(
                 service: transcriptionService
+            )
+            self.search = SearchCoordinator(
+                index: searchIndex,
+                indexer: indexer,
+                store: transcriptStore
             )
             self.connectivity = service
             #if DEBUG
@@ -50,12 +62,17 @@ final class PhoneAppModel {
                     Task {
                         _ = await SimulatorFixtureSeeder(inbox: inbox, store: store)
                             .seedIfNeeded()
+                        await SimulatorTranscriptSeeder(
+                            container: container,
+                            indexer: indexer
+                        ).seedIfNeeded()
                     }
                 }
             #endif
         } catch {
             self.container = nil
             self.transcription = nil
+            self.search = nil
             self.connectivity = nil
             #if DEBUG
                 self.store = nil

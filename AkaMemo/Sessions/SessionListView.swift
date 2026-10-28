@@ -4,6 +4,7 @@ import SwiftUI
 
 struct SessionListView: View {
     let transcription: TranscriptionCoordinator?
+    let search: SearchCoordinator?
 
     @Query(sort: \ReceivedChunkRecord.startedAt, order: .forward)
     private var chunks: [ReceivedChunkRecord]
@@ -42,6 +43,19 @@ struct SessionListView: View {
                         transcription: transcription
                     )
                 }
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink {
+                    SearchView(
+                        search: search,
+                        transcription: transcription
+                    )
+                } label: {
+                    Image(systemName: "magnifyingglass")
+                }
+                .accessibilityLabel(Text("search.title"))
             }
         }
     }

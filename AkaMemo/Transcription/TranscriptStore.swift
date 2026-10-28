@@ -15,6 +15,7 @@ struct TranscriptionTaskSnapshot: Sendable, Equatable {
 struct TranscriptSaveResult: Sendable, Equatable {
     let transcriptID: UUID
     let relativePath: String
+    let entries: [SearchIndexEntry]
 }
 
 /// SwiftData access for transcripts and the persistent transcription queue.
@@ -153,6 +154,10 @@ actor TranscriptStore {
                     chunkStartedAt: chunk.startedAt,
                     chunkID: chunk.chunkID,
                     transcriptID: existing.transcriptID
+                ),
+                entries: try indexEntries(
+                    transcript: existing,
+                    chunk: chunk
                 )
             )
         }
@@ -221,8 +226,51 @@ actor TranscriptStore {
                 chunkStartedAt: chunk.startedAt,
                 chunkID: chunk.chunkID,
                 transcriptID: transcript.transcriptID
+            ),
+            entries: try indexEntries(transcript: transcript, chunk: chunk)
+        )
+    }
+
+    /// All searchable entries of the newest ready transcript per chunk.
+    func indexEntries() throws -> [SearchIndexEntry] {
+        let readyRaw = TranscriptStatus.ready.rawValue
+        let readyTranscripts = try modelContext.fetch(
+            FetchDescriptor<TranscriptRecord>(
+                predicate: #Predicate { record in
+                    record.statusRaw == readyRaw
+                }
             )
         )
+        var latestByChunk: [UUID: TranscriptRecord] = [:]
+        for transcript in readyTranscripts {
+            if let existing = latestByChunk[transcript.chunkID],
+                existing.updatedAt >= transcript.updatedAt
+            {
+                continue
+            }
+            latestByChunk[transcript.chunkID] = transcript
+        }
+
+        let segments = try modelContext.fetch(
+            FetchDescriptor<TranscriptSegmentRecord>()
+        )
+        return segments.compactMap { segment in
+            guard let transcript = latestByChunk[segment.chunkID],
+                transcript.transcriptID == segment.transcriptID
+            else {
+                return nil
+            }
+            return SearchIndexEntry(
+                segmentID: segment.segmentID,
+                chunkID: segment.chunkID,
+                sessionID: segment.sessionID,
+                startMs: segment.startMs,
+                endMs: segment.endMs,
+                text: segment.text,
+                language: transcript.language,
+                providerVersion: transcript.providerVersion
+            )
+        }
     }
 
     /// Records a failed attempt. Returns the attempt count after recording.
@@ -364,6 +412,33 @@ actor TranscriptStore {
         let day = components.day ?? 1
         return
             "transcripts/\(year)/\(String(format: "%02d", month))/\(String(format: "%02d", day))/\(chunkID.uuidString)/\(transcriptID.uuidString).json"
+    }
+
+    private func indexEntries(
+        transcript: TranscriptRecord,
+        chunk: ReceivedChunkRecord
+    ) throws -> [SearchIndexEntry] {
+        let transcriptID = transcript.transcriptID
+        let segments = try modelContext.fetch(
+            FetchDescriptor<TranscriptSegmentRecord>(
+                predicate: #Predicate { segment in
+                    segment.transcriptID == transcriptID
+                },
+                sortBy: [SortDescriptor(\.startMs)]
+            )
+        )
+        return segments.map { segment in
+            SearchIndexEntry(
+                segmentID: segment.segmentID,
+                chunkID: chunk.chunkID,
+                sessionID: chunk.sessionID,
+                startMs: segment.startMs,
+                endMs: segment.endMs,
+                text: segment.text,
+                language: transcript.language,
+                providerVersion: transcript.providerVersion
+            )
+        }
     }
 
     private func findChunk(id: UUID) throws -> ReceivedChunkRecord? {

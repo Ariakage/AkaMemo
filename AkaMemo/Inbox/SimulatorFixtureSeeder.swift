@@ -32,6 +32,37 @@
             ProcessInfo.processInfo.arguments.contains("-AkaMemoSeedDemoChunks")
         }
 
+        /// Synthetic transcript lines for the demo chunks, in seed order.
+        /// `SimulatorTranscriptSeeder` turns them into ready transcripts so the
+        /// search UI can be exercised without a Watch recording.
+        static func transcriptFixtures() -> [(chunkID: UUID, text: String)] {
+            let lines = [
+                "今天下午三点，开会讨论项目进度",
+                "会议决定，下周完成第一版",
+                "需要补充测试，和文档",
+                "下次会议，定在周五上午",
+                "昨天整理了，一份会议记录",
+                "项目进度，符合预期",
+                "下周准备演示，需要提前排练",
+                "提醒自己，买牛奶",
+                "周末，去看展览",
+            ]
+            var fixtures: [(chunkID: UUID, text: String)] = []
+            var index = 0
+            for session in sessions {
+                for chunk in session.chunks {
+                    guard let id = UUID(uuidString: chunk.chunkID) else {
+                        continue
+                    }
+                    if index < lines.count {
+                        fixtures.append((id, lines[index]))
+                    }
+                    index += 1
+                }
+            }
+            return fixtures
+        }
+
         private struct DemoChunk {
             let chunkID: String
             let sequence: Int

@@ -69,7 +69,8 @@ final class PlaybackController {
         )
     }
 
-    private func start(chunk: ChunkSummary) {
+    /// Starts a chunk, optionally from an absolute position in that chunk.
+    func start(chunk: ChunkSummary, atAbsoluteMs: Int64? = nil) {
         stop()
         do {
             let root = try PhonePaths.applicationSupport()
@@ -95,6 +96,17 @@ final class PlaybackController {
             duration = player.duration
             isPlaying = true
             errorMessage = nil
+            if let atAbsoluteMs {
+                let offset = max(
+                    0,
+                    Double(atAbsoluteMs - chunk.startedAtMs) / 1_000 - 1.5
+                )
+                player.currentTime = min(
+                    offset,
+                    max(0, player.duration - 0.2)
+                )
+                currentTime = player.currentTime
+            }
             startProgressUpdates()
         } catch {
             errorMessage = String(localized: "playback.error.play")

@@ -181,7 +181,7 @@ GPS：开 / 关；定位权限：<>
 
 ### 7.1 模拟分片数据（仅 Debug）
 
-为了让 iPhone 会话列表/播放界面在没有配对 Watch 时也能测试，Debug 构建提供启动参数 `-AkaMemoSeedDemoChunks`。它会在启动后注入 3 个合成会话（共 9 个分片，6–12 秒正弦音），每个分片都走 `PhoneInboxService.receive` 的真实校验、去重、归档与 SwiftData 入库路径，等同于一次传输落地；不含任何真实录音。
+为了让 iPhone 会话列表/播放/搜索界面在没有配对 Watch 时也能测试，Debug 构建提供启动参数 `-AkaMemoSeedDemoChunks`。它会在启动后注入 3 个合成会话（共 9 个分片，6–12 秒正弦音），每个分片都走 `PhoneInboxService.receive` 的真实校验、去重、归档与 SwiftData 入库路径，等同于一次传输落地；随后为这些分片写入**合成转写文本**并建立 FTS5 索引，用于测试搜索与跳转播放。不含任何真实录音或真实转写。
 
 ```bash
 xcrun simctl install <UDID> <构建产物>/AkaMemo.app

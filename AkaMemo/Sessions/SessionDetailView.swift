@@ -5,14 +5,24 @@ import SwiftUI
 struct SessionDetailView: View {
     let sessionID: UUID
     let transcription: TranscriptionCoordinator?
+    let startChunkID: UUID?
+    let startAtMs: Int64?
 
     @Query private var chunks: [ReceivedChunkRecord]
     @Query private var transcripts: [TranscriptRecord]
     @State private var playback = PlaybackController()
+    @State private var didStartInitialPlayback = false
 
-    init(sessionID: UUID, transcription: TranscriptionCoordinator?) {
+    init(
+        sessionID: UUID,
+        transcription: TranscriptionCoordinator?,
+        startChunkID: UUID? = nil,
+        startAtMs: Int64? = nil
+    ) {
         self.sessionID = sessionID
         self.transcription = transcription
+        self.startChunkID = startChunkID
+        self.startAtMs = startAtMs
         _chunks = Query(
             filter: #Predicate<ReceivedChunkRecord> { record in
                 record.sessionID == sessionID
@@ -99,7 +109,23 @@ struct SessionDetailView: View {
             }
         }
         .navigationTitle("session.title")
+        .onAppear { startInitialPlaybackIfNeeded() }
+        .onChange(of: chunks.count) { _, _ in
+            startInitialPlaybackIfNeeded()
+        }
         .onDisappear { playback.stop() }
+    }
+
+    private func startInitialPlaybackIfNeeded() {
+        guard !didStartInitialPlayback, let startChunkID,
+            let chunk = session?.chunks.first(where: {
+                $0.chunkID == startChunkID
+            })
+        else {
+            return
+        }
+        didStartInitialPlayback = true
+        playback.start(chunk: chunk, atAbsoluteMs: startAtMs)
     }
 }
 

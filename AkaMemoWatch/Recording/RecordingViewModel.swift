@@ -1,3 +1,4 @@
+import AVFoundation
 import AkaMemoCore
 import Foundation
 import Observation
@@ -31,6 +32,7 @@ final class RecordingViewModel {
     private(set) var resumeCountdownSeconds: Int?
     private(set) var recoveryNoticeSeconds: Int?
     private(set) var isForeground = true
+    private(set) var microphoneDenied = false
     private var resumeCountdown = ResumeCountdown()
     private var countdownTask: Task<Void, Never>?
     private var resumeCountdownCancelled = false
@@ -193,6 +195,8 @@ final class RecordingViewModel {
     }
 
     func refresh() async {
+        microphoneDenied =
+            AVAudioApplication.shared.recordPermission == .denied
         let device = WKInterfaceDevice.current()
         device.isBatteryMonitoringEnabled = true
         let rawLevel = device.batteryLevel
@@ -394,6 +398,34 @@ final class RecordingViewModel {
 
     var autoResumeEnabled: Bool { settings.autoResume }
     var silentResumeEnabled: Bool { settings.silentResume }
+    var locationAuthorization: String { locationRecorder.authorizationStatus }
+
+    /// Requests microphone access for the first-run guide.
+    func requestMicrophonePermission() async -> Bool {
+        switch AVAudioApplication.shared.recordPermission {
+        case .granted:
+            microphoneDenied = false
+            return true
+        case .denied:
+            microphoneDenied = true
+            return false
+        case .undetermined:
+            let granted = await withCheckedContinuation { continuation in
+                AVAudioApplication.requestRecordPermission { granted in
+                    continuation.resume(returning: granted)
+                }
+            }
+            microphoneDenied =
+                AVAudioApplication.shared.recordPermission == .denied
+            return granted
+        @unknown default:
+            return false
+        }
+    }
+
+    func requestLocationAuthorization() {
+        locationRecorder.requestAuthorization()
+    }
 
     func setAutoResumeEnabled(_ enabled: Bool) {
         settings.setAutoResume(enabled)
@@ -416,6 +448,8 @@ final class RecordingViewModel {
     func setForeground(_ foreground: Bool) {
         isForeground = foreground
         if foreground {
+            microphoneDenied =
+                AVAudioApplication.shared.recordPermission == .denied
             if pendingRecovery != nil, settings.autoResume,
                 !resumeCountdownCancelled, !resumeCountdown.isActive
             {
@@ -426,7 +460,14 @@ final class RecordingViewModel {
         }
     }
 
+    /// FR-001: recording is refused until the first-run consent is stored.
     func start() async {
+        guard
+            ConsentState.isCompleted()
+                || ConsentState.skipOnboardingRequested
+        else {
+            return
+        }
         guard pendingRecovery == nil else { return }
         await engine.setAutoRecoveryEnabled(settings.autoResume)
         recoveryNoticeSeconds = nil

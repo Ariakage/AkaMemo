@@ -144,6 +144,14 @@ final class LocationRecorder: NSObject, CLLocationManagerDelegate {
         return number.int64Value
     }
 
+    /// Requests When-In-Use access for the first-run guide. Denial never
+    /// affects audio recording.
+    func requestAuthorization() {
+        if manager.authorizationStatus == .notDetermined {
+            manager.requestWhenInUseAuthorization()
+        }
+    }
+
     func updateLowPowerMode(_ lowPower: Bool) {
         manager.desiredAccuracy =
             lowPower ? kCLLocationAccuracyHundredMeters : kCLLocationAccuracyBest

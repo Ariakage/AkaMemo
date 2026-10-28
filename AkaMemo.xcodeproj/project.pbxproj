@@ -41,6 +41,7 @@
 		AA0200000000000000000011 /* WatchDeletionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000011 /* WatchDeletionStore.swift */; };
 		AA0200000000000000000012 /* WatchDeletionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000012 /* WatchDeletionHandler.swift */; };
 		AA0200000000000000000019 /* WatchDiagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000019 /* WatchDiagnostics.swift */; };
+		AA0200000000000000000020 /* WatchOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000020 /* WatchOnboardingView.swift */; };
 		AB0200000000000000000001 /* ReceivedChunkRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000001 /* ReceivedChunkRecord.swift */; };
 		AB0200000000000000000002 /* MemoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000002 /* MemoryStore.swift */; };
 		AB0200000000000000000003 /* PhoneInboxService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000003 /* PhoneInboxService.swift */; };
@@ -79,6 +80,7 @@
 		AD0200000000000000000072 /* TrackImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000072 /* TrackImporter.swift */; };
 		AD0200000000000000000073 /* LocationTrackSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000073 /* LocationTrackSection.swift */; };
 		AD0200000000000000000096 /* LocationTrackMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000096 /* LocationTrackMapView.swift */; };
+		AD0200000000000000000097 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000097 /* OnboardingView.swift */; };
 		AD0200000000000000000091 /* RecordingNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000091 /* RecordingNotificationService.swift */; };
 		AD0200000000000000000092 /* RecordingWatchdog.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000092 /* RecordingWatchdog.swift */; };
 		AD0200000000000000000093 /* RecordingStatusBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000093 /* RecordingStatusBannerView.swift */; };
@@ -178,6 +180,7 @@
 		AA0100000000000000000011 /* WatchDeletionStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchDeletionStore.swift; sourceTree = "<group>"; };
 		AA0100000000000000000012 /* WatchDeletionHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchDeletionHandler.swift; sourceTree = "<group>"; };
 		AA0100000000000000000019 /* WatchDiagnostics.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchDiagnostics.swift; sourceTree = "<group>"; };
+		AA0100000000000000000020 /* WatchOnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchOnboardingView.swift; sourceTree = "<group>"; };
 		AB0100000000000000000001 /* ReceivedChunkRecord.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReceivedChunkRecord.swift; sourceTree = "<group>"; };
 		AB0100000000000000000002 /* MemoryStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MemoryStore.swift; sourceTree = "<group>"; };
 		AB0100000000000000000003 /* PhoneInboxService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhoneInboxService.swift; sourceTree = "<group>"; };
@@ -216,6 +219,7 @@
 		AD0100000000000000000072 /* TrackImporter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TrackImporter.swift; sourceTree = "<group>"; };
 		AD0100000000000000000073 /* LocationTrackSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationTrackSection.swift; sourceTree = "<group>"; };
 		AD0100000000000000000096 /* LocationTrackMapView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationTrackMapView.swift; sourceTree = "<group>"; };
+		AD0100000000000000000097 /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		AD0100000000000000000091 /* RecordingNotificationService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingNotificationService.swift; sourceTree = "<group>"; };
 		AD0100000000000000000092 /* RecordingWatchdog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingWatchdog.swift; sourceTree = "<group>"; };
 		AD0100000000000000000093 /* RecordingStatusBannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingStatusBannerView.swift; sourceTree = "<group>"; };
@@ -364,6 +368,14 @@
 			path = Diagnostics;
 			sourceTree = "<group>";
 		};
+		AA0300000000000000000020 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				AA0100000000000000000020 /* WatchOnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		09B8D6ED3BF3763A37B49D6D /* AkaMemoWatch */ = {
 			isa = PBXGroup;
 			children = (
@@ -374,6 +386,7 @@
 				AA0100000000000000000010 /* Deletion */,
 				AA0100000000000000000015 /* Location */,
 				AA0300000000000000000019 /* Diagnostics */,
+				AA0300000000000000000020 /* Onboarding */,
 				4DC9C1D39D7FBEE766BDF18A /* Assets.xcassets */,
 				AA0100000000000000000005 /* Localizable.xcstrings */,
 				66BAF0B7620CAFBE7EE9537E /* Info.plist */,
@@ -584,6 +597,14 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		AD0300000000000000000097 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				AD0100000000000000000097 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		E77D0E4D19AC1E93A1A5E2DD /* AkaMemo */ = {
 			isa = PBXGroup;
 			children = (
@@ -600,6 +621,7 @@
 				AD0100000000000000000070 /* Location */,
 				AD0100000000000000000090 /* Recording */,
 				AD0300000000000000000094 /* Settings */,
+				AD0300000000000000000097 /* Onboarding */,
 				E1F22C4A920E3D53BEBA0A61 /* Assets.xcassets */,
 				AB0100000000000000000006 /* Localizable.xcstrings */,
 				A1B0CB5A4A6D4CC7F527531B /* Info.plist */,
@@ -875,6 +897,7 @@
 				AD0200000000000000000072 /* TrackImporter.swift in Sources */,
 				AD0200000000000000000073 /* LocationTrackSection.swift in Sources */,
 				AD0200000000000000000096 /* LocationTrackMapView.swift in Sources */,
+				AD0200000000000000000097 /* OnboardingView.swift in Sources */,
 				AD0200000000000000000091 /* RecordingNotificationService.swift in Sources */,
 				AD0200000000000000000092 /* RecordingWatchdog.swift in Sources */,
 				AD0200000000000000000093 /* RecordingStatusBannerView.swift in Sources */,
@@ -919,6 +942,7 @@
 				AA0200000000000000000011 /* WatchDeletionStore.swift in Sources */,
 				AA0200000000000000000012 /* WatchDeletionHandler.swift in Sources */,
 				AA0200000000000000000019 /* WatchDiagnostics.swift in Sources */,
+				AA0200000000000000000020 /* WatchOnboardingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

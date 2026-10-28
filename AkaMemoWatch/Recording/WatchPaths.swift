@@ -30,6 +30,17 @@ enum WatchPaths {
         return directory
     }
 
+    /// Holds chunks while AVAudioRecorder is writing them. The files keep a
+    /// `.m4a` extension so the recorder produces an M4A container.
+    static func partsDirectory(in sessionDirectory: URL) throws -> URL {
+        let directory = sessionDirectory.appending(
+            path: ".parts",
+            directoryHint: .isDirectory
+        )
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        return directory
+    }
+
     static func healthFileURL() throws -> URL {
         try applicationSupport().appending(path: "health.json")
     }

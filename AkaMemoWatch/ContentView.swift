@@ -24,7 +24,14 @@ struct ContentView: View {
             }
             .padding(.horizontal, 4)
         }
-        .task { await model.observe() }
+        .task {
+            #if DEBUG
+                if ProcessInfo.processInfo.arguments.contains("-AkaMemoAutoStartRecording") {
+                    await model.start()
+                }
+            #endif
+            await model.observe()
+        }
     }
 
     private var header: some View {

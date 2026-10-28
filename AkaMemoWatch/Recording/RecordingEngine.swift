@@ -44,6 +44,7 @@ actor RecordingEngine {
     private var state: RecordingEngineState = .idle
     private var session: RecordingSession?
     private var sessionDirectory: URL?
+    private var partsDirectory: URL?
     private var manifest: ChunkManifest?
     private var manifestWriter: AtomicFileWriter?
     private var sidecarWriter: AtomicFileWriter?
@@ -128,6 +129,7 @@ actor RecordingEngine {
 
             let directory = try WatchPaths.sessionDirectory(id: newSession.id)
             sessionDirectory = directory
+            partsDirectory = try WatchPaths.partsDirectory(in: directory)
             manifest = ChunkManifest(
                 sessionID: newSession.id,
                 sessionStartedAtMs: TimeMath.epochMs(now)
@@ -245,7 +247,7 @@ actor RecordingEngine {
     // MARK: - Chunks
 
     private func startChunk(at date: Date) throws {
-        guard let directory = sessionDirectory else {
+        guard let directory = sessionDirectory, let partsDirectory else {
             throw RecordingEngineError.notRecording
         }
         let startedAtMs = TimeMath.epochMs(date)
@@ -254,9 +256,10 @@ actor RecordingEngine {
             startEpochMs: startedAtMs,
             kind: .audio
         )
-        let partURL = directory.appending(
-            path: audioName + ChunkFileSuffix.part.rawValue
-        )
+        // AVAudioRecorder infers the container from the URL extension. A
+        // `.m4a.part` name makes it write CAF, so the in-progress file keeps
+        // the .m4a extension and lives in a hidden `.parts` directory.
+        let partURL = partsDirectory.appending(path: audioName)
         let finalURL = directory.appending(path: audioName)
 
         let settings: [String: Any] = [
@@ -564,10 +567,12 @@ actor RecordingEngine {
         )
         notificationTasks.append(
             Task { [weak self] in
-                for await _ in NotificationCenter.default.notifications(
+                for await notification in NotificationCenter.default.notifications(
                     named: AVAudioSession.routeChangeNotification
                 ) {
-                    await self?.handleRouteChange()
+                    let rawReason =
+                        notification.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt
+                    await self?.handleRouteChange(reasonRawValue: rawReason)
                 }
             }
         )
@@ -629,7 +634,13 @@ actor RecordingEngine {
         }
     }
 
-    private func handleRouteChange() async {
+    private func handleRouteChange(reasonRawValue: UInt?) async {
+        guard let reasonRawValue,
+            let reason = AVAudioSession.RouteChangeReason(rawValue: reasonRawValue),
+            reason == .newDeviceAvailable || reason == .oldDeviceUnavailable
+        else {
+            return
+        }
         guard state == .recording, currentChunk != nil else { return }
         do {
             try await sealCurrentChunk(reason: .routeChange)

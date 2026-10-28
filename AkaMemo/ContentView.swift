@@ -1,3 +1,4 @@
+import AkaMemoCore
 import Combine
 import SwiftData
 import SwiftUI
@@ -5,6 +6,8 @@ import SwiftUI
 struct ContentView: View {
     @State private var model = PhoneAppModel()
     @State private var path: [UUID] = []
+    @AppStorage(ConsentState.key) private var consentCompleted = false
+    @State private var showOnboarding = false
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
@@ -36,9 +39,23 @@ struct ContentView: View {
                 }
             }
         }
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingView(battery: model.battery) {
+                consentCompleted = true
+                showOnboarding = false
+            }
+        }
         .task {
+            if (!consentCompleted
+                && !ConsentState.skipOnboardingRequested)
+                || OnboardingPreview.isRequested
+            {
+                showOnboarding = true
+            }
             await model.battery?.setForeground(true)
-            await model.battery?.requestAuthorizationIfNeeded()
+            if consentCompleted {
+                await model.battery?.requestAuthorizationIfNeeded()
+            }
             await model.search?.prepare()
             await model.transcription?.start()
             model.settings?.publishLocationSetting()

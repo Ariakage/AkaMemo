@@ -385,6 +385,54 @@
         }
       }
     },
+    "recording.permission.denied": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Microphone access is denied."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "麦克风权限被拒绝"
+          }
+        }
+      }
+    },
+    "recording.permission.hint": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow AkaMemo in Watch Settings > Privacy & Security > Microphone, then return."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请在 Watch 设置 > 隐私与安全性 > 麦克风 中允许 AkaMemo，然后返回。"
+          }
+        }
+      }
+    },
+    "recording.permission.recheck": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check again"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新检查"
+          }
+        }
+      }
+    },
     "recording.resume": {
       "localizations": {
         "en": {
@@ -749,6 +797,246 @@
           "stringUnit": {
             "state": "translated",
             "value": "存储不足 500 MB，录音已停止。"
+          }
+        }
+      }
+    },
+    "watch.onboarding.agree": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agree and start"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同意并开始"
+          }
+        }
+      }
+    },
+    "watch.onboarding.continue": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "继续"
+          }
+        }
+      }
+    },
+    "watch.onboarding.intro": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record on the Watch; chunks are stored locally and sent to iPhone. Nothing is uploaded by default."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 Watch 上录音，分片保存在本机并传到 iPhone；默认不上传。"
+          }
+        }
+      }
+    },
+    "watch.onboarding.location.allow": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow location"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "允许定位"
+          }
+        }
+      }
+    },
+    "watch.onboarding.location.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One point every 5 minutes while recording. Recording works if declined; you can turn it off in iPhone Settings."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录音期间每 5 分钟记录一个位置点；拒绝仍可录音，可在 iPhone 设置中关闭。"
+          }
+        }
+      }
+    },
+    "watch.onboarding.location.denied": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not allowed. You can enable it in Settings."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未授权，可在系统设置中开启。"
+          }
+        }
+      }
+    },
+    "watch.onboarding.location.granted": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allowed"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已允许"
+          }
+        }
+      }
+    },
+    "watch.onboarding.location.notRequested": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not requested yet"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未请求"
+          }
+        }
+      }
+    },
+    "watch.onboarding.location.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location (optional)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "定位（可选）"
+          }
+        }
+      }
+    },
+    "watch.onboarding.mic.allow": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow microphone"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "允许麦克风"
+          }
+        }
+      }
+    },
+    "watch.onboarding.mic.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recording needs the microphone. If denied, you can restore it in Settings."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录音需要麦克风权限；拒绝后可在系统设置中恢复。"
+          }
+        }
+      }
+    },
+    "watch.onboarding.mic.denied": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denied. Allow AkaMemo in Watch Settings > Privacy & Security > Microphone."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已拒绝。请在 Watch 设置 > 隐私与安全性 > 麦克风 中允许 AkaMemo。"
+          }
+        }
+      }
+    },
+    "watch.onboarding.mic.granted": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allowed"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已允许"
+          }
+        }
+      }
+    },
+    "watch.onboarding.mic.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Microphone access"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "麦克风权限"
+          }
+        }
+      }
+    },
+    "watch.onboarding.privacy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The system microphone indicator always stays visible. Pause anytime. Delete all data from the iPhone app."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录音时系统麦克风指示始终可见；可随时暂停。删除全部数据请在 iPhone 上操作。"
           }
         }
       }

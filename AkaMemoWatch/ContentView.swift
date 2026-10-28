@@ -5,8 +5,24 @@ struct ContentView: View {
     @State private var model = RecordingViewModel()
     @Environment(\.scenePhase) private var scenePhase
     @ScaledMetric(relativeTo: .largeTitle) private var timerFontSize: CGFloat = 30
+    @State private var showOnboarding =
+        (!ConsentState.isCompleted()
+            && !ConsentState.skipOnboardingRequested)
+        || OnboardingPreview.isRequested
 
     var body: some View {
+        Group {
+            if showOnboarding {
+                WatchOnboardingView(model: model) {
+                    showOnboarding = false
+                }
+            } else {
+                recordingView
+            }
+        }
+    }
+
+    private var recordingView: some View {
         ScrollView {
             VStack(spacing: 8) {
                 header
@@ -40,6 +56,18 @@ struct ContentView: View {
                         .foregroundStyle(.red)
                         .multilineTextAlignment(.center)
                 }
+                if let pending = model.pendingRecovery {
+                    recoveryPrompt(for: pending)
+                }
+                controls
+                if model.snapshot.state == .idle,
+                    model.pendingRecovery == nil
+                {
+                    Text("recording.hint.foreground")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
                 HStack(spacing: 4) {
                     Image(systemName: "location")
                     Text(LocalizedStringKey(locationStatusKey(model.locationStatus)))
@@ -55,18 +83,6 @@ struct ContentView: View {
                     )
                 )
                 .font(.caption2)
-                if let pending = model.pendingRecovery {
-                    recoveryPrompt(for: pending)
-                }
-                controls
-                if model.snapshot.state == .idle,
-                    model.pendingRecovery == nil
-                {
-                    Text("recording.hint.foreground")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
                 settings
             }
             .padding(.horizontal, 4)
@@ -215,7 +231,22 @@ struct ContentView: View {
     private var controls: some View {
         switch model.snapshot.state {
         case .idle, .failed:
-            if model.pendingRecovery == nil {
+            if model.microphoneDenied {
+                VStack(spacing: 4) {
+                    Text("recording.permission.denied")
+                        .font(.caption2)
+                        .foregroundStyle(.orange)
+                        .multilineTextAlignment(.center)
+                    Text("recording.permission.hint")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                    Button("recording.permission.recheck") {
+                        Task { await model.refresh() }
+                    }
+                    .buttonStyle(.bordered)
+                }
+            } else if model.pendingRecovery == nil {
                 Button {
                     Task { await model.start() }
                 } label: {

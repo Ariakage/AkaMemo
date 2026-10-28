@@ -7,8 +7,8 @@ import WatchConnectivity
 ///
 /// Callbacks can arrive on any queue; this object holds only a `Sendable`
 /// actor reference, so it is safe to pass the instance to the queue.
-final class WatchConnectivityService: NSObject, WCSessionDelegate, ChunkTransferTransport,
-    @unchecked Sendable
+final class WatchConnectivityService: NSObject, WCSessionDelegate,
+    ChunkTransferTransport, BatteryEventTransport, @unchecked Sendable
 {
     private let queue: WatchTransferQueue
     private let deletionHandler: WatchDeletionHandler?
@@ -104,6 +104,27 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate, ChunkTransfer
             await deletionHandler.apply(command)
             sendDeletionAck(tombstoneID: command.tombstoneID)
         }
+    }
+
+    nonisolated func sendBatteryEvent(_ event: BatteryEvent) -> Bool {
+        guard WCSession.isSupported() else {
+            return false
+        }
+        let session = WCSession.default
+        guard session.activationState == .activated,
+            let payload = try? event.jsonString()
+        else {
+            return false
+        }
+        let info: [String: Any] = [
+            "type": "battery",
+            BatteryEvent.metadataKey: payload,
+        ]
+        session.transferUserInfo(info)
+        if session.isReachable {
+            session.sendMessage(info, replyHandler: nil, errorHandler: nil)
+        }
+        return true
     }
 
     private nonisolated func sendDeletionAck(tombstoneID: UUID) {

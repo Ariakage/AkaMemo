@@ -11,6 +11,7 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
 {
     private let inbox: PhoneInboxService
     private let deletionStore: DeletionStore?
+    private let batteryEventHandler: (@Sendable (BatteryEvent) -> Void)?
     private let processingDirectory: URL
     private let rejectedDirectory: URL
     private let fileManager = FileManager.default
@@ -19,10 +20,12 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
     init(
         inbox: PhoneInboxService,
         applicationSupport: URL,
-        deletionStore: DeletionStore? = nil
+        deletionStore: DeletionStore? = nil,
+        batteryEventHandler: (@Sendable (BatteryEvent) -> Void)? = nil
     ) {
         self.inbox = inbox
         self.deletionStore = deletionStore
+        self.batteryEventHandler = batteryEventHandler
         self.processingDirectory = applicationSupport.appending(
             path: "inbox-processing",
             directoryHint: .isDirectory
@@ -175,6 +178,13 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
     }
 
     private nonisolated func handleIncoming(_ info: [String: Any]) {
+        if info["type"] as? String == "battery",
+            let payload = info[BatteryEvent.metadataKey] as? String,
+            let event = try? BatteryEvent.decode(fromJSON: payload)
+        {
+            batteryEventHandler?(event)
+            return
+        }
         guard info["type"] as? String == "deletionAck",
             let rawID = info["tombstoneID"] as? String,
             let tombstoneID = UUID(uuidString: rawID)

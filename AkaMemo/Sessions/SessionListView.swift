@@ -7,6 +7,7 @@ struct SessionListView: View {
     let search: SearchCoordinator?
     let deletion: DeletionCoordinator?
     let diagnostics: AppDiagnostics?
+    let battery: BatteryAlertCoordinator?
 
     @Query(sort: \ReceivedChunkRecord.startedAt, order: .forward)
     private var chunks: [ReceivedChunkRecord]
@@ -66,6 +67,11 @@ struct SessionListView: View {
                         deletion: deletion
                     )
                 }
+            }
+        }
+        .safeAreaInset(edge: .top) {
+            if let battery {
+                BatteryBannerView(coordinator: battery)
             }
         }
         .toolbar {

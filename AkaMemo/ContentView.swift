@@ -14,7 +14,8 @@ struct ContentView: View {
                         transcription: model.transcription,
                         search: model.search,
                         deletion: model.deletion,
-                        diagnostics: model.diagnostics
+                        diagnostics: model.diagnostics,
+                        battery: model.battery
                     )
                     .modelContainer(container)
                 } else {
@@ -28,12 +29,16 @@ struct ContentView: View {
             .navigationTitle("app.name")
         }
         .task {
+            await model.battery?.setForeground(true)
+            await model.battery?.requestAuthorizationIfNeeded()
             await model.search?.prepare()
             await model.transcription?.start()
         }
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active {
-                Task {
+            let active = phase == .active
+            Task {
+                await model.battery?.setForeground(active)
+                if active {
                     await model.transcription?.start()
                 }
             }

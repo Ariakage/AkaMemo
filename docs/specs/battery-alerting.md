@@ -3,6 +3,8 @@
 > 状态：活跃 · 最后更新：2026-10-28
 >
 > 本文定义 Watch 电量 5% 时的 iPhone 高优先级通知、低电量 Live Activity/灵动岛、以及自动暂停策略。产品决策见 `../decisions/0006-low-battery-alerting.md`。
+>
+> 实现状态（2026-10-28）：Watch 电量监测、5% 事件、3% 安全停止、iPhone 本地 Time Sensitive 通知、前台 Live Activity 与应用内横幅已实现；20%/10% 仅 Watch 应用内文本，未使用 `applicationContext` 快照发布；G-003 未通过。免费个人团队无法配置 Time Sensitive capability，本地真机若使用空 entitlements，系统可能按普通通知处理。
 
 ## 1. 目标与非目标
 

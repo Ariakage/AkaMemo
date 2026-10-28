@@ -68,10 +68,13 @@
 		AD0200000000000000000033 /* DeletionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000033 /* DeletionService.swift */; };
 		AD0200000000000000000034 /* DeletionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000034 /* DeletionCoordinator.swift */; };
 		AD0200000000000000000035 /* PendingDeletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000035 /* PendingDeletion.swift */; };
+		AD0200000000000000000041 /* AppDiagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000041 /* AppDiagnostics.swift */; };
+		AD0200000000000000000042 /* DiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000042 /* DiagnosticsView.swift */; };
 		AB0200000000000000000008 /* SimulatorFixtureSeederTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000009 /* SimulatorFixtureSeederTests.swift */; };
 		AB0200000000000000000009 /* TranscriptionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB010000000000000000000A /* TranscriptionServiceTests.swift */; };
 		AB020000000000000000000A /* SearchIndexingIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB010000000000000000000B /* SearchIndexingIntegrationTests.swift */; };
 		AB020000000000000000000B /* DeletionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB010000000000000000000C /* DeletionServiceTests.swift */; };
+		AB020000000000000000000C /* AppDiagnosticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB010000000000000000000D /* AppDiagnosticsTests.swift */; };
 		AB0400000000000000000001 /* AkaMemoCore in Frameworks */ = {isa = PBXBuildFile; productRef = AB0300000000000000000001 /* AkaMemoCore */; };
 		AB0400000000000000000002 /* AkaMemoCore in Frameworks */ = {isa = PBXBuildFile; productRef = AB0300000000000000000002 /* AkaMemoCore */; };
 		AC0200000000000000000001 /* WatchTransferQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0100000000000000000001 /* WatchTransferQueueTests.swift */; };
@@ -175,10 +178,13 @@
 		AD0100000000000000000033 /* DeletionService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DeletionService.swift; sourceTree = "<group>"; };
 		AD0100000000000000000034 /* DeletionCoordinator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DeletionCoordinator.swift; sourceTree = "<group>"; };
 		AD0100000000000000000035 /* PendingDeletion.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PendingDeletion.swift; sourceTree = "<group>"; };
+		AD0100000000000000000041 /* AppDiagnostics.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppDiagnostics.swift; sourceTree = "<group>"; };
+		AD0100000000000000000042 /* DiagnosticsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DiagnosticsView.swift; sourceTree = "<group>"; };
 		AB0100000000000000000009 /* SimulatorFixtureSeederTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SimulatorFixtureSeederTests.swift; sourceTree = "<group>"; };
 		AB010000000000000000000A /* TranscriptionServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TranscriptionServiceTests.swift; sourceTree = "<group>"; };
 		AB010000000000000000000B /* SearchIndexingIntegrationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SearchIndexingIntegrationTests.swift; sourceTree = "<group>"; };
 		AB010000000000000000000C /* DeletionServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DeletionServiceTests.swift; sourceTree = "<group>"; };
+		AB010000000000000000000D /* AppDiagnosticsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppDiagnosticsTests.swift; sourceTree = "<group>"; };
 		AC0100000000000000000001 /* WatchTransferQueueTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchTransferQueueTests.swift; sourceTree = "<group>"; };
 		AC0100000000000000000002 /* WatchDeletionTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchDeletionTests.swift; sourceTree = "<group>"; };
 		035009F8ABC8D75D57319119 /* BatteryActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryActivityAttributes.swift; sourceTree = "<group>"; };
@@ -344,6 +350,7 @@
 				AB010000000000000000000A /* TranscriptionServiceTests.swift */,
 				AB010000000000000000000B /* SearchIndexingIntegrationTests.swift */,
 				AB010000000000000000000C /* DeletionServiceTests.swift */,
+				AB010000000000000000000D /* AppDiagnosticsTests.swift */,
 			);
 			path = AkaMemoTests;
 			sourceTree = "<group>";
@@ -443,6 +450,15 @@
 			path = Deletion;
 			sourceTree = "<group>";
 		};
+		AD0100000000000000000040 /* Diagnostics */ = {
+			isa = PBXGroup;
+			children = (
+				AD0100000000000000000041 /* AppDiagnostics.swift */,
+				AD0100000000000000000042 /* DiagnosticsView.swift */,
+			);
+			path = Diagnostics;
+			sourceTree = "<group>";
+		};
 		E77D0E4D19AC1E93A1A5E2DD /* AkaMemo */ = {
 			isa = PBXGroup;
 			children = (
@@ -454,6 +470,7 @@
 				AD0100000000000000000010 /* Transcription */,
 				AD0100000000000000000020 /* Search */,
 				AD0100000000000000000030 /* Deletion */,
+				AD0100000000000000000040 /* Diagnostics */,
 				E1F22C4A920E3D53BEBA0A61 /* Assets.xcassets */,
 				AB0100000000000000000006 /* Localizable.xcstrings */,
 				A1B0CB5A4A6D4CC7F527531B /* Info.plist */,
@@ -668,6 +685,7 @@
 				AB0200000000000000000009 /* TranscriptionServiceTests.swift in Sources */,
 				AB020000000000000000000A /* SearchIndexingIntegrationTests.swift in Sources */,
 				AB020000000000000000000B /* DeletionServiceTests.swift in Sources */,
+				AB020000000000000000000C /* AppDiagnosticsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -714,6 +732,8 @@
 				AD0200000000000000000033 /* DeletionService.swift in Sources */,
 				AD0200000000000000000034 /* DeletionCoordinator.swift in Sources */,
 				AD0200000000000000000035 /* PendingDeletion.swift in Sources */,
+				AD0200000000000000000041 /* AppDiagnostics.swift in Sources */,
+				AD0200000000000000000042 /* DiagnosticsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

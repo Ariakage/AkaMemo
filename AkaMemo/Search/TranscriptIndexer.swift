@@ -8,13 +8,18 @@ import OSLog
 /// be rebuilt from SwiftData at any time.
 actor TranscriptIndexer {
     private let index: SQLiteSearchIndex
+    private let diagnostics: AppDiagnostics?
     private let logger = Logger(
         subsystem: "com.ariakage.AkaMemo",
         category: "storage"
     )
 
-    init(index: SQLiteSearchIndex) {
+    init(
+        index: SQLiteSearchIndex,
+        diagnostics: AppDiagnostics? = nil
+    ) {
         self.index = index
+        self.diagnostics = diagnostics
     }
 
     func replaceChunk(_ chunkID: UUID, entries: [SearchIndexEntry]) async {
@@ -23,6 +28,12 @@ actor TranscriptIndexer {
         } catch {
             logger.error(
                 "search index update failed: \(String(describing: error), privacy: .public)"
+            )
+            await diagnostics?.log(
+                level: .warning,
+                category: .storage,
+                message: "search index update failed",
+                metadata: ["errorCode": "indexWriteFailed"]
             )
         }
     }
@@ -41,6 +52,12 @@ actor TranscriptIndexer {
             try await index.replaceAll(entries)
             logger.info(
                 "search index rebuilt with \(entries.count, privacy: .public) entries"
+            )
+            await diagnostics?.log(
+                level: .info,
+                category: .storage,
+                message: "search index built",
+                metadata: ["count": "\(entries.count)"]
             )
         } catch {
             logger.error(

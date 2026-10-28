@@ -3,6 +3,8 @@
 > 状态：活跃 · 最后更新：2026-10-28
 >
 > 本文定义应用内实时日志、脱敏、保留、导出与性能要求。决策见 `../decisions/0008-realtime-diagnostics.md`；隐私规则见 `../privacy/privacy-and-security.md`。
+>
+> 实现状态（2026-10-28）：iPhone 端内存环形缓冲、JSONL 每日路径/5MB 轮转/7 天保留、诊断页（实时/过滤/暂停/清空/导出提示/详细日志开关）与关键链路埋点已实现；Watch 批量转发与 G-005 性能/真机验证未完成。
 
 ## 1. 目标与非目标
 
@@ -45,7 +47,7 @@ enum Category: String, Codable, Sendable {
 规则：
 
 - `message` 使用固定模板，不拼接用户内容；变量放 `metadata`。
-- `metadata` 只放白名单键（如 `chunkSeq`、`durationMs`、`errorCode`、`state`）。
+- `metadata` 只放白名单键（如 `chunkSeq`、`durationMs`、`errorCode`、`state`、`count`、`succeeded`、`failed`）。
 - 会话/分片 ID 截断为前 8 位；不记录完整 UUID 之外的设备标识。
 - **MUST NOT** 记录音频、转写、经纬度、地址、文件名、联系人、搜索词。
 

@@ -13,7 +13,8 @@ struct ContentView: View {
                     SessionListView(
                         transcription: model.transcription,
                         search: model.search,
-                        deletion: model.deletion
+                        deletion: model.deletion,
+                        diagnostics: model.diagnostics
                     )
                     .modelContainer(container)
                 } else {

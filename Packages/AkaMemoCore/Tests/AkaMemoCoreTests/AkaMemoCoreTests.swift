@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import AkaMemoCore
 
 final class AkaMemoCoreTests: XCTestCase {

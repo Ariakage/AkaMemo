@@ -39,7 +39,7 @@
 - 个人团队：Team ID 放本地 `Local.xcconfig`；TestFlight、iCloud/CloudKit 需要付费 Apple Developer Program，免费 Apple ID 只能短期真机调试。
 - iCloud 容器预留 `iCloud.com.ariakage.AkaMemo`；**MVP 不启用**（ADR-0009）。
 
-## 3. 创建工程（仓库当前为空）
+## 3. 创建工程（已完成，步骤保留作参考）
 
 按以下顺序创建，完成后提交工程文件与共享 scheme：
 
@@ -128,8 +128,8 @@ xcodebuild test -project AkaMemo.xcodeproj -scheme AkaMemo \
 xcodebuild test -project AkaMemo.xcodeproj -scheme AkaMemoWatch \
   -destination 'platform=watchOS Simulator,name=<可用设备名>'
 
-# 共享包测试（纯 Swift 逻辑）
-swift test --package-path Packages/AkaMemoCore
+# 共享包测试（纯 Swift 逻辑；产物放本地磁盘，避开 iCloud 扩展属性）
+swift test --package-path Packages/AkaMemoCore --scratch-path /tmp/AkaMemoCoreBuild
 
 # 格式检查 / 修复
 xcrun swift-format lint --recursive AkaMemo AkaMemoWatch Packages
@@ -137,6 +137,9 @@ xcrun swift-format format --in-place --recursive AkaMemo AkaMemoWatch Packages
 ```
 
 模拟器名称随 Xcode 版本变化；不要为了跑命令改 scheme 名。
+
+- **iOS 模拟器测试统一使用 `iPhone 18 Pro`**（当前为 iOS 27.0）。同名设备可能有多个，必要时用 `xcrun simctl list devices available` 查到 UDID，并以 `-destination 'platform=iOS Simulator,id=<UDID>'` 指定。
+- 仓库位于 iCloud Drive 时，SPM 产物会被文件提供器加上扩展属性，导致 codesign 报 `resource fork… not allowed`；共享包测试必须使用上面的 `--scratch-path` 指向本地磁盘。Xcode 构建同理，使用 `-derivedDataPath /tmp/AkaMemoDerived`。
 
 ## 6. 真机调试
 

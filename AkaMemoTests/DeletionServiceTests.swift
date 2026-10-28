@@ -50,6 +50,7 @@ final class DeletionServiceTests: XCTestCase {
             TranscriptionTaskRecord.self,
             DeletionTombstoneRecord.self,
             DataEpochRecord.self,
+            LocationTrackRecord.self,
             configurations: configuration
         )
         let deletionStore = DeletionStore(modelContainer: container)

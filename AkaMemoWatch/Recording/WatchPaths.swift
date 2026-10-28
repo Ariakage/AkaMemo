@@ -44,4 +44,20 @@ enum WatchPaths {
     static func healthFileURL() throws -> URL {
         try applicationSupport().appending(path: "health.json")
     }
+
+    static func locationRoot() throws -> URL {
+        let root = try applicationSupport().appending(
+            path: "location",
+            directoryHint: .isDirectory
+        )
+        try FileManager.default.createDirectory(
+            at: root,
+            withIntermediateDirectories: true
+        )
+        return root
+    }
+
+    static func locationFileURL(sessionID: UUID) throws -> URL {
+        try locationRoot().appending(path: "\(sessionID.uuidString).jsonl")
+    }
 }

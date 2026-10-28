@@ -27,7 +27,8 @@ final class PhoneAppModel {
                 TranscriptSegmentRecord.self,
                 TranscriptionTaskRecord.self,
                 DeletionTombstoneRecord.self,
-                DataEpochRecord.self
+                DataEpochRecord.self,
+                LocationTrackRecord.self
             )
             let root = try PhonePaths.applicationSupport()
             let diagnostics = AppDiagnostics(root: root)
@@ -43,10 +44,20 @@ final class PhoneAppModel {
                 notifier: BatteryNotificationService(),
                 activity: BatteryLiveActivityController()
             )
+            let locationTrackStore = LocationTrackStore(
+                modelContainer: container
+            )
+            let trackImporter = TrackImporter(
+                store: locationTrackStore,
+                applicationSupport: root,
+                deletionStore: deletionStore,
+                diagnostics: diagnostics
+            )
             let service = PhoneConnectivityService(
                 inbox: inbox,
                 applicationSupport: root,
                 deletionStore: deletionStore,
+                trackImporter: trackImporter,
                 batteryEventHandler: { event in
                     Task { @MainActor in
                         await batteryCoordinator.handle(event)

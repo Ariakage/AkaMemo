@@ -106,6 +106,29 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate,
         }
     }
 
+    nonisolated func sendTrack(
+        fileURL: URL,
+        envelope: TrackTransferEnvelope
+    ) -> Bool {
+        guard WCSession.isSupported() else {
+            return false
+        }
+        let session = WCSession.default
+        guard session.activationState == .activated,
+            let payload = try? envelope.jsonString()
+        else {
+            return false
+        }
+        _ = session.transferFile(
+            fileURL,
+            metadata: [
+                "type": "track",
+                TrackTransferEnvelope.metadataKey: payload,
+            ]
+        )
+        return true
+    }
+
     nonisolated func sendBatteryEvent(_ event: BatteryEvent) -> Bool {
         guard WCSession.isSupported() else {
             return false

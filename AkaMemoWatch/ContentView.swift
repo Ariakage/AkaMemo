@@ -25,6 +25,20 @@ struct ContentView: View {
                         .foregroundStyle(.orange)
                         .multilineTextAlignment(.center)
                 }
+                HStack(spacing: 4) {
+                    Image(systemName: "location")
+                    Text(LocalizedStringKey(locationStatusKey(model.locationStatus)))
+                }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                Toggle(
+                    "location.enabled",
+                    isOn: Binding(
+                        get: { model.locationEnabled },
+                        set: { model.setLocationEnabled($0) }
+                    )
+                )
+                .font(.caption2)
                 controls
                 if model.snapshot.state == .idle {
                     Text("recording.hint.foreground")
@@ -57,6 +71,21 @@ struct ContentView: View {
             }
         }
         .accessibilityElement(children: .combine)
+    }
+
+    private func locationStatusKey(
+        _ status: LocationRecorder.Status
+    ) -> String {
+        switch status {
+        case .idle: "location.status.idle"
+        case .requesting: "location.status.requesting"
+        case .recording: "location.status.recording"
+        case .paused: "location.status.paused"
+        case .unavailable: "location.status.unavailable"
+        case .disabled: "location.status.disabled"
+        case .completed: "location.status.completed"
+        case .failed: "location.status.failed"
+        }
     }
 
     private var timer: some View {

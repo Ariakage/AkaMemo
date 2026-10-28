@@ -31,6 +31,9 @@ actor PhoneInboxService {
         envelope: ChunkTransferEnvelope,
         receivedAt: Date = Date()
     ) async -> Result {
+        guard envelope.isValid else {
+            return .rejected("invalidEnvelope")
+        }
         do {
             let attributes = try fileManager.attributesOfItem(atPath: fileURL.path)
             guard let number = attributes[.size] as? NSNumber else {

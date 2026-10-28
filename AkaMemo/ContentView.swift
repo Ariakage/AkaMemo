@@ -15,7 +15,8 @@ struct ContentView: View {
                         search: model.search,
                         deletion: model.deletion,
                         diagnostics: model.diagnostics,
-                        battery: model.battery
+                        battery: model.battery,
+                        recordingWatchdog: model.recordingWatchdog
                     )
                     .modelContainer(container)
                 } else {

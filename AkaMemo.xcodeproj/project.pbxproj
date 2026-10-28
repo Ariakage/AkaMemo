@@ -77,6 +77,11 @@
 		AD0200000000000000000071 /* LocationTrackRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000071 /* LocationTrackRecord.swift */; };
 		AD0200000000000000000072 /* TrackImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000072 /* TrackImporter.swift */; };
 		AD0200000000000000000073 /* LocationTrackSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000073 /* LocationTrackSection.swift */; };
+		AD0200000000000000000091 /* RecordingNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000091 /* RecordingNotificationService.swift */; };
+		AD0200000000000000000092 /* RecordingWatchdog.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000092 /* RecordingWatchdog.swift */; };
+		AD0200000000000000000093 /* RecordingStatusBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000093 /* RecordingStatusBannerView.swift */; };
+		AA0200000000000000000016 /* WatchStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000016 /* WatchStorage.swift */; };
+		AA0200000000000000000017 /* WatchHealthPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000017 /* WatchHealthPublisher.swift */; };
 		AA0200000000000000000013 /* WatchBatteryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000013 /* WatchBatteryMonitor.swift */; };
 		AA0200000000000000000014 /* LocationRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000014 /* LocationRecorder.swift */; };
 		AB0200000000000000000008 /* SimulatorFixtureSeederTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000009 /* SimulatorFixtureSeederTests.swift */; };
@@ -86,12 +91,14 @@
 		AB020000000000000000000C /* AppDiagnosticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB010000000000000000000D /* AppDiagnosticsTests.swift */; };
 		AB020000000000000000000D /* BatteryAlertCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB010000000000000000000E /* BatteryAlertCoordinatorTests.swift */; };
 		AB020000000000000000000E /* TrackImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB010000000000000000000F /* TrackImporterTests.swift */; };
+		AB020000000000000000000F /* RecordingWatchdogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000010 /* RecordingWatchdogTests.swift */; };
 		AB0400000000000000000001 /* AkaMemoCore in Frameworks */ = {isa = PBXBuildFile; productRef = AB0300000000000000000001 /* AkaMemoCore */; };
 		AB0400000000000000000002 /* AkaMemoCore in Frameworks */ = {isa = PBXBuildFile; productRef = AB0300000000000000000002 /* AkaMemoCore */; };
 		AC0200000000000000000001 /* WatchTransferQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0100000000000000000001 /* WatchTransferQueueTests.swift */; };
 		AC0200000000000000000002 /* WatchDeletionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0100000000000000000002 /* WatchDeletionTests.swift */; };
 		AC0200000000000000000003 /* WatchBatteryMonitorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0100000000000000000003 /* WatchBatteryMonitorTests.swift */; };
 		AC0200000000000000000004 /* LocationFileWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0100000000000000000004 /* LocationFileWriterTests.swift */; };
+		AC0200000000000000000005 /* WatchHealthPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0100000000000000000005 /* WatchHealthPublisherTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -200,6 +207,11 @@
 		AD0100000000000000000071 /* LocationTrackRecord.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationTrackRecord.swift; sourceTree = "<group>"; };
 		AD0100000000000000000072 /* TrackImporter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TrackImporter.swift; sourceTree = "<group>"; };
 		AD0100000000000000000073 /* LocationTrackSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationTrackSection.swift; sourceTree = "<group>"; };
+		AD0100000000000000000091 /* RecordingNotificationService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingNotificationService.swift; sourceTree = "<group>"; };
+		AD0100000000000000000092 /* RecordingWatchdog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingWatchdog.swift; sourceTree = "<group>"; };
+		AD0100000000000000000093 /* RecordingStatusBannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingStatusBannerView.swift; sourceTree = "<group>"; };
+		AA0100000000000000000016 /* WatchStorage.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchStorage.swift; sourceTree = "<group>"; };
+		AA0100000000000000000017 /* WatchHealthPublisher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchHealthPublisher.swift; sourceTree = "<group>"; };
 		AA0100000000000000000013 /* WatchBatteryMonitor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchBatteryMonitor.swift; sourceTree = "<group>"; };
 		AA0100000000000000000014 /* LocationRecorder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationRecorder.swift; sourceTree = "<group>"; };
 		AB0100000000000000000009 /* SimulatorFixtureSeederTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SimulatorFixtureSeederTests.swift; sourceTree = "<group>"; };
@@ -209,10 +221,12 @@
 		AB010000000000000000000D /* AppDiagnosticsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppDiagnosticsTests.swift; sourceTree = "<group>"; };
 		AB010000000000000000000E /* BatteryAlertCoordinatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryAlertCoordinatorTests.swift; sourceTree = "<group>"; };
 		AB010000000000000000000F /* TrackImporterTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TrackImporterTests.swift; sourceTree = "<group>"; };
+		AB0100000000000000000010 /* RecordingWatchdogTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingWatchdogTests.swift; sourceTree = "<group>"; };
 		AC0100000000000000000001 /* WatchTransferQueueTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchTransferQueueTests.swift; sourceTree = "<group>"; };
 		AC0100000000000000000002 /* WatchDeletionTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchDeletionTests.swift; sourceTree = "<group>"; };
 		AC0100000000000000000003 /* WatchBatteryMonitorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchBatteryMonitorTests.swift; sourceTree = "<group>"; };
 		AC0100000000000000000004 /* LocationFileWriterTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationFileWriterTests.swift; sourceTree = "<group>"; };
+		AC0100000000000000000005 /* WatchHealthPublisherTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchHealthPublisherTests.swift; sourceTree = "<group>"; };
 		035009F8ABC8D75D57319119 /* BatteryActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryActivityAttributes.swift; sourceTree = "<group>"; };
 		0FC4CD7E510620FBA8E0CBE9 /* BatteryLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryLiveActivity.swift; sourceTree = "<group>"; };
 		129933E21C58719BC3844183 /* AkaMemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AkaMemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -295,6 +309,8 @@
 				AA0100000000000000000004 /* WatchPaths.swift */,
 				AA0100000000000000000007 /* ChunkRecoveryService.swift */,
 				AA0100000000000000000013 /* WatchBatteryMonitor.swift */,
+				AA0100000000000000000016 /* WatchStorage.swift */,
+				AA0100000000000000000017 /* WatchHealthPublisher.swift */,
 			);
 			path = Recording;
 			sourceTree = "<group>";
@@ -367,6 +383,7 @@
 				AC0100000000000000000002 /* WatchDeletionTests.swift */,
 				AC0100000000000000000003 /* WatchBatteryMonitorTests.swift */,
 				AC0100000000000000000004 /* LocationFileWriterTests.swift */,
+				AC0100000000000000000005 /* WatchHealthPublisherTests.swift */,
 			);
 			path = AkaMemoWatchTests;
 			sourceTree = "<group>";
@@ -391,6 +408,7 @@
 				AB010000000000000000000D /* AppDiagnosticsTests.swift */,
 				AB010000000000000000000E /* BatteryAlertCoordinatorTests.swift */,
 				AB010000000000000000000F /* TrackImporterTests.swift */,
+				AB0100000000000000000010 /* RecordingWatchdogTests.swift */,
 			);
 			path = AkaMemoTests;
 			sourceTree = "<group>";
@@ -520,6 +538,16 @@
 			path = Location;
 			sourceTree = "<group>";
 		};
+		AD0100000000000000000090 /* Recording */ = {
+			isa = PBXGroup;
+			children = (
+				AD0100000000000000000091 /* RecordingNotificationService.swift */,
+				AD0100000000000000000092 /* RecordingWatchdog.swift */,
+				AD0100000000000000000093 /* RecordingStatusBannerView.swift */,
+			);
+			path = Recording;
+			sourceTree = "<group>";
+		};
 		E77D0E4D19AC1E93A1A5E2DD /* AkaMemo */ = {
 			isa = PBXGroup;
 			children = (
@@ -534,6 +562,7 @@
 				AD0100000000000000000040 /* Diagnostics */,
 				AD0100000000000000000060 /* Battery */,
 				AD0100000000000000000070 /* Location */,
+				AD0100000000000000000090 /* Recording */,
 				E1F22C4A920E3D53BEBA0A61 /* Assets.xcassets */,
 				AB0100000000000000000006 /* Localizable.xcstrings */,
 				A1B0CB5A4A6D4CC7F527531B /* Info.plist */,
@@ -751,6 +780,7 @@
 				AB020000000000000000000C /* AppDiagnosticsTests.swift in Sources */,
 				AB020000000000000000000D /* BatteryAlertCoordinatorTests.swift in Sources */,
 				AB020000000000000000000E /* TrackImporterTests.swift in Sources */,
+				AB020000000000000000000F /* RecordingWatchdogTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -806,6 +836,9 @@
 				AD0200000000000000000071 /* LocationTrackRecord.swift in Sources */,
 				AD0200000000000000000072 /* TrackImporter.swift in Sources */,
 				AD0200000000000000000073 /* LocationTrackSection.swift in Sources */,
+				AD0200000000000000000091 /* RecordingNotificationService.swift in Sources */,
+				AD0200000000000000000092 /* RecordingWatchdog.swift in Sources */,
+				AD0200000000000000000093 /* RecordingStatusBannerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -819,6 +852,7 @@
 				AC0200000000000000000002 /* WatchDeletionTests.swift in Sources */,
 				AC0200000000000000000003 /* WatchBatteryMonitorTests.swift in Sources */,
 				AC0200000000000000000004 /* LocationFileWriterTests.swift in Sources */,
+				AC0200000000000000000005 /* WatchHealthPublisherTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -834,6 +868,8 @@
 				AA0200000000000000000004 /* WatchPaths.swift in Sources */,
 				AA0200000000000000000006 /* ChunkRecoveryService.swift in Sources */,
 				AA0200000000000000000013 /* WatchBatteryMonitor.swift in Sources */,
+				AA0200000000000000000016 /* WatchStorage.swift in Sources */,
+				AA0200000000000000000017 /* WatchHealthPublisher.swift in Sources */,
 				AA0200000000000000000014 /* LocationRecorder.swift in Sources */,
 				AA0200000000000000000008 /* WatchTransferQueue.swift in Sources */,
 				AA0200000000000000000009 /* WatchConnectivityService.swift in Sources */,

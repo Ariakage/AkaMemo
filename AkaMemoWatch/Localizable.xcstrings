@@ -560,6 +560,38 @@
           }
         }
       }
+    },
+    "storage.warning.1gb": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Less than 1 GB free. Consider clearing space."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "存储不足 1 GB，请清理空间。"
+          }
+        }
+      }
+    },
+    "storage.warning.critical": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Less than 500 MB free. Recording stopped."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "存储不足 500 MB，录音已停止。"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

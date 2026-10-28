@@ -3,6 +3,8 @@
 > 状态：活跃 · 最后更新：2026-10-28
 >
 > 本文定义录音心跳/看门狗、中断通知、分片完整性校验与恢复。决策见 `../decisions/0007-recording-health-and-integrity.md`；录音参数见 `recording.md`。
+>
+> 实现状态（2026-10-28）：Watch 每 10 秒写 `applicationContext` 健康快照（含心跳/电量/存储/录音状态），状态变化即时发送事件；iPhone 在可达时 45 秒无心跳、或收到 interrupted 事件时发本地通知，并有 90 秒 dead-man 本地通知，stop/pause/删除时取消。Watch 存储 <1GB 警告、<500MB 停止录音。真机后台/通知/G-004 未验证。
 
 ## 1. 目标与非目标
 

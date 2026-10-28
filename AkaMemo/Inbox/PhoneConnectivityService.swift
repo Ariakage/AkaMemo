@@ -13,6 +13,7 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
     private let deletionStore: DeletionStore?
     private let trackImporter: TrackImporter?
     private let batteryEventHandler: (@Sendable (BatteryEvent) -> Void)?
+    private let healthEventHandler: (@Sendable (RecordingHealthEvent) -> Void)?
     private let processingDirectory: URL
     private let rejectedDirectory: URL
     private let fileManager = FileManager.default
@@ -23,12 +24,14 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
         applicationSupport: URL,
         deletionStore: DeletionStore? = nil,
         trackImporter: TrackImporter? = nil,
-        batteryEventHandler: (@Sendable (BatteryEvent) -> Void)? = nil
+        batteryEventHandler: (@Sendable (BatteryEvent) -> Void)? = nil,
+        healthEventHandler: (@Sendable (RecordingHealthEvent) -> Void)? = nil
     ) {
         self.inbox = inbox
         self.deletionStore = deletionStore
         self.trackImporter = trackImporter
         self.batteryEventHandler = batteryEventHandler
+        self.healthEventHandler = healthEventHandler
         self.processingDirectory = applicationSupport.appending(
             path: "inbox-processing",
             directoryHint: .isDirectory
@@ -243,7 +246,21 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
         handleIncoming(message)
     }
 
+    nonisolated func session(
+        _ session: WCSession,
+        didReceiveApplicationContext applicationContext: [String: Any]
+    ) {
+        handleIncoming(applicationContext)
+    }
+
     private nonisolated func handleIncoming(_ info: [String: Any]) {
+        if info["type"] as? String == "health",
+            let payload = info[RecordingHealthEvent.metadataKey] as? String,
+            let event = try? RecordingHealthEvent.decode(fromJSON: payload)
+        {
+            healthEventHandler?(event)
+            return
+        }
         if info["type"] as? String == "battery",
             let payload = info[BatteryEvent.metadataKey] as? String,
             let event = try? BatteryEvent.decode(fromJSON: payload)

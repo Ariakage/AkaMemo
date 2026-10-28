@@ -33,6 +33,7 @@ struct RecordingSnapshot: Sendable, Equatable {
     var totalGapMs: Int64 = 0
     var interruptionCount: Int = 0
     var stateVersion: Int64 = 0
+    var lastAudioBufferAt: Date?
 }
 
 /// The on-disk heartbeat described by `docs/specs/recording-health.md` §3.1.

@@ -96,7 +96,7 @@ actor TrackImporter {
                 ) {
                 case .none:
                     break
-                case .session, .chunk, .epoch:
+                case .session, .chunk, .location, .epoch:
                     try? fileManager.removeItem(at: fileURL)
                     return .rejected("deletedSession")
                 }

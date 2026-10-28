@@ -55,6 +55,15 @@ actor DeletionService {
         )
     }
 
+    func deleteTrack(_ trackID: UUID, sessionID: UUID) async throws {
+        try await execute(
+            scope: .location,
+            entityID: trackID,
+            sessionID: sessionID,
+            reason: "userDeleteTrack"
+        )
+    }
+
     func deleteAll() async throws {
         try await execute(
             scope: .all,
@@ -88,6 +97,8 @@ actor DeletionService {
                     if let sessionID {
                         try await index.deleteSession(sessionID)
                     }
+                case .location:
+                    break
                 case .all:
                     // Scoped per session so an entry that arrived after the
                     // epoch is not removed from the index.
@@ -130,6 +141,11 @@ actor DeletionService {
         for relativePath in plan.transcriptPaths {
             let url = applicationSupport.appending(path: relativePath)
             try removeIfExists(url)
+        }
+        if plan.scope == .location, let relativePath = plan.locationRelativePath {
+            try removeIfExists(
+                applicationSupport.appending(path: relativePath)
+            )
         }
         try removeLocationFiles(sessionIDs: plan.sessionIDs)
     }

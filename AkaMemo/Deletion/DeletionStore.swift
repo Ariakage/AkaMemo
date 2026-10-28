@@ -6,6 +6,7 @@ enum InboxDeletionMatch: Sendable, Equatable {
     case none
     case chunk(tombstoneID: UUID)
     case session(tombstoneID: UUID)
+    case location(tombstoneID: UUID)
     case epoch(epochMs: Int64)
 }
 
@@ -23,6 +24,8 @@ struct DeletionPlan: Sendable, Equatable {
     let transcriptPaths: [String]
     let chunkIDs: [UUID]
     let sessionIDs: [UUID]
+    let locationTrackID: UUID?
+    let locationRelativePath: String?
 }
 
 enum DeletionStoreError: Error, Equatable, Sendable {
@@ -50,14 +53,17 @@ actor DeletionStore {
         return .none
     }
 
-    /// Track imports are rejected by session tombstone or DataEpoch; a chunk
-    /// tombstone does not apply to the session track.
+    /// Track imports are rejected by session tombstone, location tombstone or
+    /// DataEpoch; a chunk tombstone does not apply to the session track.
     func matchForTrack(
         sessionID: UUID,
         sessionStartedAtMs: Int64
     ) throws -> InboxDeletionMatch {
         if let tombstone = try sessionTombstone(sessionID: sessionID) {
             return .session(tombstoneID: tombstone.tombstoneID)
+        }
+        if let tombstone = try locationTombstone(sessionID: sessionID) {
+            return .location(tombstoneID: tombstone.tombstoneID)
         }
         if let epoch = try latestEpoch(), sessionStartedAtMs < epoch.epochMs {
             return .epoch(epochMs: epoch.epochMs)
@@ -77,6 +83,8 @@ actor DeletionStore {
         let nowMs = TimeMath.epochMs(now)
         let tombstoneID = UUID()
         var resolvedSessionID = sessionID
+        var locationTrackID: UUID?
+        var locationRelativePath: String?
 
         switch scope {
         case .chunk:
@@ -110,6 +118,26 @@ actor DeletionStore {
                 reason: reason
             )
             modelContext.insert(record)
+        case .location:
+            guard let entityID else {
+                throw DeletionStoreError.missingEntity
+            }
+            guard let track = try findTrack(id: entityID) else {
+                throw DeletionStoreError.missingEntity
+            }
+            resolvedSessionID = track.sessionID
+            locationTrackID = track.trackID
+            locationRelativePath = track.relativePath
+            let record = DeletionTombstoneRecord(
+                tombstoneID: tombstoneID,
+                entityTypeRaw: "location",
+                entityID: track.trackID,
+                sessionID: track.sessionID,
+                deletedAt: now,
+                expiresAt: now.addingTimeInterval(30 * 24 * 60 * 60),
+                reason: reason
+            )
+            modelContext.insert(record)
         case .all:
             let epoch = DataEpochRecord(
                 tombstoneID: tombstoneID,
@@ -138,6 +166,8 @@ actor DeletionStore {
                     }
                 )
             )
+        case .location:
+            chunks = []
         case .all:
             // Only sessions that started before the epoch are in scope. A
             // recording that began after the epoch must survive delete-all.
@@ -168,6 +198,8 @@ actor DeletionStore {
             transcripts = try fetchTranscripts(chunkIDs: chunkIDs)
         case .session:
             transcripts = try fetchTranscripts(sessionIDs: sessionIDs)
+        case .location:
+            transcripts = []
         case .all:
             transcripts = try fetchTranscripts(sessionIDs: sessionIDs)
         }
@@ -198,7 +230,9 @@ actor DeletionStore {
             targets: targets,
             transcriptPaths: transcriptPaths,
             chunkIDs: chunkIDs,
-            sessionIDs: sessionIDs
+            sessionIDs: sessionIDs,
+            locationTrackID: locationTrackID,
+            locationRelativePath: locationRelativePath
         )
     }
 
@@ -229,6 +263,18 @@ actor DeletionStore {
                     FetchDescriptor<ReceivedChunkRecord>(
                         predicate: #Predicate { record in
                             record.sessionID == sessionID
+                        }
+                    )
+                ) {
+                    modelContext.delete(record)
+                }
+            }
+        case .location:
+            if let trackID = plan.locationTrackID {
+                for record in try modelContext.fetch(
+                    FetchDescriptor<LocationTrackRecord>(
+                        predicate: #Predicate { record in
+                            record.trackID == trackID
                         }
                     )
                 ) {
@@ -323,6 +369,20 @@ actor DeletionStore {
         return nil
     }
 
+    /// Used when a track upload arrives after its track was deleted.
+    func commandForRejectedTrack(sessionID: UUID) throws -> DeletionCommand? {
+        if let tombstone = try sessionTombstone(sessionID: sessionID) {
+            return Self.command(for: tombstone)
+        }
+        if let tombstone = try locationTombstone(sessionID: sessionID) {
+            return Self.command(for: tombstone)
+        }
+        if let epoch = try latestEpoch() {
+            return Self.command(for: epoch)
+        }
+        return nil
+    }
+
     private static func command(
         for record: DeletionTombstoneRecord
     ) -> DeletionCommand {
@@ -370,9 +430,32 @@ actor DeletionStore {
         return try modelContext.fetch(descriptor).first
     }
 
+    private func locationTombstone(
+        sessionID: UUID
+    ) throws -> DeletionTombstoneRecord? {
+        let records = try modelContext.fetch(
+            FetchDescriptor<DeletionTombstoneRecord>(
+                predicate: #Predicate { record in
+                    record.entityTypeRaw == "location"
+                }
+            )
+        )
+        return records.first { $0.sessionID == sessionID }
+    }
+
     private func latestEpoch() throws -> DataEpochRecord? {
         var descriptor = FetchDescriptor<DataEpochRecord>(
             sortBy: [SortDescriptor(\.epochMs, order: .reverse)]
+        )
+        descriptor.fetchLimit = 1
+        return try modelContext.fetch(descriptor).first
+    }
+
+    private func findTrack(id: UUID) throws -> LocationTrackRecord? {
+        var descriptor = FetchDescriptor<LocationTrackRecord>(
+            predicate: #Predicate { record in
+                record.trackID == id
+            }
         )
         descriptor.fetchLimit = 1
         return try modelContext.fetch(descriptor).first

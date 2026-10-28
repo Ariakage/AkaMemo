@@ -352,6 +352,107 @@ final class DeletionServiceTests: XCTestCase {
         )
     }
 
+    private func insertTrack(
+        in environment: Environment,
+        sessionID: UUID
+    ) throws -> LocationTrackRecord {
+        let trackID = UUID()
+        let now = Date()
+        let relativePath =
+            "location/2026/10/28/\(sessionID.uuidString).jsonl"
+        let url = environment.root.appending(path: relativePath)
+        try FileManager.default.createDirectory(
+            at: url.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        try Data("{}".utf8).write(to: url)
+        let context = ModelContext(environment.container)
+        let track = LocationTrackRecord(
+            trackID: trackID,
+            sessionID: sessionID,
+            sessionStartedAt: now,
+            startedAt: now,
+            endedAt: now,
+            pointCount: 1,
+            distanceMeters: nil,
+            relativePath: relativePath,
+            checksumSHA256: String(repeating: "b", count: 64),
+            importedAt: now
+        )
+        context.insert(track)
+        try context.save()
+        return track
+    }
+
+    func testDeleteTrackKeepsAudioTranscriptsAndIndex() async throws {
+        let environment = try makeEnvironment()
+        defer { try? FileManager.default.removeItem(at: environment.root) }
+        let sessionID = UUID()
+        let chunk = try insertChunk(
+            in: environment,
+            sessionID: sessionID,
+            sequence: 0,
+            text: "轨迹删除不影响转写",
+            startedAtMs: 1_800_000_000_000
+        )
+        try await index(
+            chunk,
+            text: "轨迹删除不影响转写",
+            in: environment
+        )
+        let track = try insertTrack(in: environment, sessionID: sessionID)
+
+        try await environment.service.deleteTrack(
+            track.trackID,
+            sessionID: sessionID
+        )
+
+        let context = ModelContext(environment.container)
+        let tracks = try context.fetch(
+            FetchDescriptor<LocationTrackRecord>()
+        )
+        XCTAssertTrue(tracks.isEmpty)
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: environment.root.appending(
+                    path: track.relativePath
+                ).path
+            )
+        )
+        XCTAssertEqual(try chunkCount(in: environment), 1)
+        XCTAssertTrue(
+            FileManager.default.fileExists(
+                atPath: environment.root.appending(
+                    path: chunk.relativePath
+                ).path
+            )
+        )
+        XCTAssertEqual(
+            try context.fetchCount(FetchDescriptor<TranscriptRecord>()),
+            1
+        )
+        let hits = try await environment.index.search(
+            SearchQuery(text: "轨迹删除")
+        )
+        XCTAssertEqual(hits.count, 1)
+        XCTAssertEqual(environment.sender.commands.last?.scope, .location)
+
+        let trackMatch = try await environment.deletionStore.matchForTrack(
+            sessionID: sessionID,
+            sessionStartedAtMs: TimeMath.epochMs(chunk.startedAt)
+        )
+        if case .location = trackMatch {
+        } else {
+            XCTFail("expected location tombstone, got \(trackMatch)")
+        }
+        let inboxMatch = try await environment.deletionStore.matchForInbox(
+            chunkID: UUID(),
+            sessionID: sessionID,
+            sessionStartedAtMs: TimeMath.epochMs(chunk.startedAt)
+        )
+        XCTAssertEqual(inboxMatch, .none)
+    }
+
     func testInboxRejectsTombstonedChunk() async throws {
         let environment = try makeEnvironment()
         defer { try? FileManager.default.removeItem(at: environment.root) }

@@ -929,6 +929,38 @@
         }
       }
     },
+    "location.delete.message": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The recording and transcript are kept. This cannot be undone."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不会删除录音与转写；删除后无法恢复。"
+          }
+        }
+      }
+    },
+    "location.delete.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete track?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "删除轨迹？"
+          }
+        }
+      }
+    },
     "location.export.continue": {
       "localizations": {
         "en": {
@@ -1021,6 +1053,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "导出 GPX？"
+          }
+        }
+      }
+    },
+    "location.track.delete": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete track"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "删除轨迹"
           }
         }
       }

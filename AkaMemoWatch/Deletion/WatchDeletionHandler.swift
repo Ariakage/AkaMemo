@@ -8,6 +8,7 @@ actor WatchDeletionHandler {
     private let deletionStore: WatchDeletionStore
     private let queue: WatchTransferQueue
     private var stopSessionHandler: (@Sendable (UUID?, Int64?) async -> Void)?
+    private var stopLocationSessionHandler: (@Sendable (UUID) async -> Void)?
     private let fileManager = FileManager.default
     private let logger = Logger(
         subsystem: "com.ariakage.AkaMemo",
@@ -29,6 +30,14 @@ actor WatchDeletionHandler {
         _ handler: @escaping @Sendable (UUID?, Int64?) async -> Void
     ) {
         stopSessionHandler = handler
+    }
+
+    /// Lets a location deletion stop the live location writer without
+    /// touching audio recording.
+    func setStopLocationSessionHandler(
+        _ handler: @escaping @Sendable (UUID) async -> Void
+    ) {
+        stopLocationSessionHandler = handler
     }
 
     func apply(_ command: DeletionCommand, now: Date = Date()) async {
@@ -77,6 +86,13 @@ actor WatchDeletionHandler {
             }
             await stopSessionHandler?(sessionID, nil)
             removeSession(sessionID: sessionID)
+            await queue.applyDeletion(command, now: now)
+        case .location:
+            guard let sessionID = command.sessionID ?? command.entityID else {
+                return
+            }
+            await stopLocationSessionHandler?(sessionID)
+            removeLocationFiles(sessionIDs: [sessionID])
             await queue.applyDeletion(command, now: now)
         case .all:
             guard let epochMs = command.epochMs else {
@@ -193,7 +209,11 @@ actor WatchDeletionHandler {
         }
         let names = Set(
             sessionIDs.flatMap {
-                [$0.uuidString + ".jsonl", $0.uuidString + ".gpx"]
+                [
+                    $0.uuidString + ".jsonl",
+                    $0.uuidString + ".jsonl.part",
+                    $0.uuidString + ".gpx",
+                ]
             }
         )
         for case let url as URL in enumerator

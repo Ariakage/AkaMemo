@@ -392,6 +392,8 @@ actor WatchTransferQueue {
                     $0.envelope.sessionID == sessionID
                 }
             }
+        case .location:
+            break
         case .all:
             if let epochMs = command.epochMs {
                 document.entries.removeAll {

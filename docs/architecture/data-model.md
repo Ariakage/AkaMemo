@@ -237,11 +237,19 @@ MVP 不做自动标签；保留结构以便后续扩展。
 | 入口 | `scope` | 删除范围 |
 | --- | --- | --- |
 | 单条分片/录音 | `chunk` | 该 chunk 的音频、转写、索引；不影响同会话其他 chunk/轨迹 |
+| 单条轨迹 | `location` | 该轨迹文件与元数据；同会话后续轨迹导入被拒绝；不影响音频/转写/索引 |
 | 单次会话 | `session` | 该会话全部 chunk、转写、索引、轨迹、GPX |
 | 删除全部 | `all` | DataEpoch；Watch 所有 `sessionStartedAt < epoch` 的数据 |
 
 - 删除指令 **MUST** 携带 `scope` 与对应 ID；Watch 只删除匹配范围，不得把 `chunk` 删除扩大为 `session` 删除。
 - Inbox 按 `scope` 检查墓碑：`chunk` 墓碑只拒绝该 chunk；`session` 墓碑拒绝整个会话。
+
+### 删除轨迹（保留录音）
+
+- iPhone 删除单条轨迹：写 `DeletionTombstone(entityType=location, entityID=trackID, sessionID=…)`，再删除轨迹文件与 `LocationTrackRecord`；音频、转写、索引保持不变。
+- 指令 `scope=location` 只要求 `sessionID`；Watch 停止该会话的定位写入并删除 `.jsonl` / `.jsonl.part`，音频与传输队列不受影响。
+- `TrackImporter` **MUST** 同时检查 session 墓碑、location 墓碑与 DataEpoch；任一命中即拒绝并回执，不得重建。
+- location 墓碑 **MUST NOT** 导致 Inbox 拒绝同会话音频。
 
 ### 清理音频（保留转写）
 

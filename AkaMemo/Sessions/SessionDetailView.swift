@@ -89,7 +89,20 @@ struct SessionDetailView: View {
                     )
                 }
 
-                LocationTrackSection(track: locationTracks.first)
+                LocationTrackSection(track: locationTracks.first) {
+                    guard let track = locationTracks.first else {
+                        return
+                    }
+                    Task {
+                        let deleted = await deletion?.deleteTrack(
+                            track.trackID,
+                            sessionID: track.sessionID
+                        )
+                        if deleted != true, let message = deletion?.errorMessage {
+                            deletionError = message
+                        }
+                    }
+                }
 
                 Section("session.chunks.title") {
                     ForEach(session.chunks, id: \.chunkID) { chunk in

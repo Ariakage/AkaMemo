@@ -65,6 +65,12 @@ final class RecordingViewModel {
                     )
                 }
             }
+            Task {
+                await handler.setStopLocationSessionHandler {
+                    [weak self] sessionID in
+                    await self?.stopLocationIfDeleted(sessionID: sessionID)
+                }
+            }
             service.setLocationSettingHandler { [weak self] setting in
                 Task { @MainActor in
                     self?.applyRemoteLocationSetting(setting)
@@ -80,6 +86,13 @@ final class RecordingViewModel {
             self.settings = WatchRecordingSettings()
             self.locationEnabled = self.locationRecorder.isEnabled
         }
+    }
+
+    /// Stops only the location writer when the current session's track is
+    /// deleted; audio recording continues.
+    private func stopLocationIfDeleted(sessionID: UUID) async {
+        await locationRecorder.cancelSession(matching: sessionID)
+        syncLocationState()
     }
 
     /// Stops the recorder only when the deleted session is the one currently

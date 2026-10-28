@@ -49,4 +49,29 @@ final class DeletionCommandTests: XCTestCase {
             DeletionCommand(scope: .all, epochMs: 2, deletedAtMs: 1).isValid
         )
     }
+
+    func testLocationScopeRoundTripsAndRequiresSession() throws {
+        let sessionID = UUID()
+        let trackID = UUID()
+        let command = DeletionCommand(
+            scope: .location,
+            entityID: trackID,
+            sessionID: sessionID,
+            deletedAtMs: 1_700_000_000_000
+        )
+
+        let decoded = try DeletionCommand.decode(
+            fromJSON: try command.jsonString()
+        )
+
+        XCTAssertEqual(decoded, command)
+        XCTAssertTrue(decoded.isValid)
+        XCTAssertFalse(
+            DeletionCommand(
+                scope: .location,
+                entityID: trackID,
+                deletedAtMs: 1
+            ).isValid
+        )
+    }
 }

@@ -203,8 +203,13 @@ final class LocationRecorder: NSObject, CLLocationManagerDelegate {
     }
 
     /// Stops without producing an upload; used when the session is deleted.
-    func cancelSession() async {
+    /// - Parameter matching: When set, only cancel if this is the active
+    ///   session, so a late deletion cannot stop a newer recording.
+    func cancelSession(matching expectedSessionID: UUID? = nil) async {
         guard isSessionActive else {
+            return
+        }
+        if let expectedSessionID, sessionID != expectedSessionID {
             return
         }
         isSessionActive = false

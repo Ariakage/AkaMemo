@@ -263,4 +263,53 @@ final class TrackImporterTests: XCTestCase {
         )
         XCTAssertEqual(epochResult, .rejected("deletedSession"))
     }
+
+    func testRejectsTrackAfterLocationTombstone() async throws {
+        let environment = try makeEnvironment()
+        defer { try? FileManager.default.removeItem(at: environment.root) }
+        let sessionID = UUID()
+        let sessionStart: Int64 = 1_800_000_000_000
+        let first = try makeUpload(
+            in: environment,
+            sessionID: sessionID,
+            sessionStartedAtMs: sessionStart,
+            points: points(sessionStartedAtMs: sessionStart)
+        )
+        let accepted = await environment.importer.importFile(
+            at: first.url,
+            envelope: first.envelope
+        )
+        guard case .accepted = accepted else {
+            return XCTFail("expected accepted, got \(accepted)")
+        }
+        let track = try XCTUnwrap(try records(in: environment).first)
+
+        _ = try await environment.deletionStore.prepareDeletion(
+            scope: .location,
+            entityID: track.trackID,
+            sessionID: sessionID,
+            reason: "userDeleteTrack"
+        )
+
+        let retry = try makeUpload(
+            in: environment,
+            sessionID: sessionID,
+            sessionStartedAtMs: sessionStart,
+            points: points(sessionStartedAtMs: sessionStart)
+        )
+        let rejected = await environment.importer.importFile(
+            at: retry.url,
+            envelope: retry.envelope
+        )
+        XCTAssertEqual(rejected, .rejected("deletedSession"))
+
+        let match = try await environment.deletionStore.matchForTrack(
+            sessionID: sessionID,
+            sessionStartedAtMs: sessionStart
+        )
+        if case .location = match {
+        } else {
+            XCTFail("expected location tombstone, got \(match)")
+        }
+    }
 }

@@ -3,13 +3,16 @@ import Foundation
 public enum DeletionScope: String, Codable, Sendable, Equatable {
     case chunk
     case session
+    /// Deletes the location track of `sessionID` only; audio and transcripts
+    /// stay intact.
+    case location
     case all
 }
 
 /// A deletion instruction sent from iPhone to Watch.
 ///
-/// `tombstoneID` is also the acknowledgement key. `entityID` is the chunk or
-/// session being deleted; `epochMs` is set only for `scope == .all`.
+/// `tombstoneID` is also the acknowledgement key. `entityID` is the chunk,
+/// session or track being deleted; `epochMs` is set only for `scope == .all`.
 public struct DeletionCommand: Codable, Sendable, Equatable, Identifiable {
     public static let metadataKey = "akamemo.deletion"
 
@@ -43,6 +46,8 @@ public struct DeletionCommand: Codable, Sendable, Equatable, Identifiable {
             return entityID != nil
         case .session:
             return entityID != nil
+        case .location:
+            return sessionID != nil
         case .all:
             return epochMs != nil
         }

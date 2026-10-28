@@ -4,8 +4,10 @@ import UniformTypeIdentifiers
 
 struct LocationTrackSection: View {
     let track: LocationTrackRecord?
+    var onDelete: (() -> Void)?
 
     @State private var showPrivacyPrompt = false
+    @State private var showDeletePrompt = false
     @State private var exportDocument: GPXExportDocument?
     @State private var exportFileName = "AkaMemo.gpx"
     @State private var isExporting = false
@@ -26,6 +28,22 @@ struct LocationTrackSection: View {
                 }
                 Button("location.export.gpx") {
                     showPrivacyPrompt = true
+                }
+                if let onDelete {
+                    Button("location.track.delete", role: .destructive) {
+                        showDeletePrompt = true
+                    }
+                    .alert(
+                        "location.delete.title",
+                        isPresented: $showDeletePrompt
+                    ) {
+                        Button("location.delete.confirm", role: .destructive) {
+                            onDelete()
+                        }
+                        Button("deletion.cancel", role: .cancel) {}
+                    } message: {
+                        Text("location.delete.message")
+                    }
                 }
             } else {
                 Text("location.track.empty")

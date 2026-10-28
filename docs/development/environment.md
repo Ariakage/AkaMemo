@@ -178,6 +178,19 @@ GPS：开 / 关；定位权限：<>
 - 模拟器可用于：UI 布局、纯逻辑、单元测试、导航流程。
 - **不得**用模拟器结果作为录音链路验收依据。
 
+### 7.1 模拟分片数据（仅 Debug）
+
+为了让 iPhone 会话列表/播放界面在没有配对 Watch 时也能测试，Debug 构建提供启动参数 `-AkaMemoSeedDemoChunks`。它会在启动后注入 3 个合成会话（共 9 个分片，6–12 秒正弦音），每个分片都走 `PhoneInboxService.receive` 的真实校验、去重、归档与 SwiftData 入库路径，等同于一次传输落地；不含任何真实录音。
+
+```bash
+xcrun simctl install <UDID> <构建产物>/AkaMemo.app
+xcrun simctl launch <UDID> com.ariakage.AkaMemo -AkaMemoSeedDemoChunks
+```
+
+- 分片与会话使用固定 UUID；带参数重复启动只会跳过已存在的分片，不会重复入库。
+- 需要重置时删除模拟器上的 App（或抹掉模拟器数据）后重新安装。
+- 该参数与代码仅在 Debug 构建存在，Release/TestFlight 不包含。
+
 ## 8. 故障排查
 
 | 现象 | 可能原因 | 处理 |

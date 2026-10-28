@@ -51,6 +51,8 @@
 		AD0200000000000000000004 /* SessionFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000004 /* SessionFormatting.swift */; };
 		AD0200000000000000000005 /* SessionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000005 /* SessionListView.swift */; };
 		AD0200000000000000000006 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000006 /* SessionDetailView.swift */; };
+		AD0200000000000000000007 /* SimulatorFixtureSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000008 /* SimulatorFixtureSeeder.swift */; };
+		AB0200000000000000000008 /* SimulatorFixtureSeederTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000009 /* SimulatorFixtureSeederTests.swift */; };
 		AB0400000000000000000001 /* AkaMemoCore in Frameworks */ = {isa = PBXBuildFile; productRef = AB0300000000000000000001 /* AkaMemoCore */; };
 		AB0400000000000000000002 /* AkaMemoCore in Frameworks */ = {isa = PBXBuildFile; productRef = AB0300000000000000000002 /* AkaMemoCore */; };
 		AC0200000000000000000001 /* WatchTransferQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0100000000000000000001 /* WatchTransferQueueTests.swift */; };
@@ -136,6 +138,8 @@
 		AD0100000000000000000004 /* SessionFormatting.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SessionFormatting.swift; sourceTree = "<group>"; };
 		AD0100000000000000000005 /* SessionListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SessionListView.swift; sourceTree = "<group>"; };
 		AD0100000000000000000006 /* SessionDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
+		AD0100000000000000000008 /* SimulatorFixtureSeeder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SimulatorFixtureSeeder.swift; sourceTree = "<group>"; };
+		AB0100000000000000000009 /* SimulatorFixtureSeederTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SimulatorFixtureSeederTests.swift; sourceTree = "<group>"; };
 		AC0100000000000000000001 /* WatchTransferQueueTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchTransferQueueTests.swift; sourceTree = "<group>"; };
 		035009F8ABC8D75D57319119 /* BatteryActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryActivityAttributes.swift; sourceTree = "<group>"; };
 		0FC4CD7E510620FBA8E0CBE9 /* BatteryLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryLiveActivity.swift; sourceTree = "<group>"; };
@@ -285,6 +289,7 @@
 			children = (
 				2530B973040C23AEDCE79B0B /* AkaMemoTests.swift */,
 				AB0100000000000000000008 /* PhoneInboxServiceTests.swift */,
+				AB0100000000000000000009 /* SimulatorFixtureSeederTests.swift */,
 			);
 			path = AkaMemoTests;
 			sourceTree = "<group>";
@@ -333,6 +338,7 @@
 				AB0100000000000000000003 /* PhoneInboxService.swift */,
 				AB0100000000000000000004 /* PhoneConnectivityService.swift */,
 				AD0100000000000000000001 /* PhonePaths.swift */,
+				AD0100000000000000000008 /* SimulatorFixtureSeeder.swift */,
 			);
 			path = Inbox;
 			sourceTree = "<group>";
@@ -566,6 +572,7 @@
 			files = (
 				468F44D560E436F9FAEC0BFB /* AkaMemoTests.swift in Sources */,
 				AB0200000000000000000007 /* PhoneInboxServiceTests.swift in Sources */,
+				AB0200000000000000000008 /* SimulatorFixtureSeederTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -597,6 +604,7 @@
 				AD0200000000000000000004 /* SessionFormatting.swift in Sources */,
 				AD0200000000000000000005 /* SessionListView.swift in Sources */,
 				AD0200000000000000000006 /* SessionDetailView.swift in Sources */,
+				AD0200000000000000000007 /* SimulatorFixtureSeeder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

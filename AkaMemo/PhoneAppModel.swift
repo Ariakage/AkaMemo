@@ -7,6 +7,10 @@ import SwiftData
 final class PhoneAppModel {
     let container: ModelContainer?
     private let connectivity: PhoneConnectivityService?
+    #if DEBUG
+        private let store: MemoryStore?
+        private let inbox: PhoneInboxService?
+    #endif
     private(set) var setupFailed = false
 
     init() {
@@ -21,10 +25,26 @@ final class PhoneAppModel {
             )
             self.container = container
             self.connectivity = service
+            #if DEBUG
+                self.store = store
+                self.inbox = inbox
+            #endif
             service.activate()
+            #if DEBUG
+                if SimulatorFixtureSeeder.isRequested {
+                    Task {
+                        _ = await SimulatorFixtureSeeder(inbox: inbox, store: store)
+                            .seedIfNeeded()
+                    }
+                }
+            #endif
         } catch {
             self.container = nil
             self.connectivity = nil
+            #if DEBUG
+                self.store = nil
+                self.inbox = nil
+            #endif
             self.setupFailed = true
         }
     }

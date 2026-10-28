@@ -12,6 +12,7 @@ final class PhoneAppModel {
     let deletion: DeletionCoordinator?
     let diagnostics: AppDiagnostics?
     let battery: BatteryAlertCoordinator?
+    let recordingWatchdog: RecordingWatchdog?
     private let connectivity: PhoneConnectivityService?
     #if DEBUG
         private let store: MemoryStore?
@@ -44,6 +45,9 @@ final class PhoneAppModel {
                 notifier: BatteryNotificationService(),
                 activity: BatteryLiveActivityController()
             )
+            let recordingWatchdog = RecordingWatchdog(
+                notifier: RecordingNotificationService()
+            )
             let locationTrackStore = LocationTrackStore(
                 modelContainer: container
             )
@@ -61,6 +65,11 @@ final class PhoneAppModel {
                 batteryEventHandler: { event in
                     Task { @MainActor in
                         await batteryCoordinator.handle(event)
+                    }
+                },
+                healthEventHandler: { event in
+                    Task { @MainActor in
+                        await recordingWatchdog.handle(event)
                     }
                 }
             )
@@ -97,6 +106,7 @@ final class PhoneAppModel {
             self.deletion = DeletionCoordinator(service: deletionService)
             self.diagnostics = diagnostics
             self.battery = batteryCoordinator
+            self.recordingWatchdog = recordingWatchdog
             self.connectivity = service
             #if DEBUG
                 self.store = store
@@ -122,6 +132,7 @@ final class PhoneAppModel {
             self.deletion = nil
             self.diagnostics = nil
             self.battery = nil
+            self.recordingWatchdog = nil
             self.connectivity = nil
             #if DEBUG
                 self.store = nil

@@ -1169,6 +1169,118 @@
         }
       }
     },
+    "recording.banner.interrupted": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch recording may have stopped. Open AkaMemo to check."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch 录音可能已中断。打开 AkaMemo 查看。"
+          }
+        }
+      }
+    },
+    "recording.banner.stale": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No recording heartbeat for over 45 seconds."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "超过 45 秒未收到录音心跳。"
+          }
+        }
+      }
+    },
+    "recording.banner.storage": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch storage is low. Recording stopped."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch 存储不足，录音已停止。"
+          }
+        }
+      }
+    },
+    "recording.notification.deadman.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open AkaMemo to check the Watch recording state."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 AkaMemo 查看 Watch 录音状态。"
+          }
+        }
+      }
+    },
+    "recording.notification.deadman.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cannot confirm recording state"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法确认录音状态"
+          }
+        }
+      }
+    },
+    "recording.notification.interrupted.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open AkaMemo to check the Watch recording state."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 AkaMemo 查看 Watch 录音状态。"
+          }
+        }
+      }
+    },
+    "recording.notification.interrupted.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recording may have stopped"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录音可能已中断"
+          }
+        }
+      }
+    },
     "search.empty.message": {
       "localizations": {
         "en": {

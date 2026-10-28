@@ -16,7 +16,7 @@
 
 ## 当前基线
 
-- 2026-10-28，`main` 已包含 PR #1～#12；PR #5 增加 `.parts` 启动恢复与损坏隔离；PR #6 增加 WatchConnectivity 传输与 iPhone inbox；PR #7 增加 envelope 校验；PR #8 增加 iPhone 会话列表与播放；PR #9 增加模拟器分片注入；PR #10 增加端上转写（FR-009）；PR #11 增加 FTS5 全文检索（FR-010）；PR #12 增加删除与墓碑传播（FR-012 部分）；PR #13 增加 iPhone 端实时诊断日志（FR-031 部分）；PR #14 增加低电量告警基础链路（FR-025～027 部分）；PR #15 增加 GPS 轨迹与 GPX 导出基础链路（FR-021/022 部分）。
+- 2026-10-28，`main` 已包含 PR #1～#12；PR #5 增加 `.parts` 启动恢复与损坏隔离；PR #6 增加 WatchConnectivity 传输与 iPhone inbox；PR #7 增加 envelope 校验；PR #8 增加 iPhone 会话列表与播放；PR #9 增加模拟器分片注入；PR #10 增加端上转写（FR-009）；PR #11 增加 FTS5 全文检索（FR-010）；PR #12 增加删除与墓碑传播（FR-012 部分）；PR #13 增加 iPhone 端实时诊断日志（FR-031 部分）；PR #14 增加低电量告警基础链路（FR-025～027 部分）；PR #15 增加 GPS 轨迹与 GPX 导出基础链路（FR-021/022 部分）；当前分支增加低存储与录音保活通知基础链路（FR-013/028 部分）。
 - 模拟器已验证：双端构建、单元测试、Watch 录音 UI、M4A 容器（`afinfo` 显示 `m4af`）、60 秒封口、`.parts` 启动恢复与损坏隔离。
 - 模拟器**不能**验证：系统麦克风隐私指示、真实麦克风/后台/中断/断电/热/电量。
 - 模拟器出现的异常短分片与音频停滞不代表真机行为，也不能证明真机不会出现。
@@ -33,9 +33,9 @@
 | D-006 | 蓝牙耳机连接/断开 | 封口当前分片；按新路由继续；不产生短分片风暴 | `specs/recording.md` #5 | 待实测 |
 | D-007 | 看门狗与自动恢复 | 音频进度停滞 10 秒进入 recovering；30 秒 interrupted；3 次 1/5/15 秒恢复；缺口可见；不伪造心跳 | `specs/recording-health.md` §3.1、§3.4、G-004 | 待实测（当前以 `AVAudioRecorder.currentTime` 作为活性信号，需确认能检测真实停录） |
 | D-008 | 强制退出 / 断电 | 已封口分片 0 损坏；损失 ≤60 秒；`.parts` 可恢复或隔离 `.corrupt`；不把半截文件当完整 | `specs/recording-health.md` §5、G-004 #1、#2 | 待实测（启动恢复已实现） |
-| D-009 | 正常停止 / 暂停 / 删除 | 状态正确；pending dead-man 通知取消；不触发中断告警 | `specs/recording-health.md` §3.2、G-004 #15 | 待实测（通知尚未实现） |
+| D-009 | 正常停止 / 暂停 / 删除 | 状态正确；pending dead-man 通知取消；不触发中断告警 | `specs/recording-health.md` §3.2、G-004 #15 | 待实测（dead-man 取消已实现；真机通知待验证） |
 | D-010 | 启动恢复真机 | 真实断电/强制退出后，下次前台启动恢复 `.parts`、sidecar 与 manifest；重复启动幂等；损坏段保留 | `specs/recording-health.md` §5.2 | 待实测（PR #5 实现） |
-| D-011 | 存储阈值 | 可用空间 <1 GB 警告、<500 MB 停止新录音并提示；不覆盖未确认分片 | `specs/recording.md` §9.2 | 待实现 |
+| D-011 | 存储阈值 | 可用空间 <1 GB 警告、<500 MB 停止新录音并提示；不覆盖未确认分片 | `specs/recording.md` §9.2 | 待实测（Watch 阈值与停止已实现；真机验证） |
 | D-012 | 2 MB 提前封口 | 高码率或异常输入下按 2 MB 提前封口；正常输入按 60 秒封口 | `specs/recording.md` §5.2 | 待实测 |
 | D-013 | 音频停滞检测边界 | 静音、风噪、蓝牙切换、系统音频服务重置下不误报；真实停录可检出 | `specs/recording-health.md` §3.3 | 待实测 |
 | D-014 | 录音列表与播放 | 会话按开始时间聚合；播放/暂停/拖动进度与音频位置一致；切后台停止且不崩溃 | `product/requirements.md` FR-011、Q-018 | 待实测 |
@@ -55,7 +55,7 @@
 | D-024 | 24 小时连续录音 | 满电开始连续 24h；音频连续；0 丢失/损坏；设备未关机；结束电量 ≥5% | `specs/24h-feasibility.md`、G-001 | 待实现/待实测 |
 | D-025 | 24h + GPS 组合 | 录音与轨迹并行；组合续航按 G-002 判定 | `specs/gps-tracking.md`、G-002 | 待实现 |
 | D-026 | stateVersion 跨重启 | 同一会话跨 Watch 重启继续递增，不归零；新会话从 1；`health.json` 持久化 | `specs/recording-health.md` §3.3.1、G-004 #16 | 待实现（当前无跨重启会话恢复） |
-| D-027 | iPhone dead-man 通知 | 可达且 45 秒无心跳告警；90 秒 dead-man；stop/pause/delete 后取消 pending | `specs/recording-health.md` §3.2、G-004 #13、#15 | 待实现 |
+| D-027 | iPhone dead-man 通知 | 可达且 45 秒无心跳告警；90 秒 dead-man；stop/pause/delete 后取消 pending | `specs/recording-health.md` §3.2、G-004 #13、#15 | 待实测（45s/90s 已实现；真机通知/后台待验证） |
 | D-028 | 通知/Live Activity 内容 | 仅电量与录音状态；无音频、转写、位置；状态与真实采集一致 | `privacy/privacy-and-security.md` | 待实现/待实测 |
 | D-029 | iCloud 设备备份/恢复 | 备份包含音频；恢复后文件可读；备份回滚时提示并允许再次删除 | `privacy/privacy-and-security.md`（Q-016） | 待实测（系统能力） |
 | D-030 | 迁移与升级安装 | 旧数据可读；迁移失败保留原库并可回滚 | `architecture/data-model.md`、`development/testing.md` | 待实现 |

@@ -8,7 +8,8 @@ import WatchConnectivity
 /// Callbacks can arrive on any queue; this object holds only a `Sendable`
 /// actor reference, so it is safe to pass the instance to the queue.
 final class WatchConnectivityService: NSObject, WCSessionDelegate,
-    ChunkTransferTransport, BatteryEventTransport, @unchecked Sendable
+    ChunkTransferTransport, BatteryEventTransport, HealthEventTransport,
+    @unchecked Sendable
 {
     private let queue: WatchTransferQueue
     private let deletionHandler: WatchDeletionHandler?
@@ -104,6 +105,52 @@ final class WatchConnectivityService: NSObject, WCSessionDelegate,
             await deletionHandler.apply(command)
             sendDeletionAck(tombstoneID: command.tombstoneID)
         }
+    }
+
+    nonisolated func updateHealthContext(
+        _ event: RecordingHealthEvent
+    ) -> Bool {
+        guard WCSession.isSupported() else {
+            return false
+        }
+        let session = WCSession.default
+        guard session.activationState == .activated,
+            let payload = try? event.jsonString()
+        else {
+            return false
+        }
+        do {
+            try session.updateApplicationContext([
+                "type": "health",
+                RecordingHealthEvent.metadataKey: payload,
+            ])
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    nonisolated func sendHealthEvent(
+        _ event: RecordingHealthEvent
+    ) -> Bool {
+        guard WCSession.isSupported() else {
+            return false
+        }
+        let session = WCSession.default
+        guard session.activationState == .activated,
+            let payload = try? event.jsonString()
+        else {
+            return false
+        }
+        let info: [String: Any] = [
+            "type": "health",
+            RecordingHealthEvent.metadataKey: payload,
+        ]
+        session.transferUserInfo(info)
+        if session.isReachable {
+            session.sendMessage(info, replyHandler: nil, errorHandler: nil)
+        }
+        return true
     }
 
     nonisolated func sendTrack(

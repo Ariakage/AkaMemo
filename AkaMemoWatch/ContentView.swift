@@ -25,6 +25,12 @@ struct ContentView: View {
                         .foregroundStyle(.orange)
                         .multilineTextAlignment(.center)
                 }
+                if let warning = model.storageWarning {
+                    Text(LocalizedStringKey(warning))
+                        .font(.caption2)
+                        .foregroundStyle(.red)
+                        .multilineTextAlignment(.center)
+                }
                 HStack(spacing: 4) {
                     Image(systemName: "location")
                     Text(LocalizedStringKey(locationStatusKey(model.locationStatus)))

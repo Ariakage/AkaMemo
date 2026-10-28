@@ -8,6 +8,7 @@ struct SessionListView: View {
     let deletion: DeletionCoordinator?
     let diagnostics: AppDiagnostics?
     let battery: BatteryAlertCoordinator?
+    let recordingWatchdog: RecordingWatchdog?
 
     @Query(sort: \ReceivedChunkRecord.startedAt, order: .forward)
     private var chunks: [ReceivedChunkRecord]
@@ -70,8 +71,15 @@ struct SessionListView: View {
             }
         }
         .safeAreaInset(edge: .top) {
-            if let battery {
-                BatteryBannerView(coordinator: battery)
+            VStack(spacing: 0) {
+                if let battery {
+                    BatteryBannerView(coordinator: battery)
+                }
+                if let recordingWatchdog {
+                    RecordingStatusBannerView(
+                        coordinator: recordingWatchdog
+                    )
+                }
             }
         }
         .toolbar {
@@ -141,7 +149,9 @@ struct SessionListView: View {
         case .chunk(let chunkID, _):
             _ = await deletion?.deleteChunk(chunkID)
         case .all:
-            _ = await deletion?.deleteAll()
+            if await deletion?.deleteAll() == true {
+                await recordingWatchdog?.clear()
+            }
         }
         if let message = deletion?.errorMessage {
             deletionError = message

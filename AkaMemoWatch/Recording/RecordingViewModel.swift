@@ -10,7 +10,12 @@ final class RecordingViewModel {
     private let connectivity: WatchConnectivityService?
     private let batteryMonitor: WatchBatteryMonitor?
     private let locationRecorder: LocationRecorder
+    private let healthPublisher: WatchHealthPublisher
     private(set) var snapshot = RecordingSnapshot()
+    private(set) var storageWarning: String?
+    private var lastStorageCheckAt = Date.distantPast
+    private var lastStorageBytes: Int64?
+    private var previousStateForHaptic: RecordingEngineState?
     private(set) var batteryWarning: String?
     private(set) var batteryMonitoringUnavailable = false
     private(set) var locationStatus: LocationRecorder.Status = .idle
@@ -40,6 +45,7 @@ final class RecordingViewModel {
             self.connectivity = service
             self.batteryMonitor = WatchBatteryMonitor(transport: service)
             self.locationRecorder = LocationRecorder()
+            self.healthPublisher = WatchHealthPublisher(transport: service)
             self.locationEnabled = self.locationRecorder.isEnabled
             Task {
                 await handler.setStopSessionHandler {
@@ -56,6 +62,7 @@ final class RecordingViewModel {
             self.connectivity = nil
             self.batteryMonitor = nil
             self.locationRecorder = LocationRecorder()
+            self.healthPublisher = WatchHealthPublisher(transport: nil)
             self.locationEnabled = self.locationRecorder.isEnabled
         }
     }
@@ -168,7 +175,60 @@ final class RecordingViewModel {
             ProcessInfo.processInfo.isLowPowerModeEnabled
         )
         syncLocationState()
-        now = Date()
+
+        let referenceNow = Date()
+        if referenceNow.timeIntervalSince(lastStorageCheckAt) >= 60 {
+            lastStorageCheckAt = referenceNow
+            lastStorageBytes = WatchStorage.availableBytes()
+        }
+        let storageBand = RecordingStoragePolicy.standard.band(
+            forAvailableBytes: lastStorageBytes
+        )
+        switch storageBand {
+        case .critical:
+            storageWarning = "storage.warning.critical"
+            if snapshot.state == .recording {
+                await engine.stop()
+                let upload = await locationRecorder.stopSession()
+                sendTrackIfAvailable(upload)
+                snapshot = await engine.currentSnapshot()
+            }
+        case .warning:
+            storageWarning = "storage.warning.1gb"
+        case .normal, .unknown:
+            storageWarning = nil
+        }
+
+        if snapshot.state == .interrupted,
+            previousStateForHaptic != .interrupted
+        {
+            device.play(.notification)
+        }
+        previousStateForHaptic = snapshot.state
+        await publishHealth(now: referenceNow)
+        now = referenceNow
+    }
+
+    private func publishHealth(now: Date) async {
+        let event = RecordingHealthEvent(
+            sessionID: snapshot.sessionID,
+            stateVersion: snapshot.stateVersion,
+            state: recordingStateName(snapshot.state),
+            recordingStartedAtMs: snapshot.sessionStartedAt.map {
+                TimeMath.epochMs($0)
+            },
+            recordedAtMs: TimeMath.epochMs(now),
+            lastAudioBufferAtMs: snapshot.lastAudioBufferAt.map {
+                TimeMath.epochMs($0)
+            },
+            chunkSequence: snapshot.currentSequence,
+            bytesWritten: snapshot.totalBytes,
+            batteryLevel: batteryLevel,
+            storageAvailableBytes: lastStorageBytes,
+            audioSessionActive: snapshot.state == .recording
+                || snapshot.state == .recovering
+        )
+        await healthPublisher.publish(event)
     }
 
     private func chargeState(
@@ -206,6 +266,17 @@ final class RecordingViewModel {
     }
 
     func start() async {
+        let storageBytes = WatchStorage.availableBytes()
+        lastStorageBytes = storageBytes
+        lastStorageCheckAt = Date()
+        let storageBand = RecordingStoragePolicy.standard.band(
+            forAvailableBytes: storageBytes
+        )
+        if storageBand == .critical {
+            storageWarning = "storage.warning.critical"
+            return
+        }
+        storageWarning = storageBand == .warning ? "storage.warning.1gb" : nil
         let device = WKInterfaceDevice.current()
         let osVersion = ProcessInfo.processInfo.operatingSystemVersionString
         await engine.start(deviceModel: device.model, osVersion: osVersion)

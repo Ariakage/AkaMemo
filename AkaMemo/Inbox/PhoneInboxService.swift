@@ -19,17 +19,20 @@ actor PhoneInboxService {
     private let store: MemoryStore
     private let applicationSupport: URL
     private let deletionStore: DeletionStore?
+    private let diagnostics: AppDiagnostics?
     private let fileManager = FileManager.default
     private let logger = Logger(subsystem: "com.ariakage.AkaMemo", category: "storage")
 
     init(
         store: MemoryStore,
         applicationSupport: URL,
-        deletionStore: DeletionStore? = nil
+        deletionStore: DeletionStore? = nil,
+        diagnostics: AppDiagnostics? = nil
     ) {
         self.store = store
         self.applicationSupport = applicationSupport
         self.deletionStore = deletionStore
+        self.diagnostics = diagnostics
     }
 
     func receive(
@@ -51,12 +54,15 @@ actor PhoneInboxService {
                     break
                 case .chunk:
                     try? fileManager.removeItem(at: fileURL)
+                    await logRejection("deletedChunk", envelope: envelope)
                     return .rejected("deletedChunk")
                 case .session:
                     try? fileManager.removeItem(at: fileURL)
+                    await logRejection("deletedSession", envelope: envelope)
                     return .rejected("deletedSession")
                 case .epoch:
                     try? fileManager.removeItem(at: fileURL)
+                    await logRejection("deletedEpoch", envelope: envelope)
                     return .rejected("deletedEpoch")
                 }
             } catch {
@@ -90,6 +96,12 @@ actor PhoneInboxService {
                 checksumSHA256: envelope.checksumSHA256
             ) {
                 try? fileManager.removeItem(at: fileURL)
+                await diagnostics?.log(
+                    level: .debug,
+                    category: .transfer,
+                    message: "chunk duplicate",
+                    metadata: ["chunkSeq": "\(envelope.sequence)"]
+                )
                 return .duplicate
             }
             if try await store.contains(chunkID: envelope.chunkID) {
@@ -153,6 +165,15 @@ actor PhoneInboxService {
                 return .rejected("persistenceFailed")
             }
 
+            await diagnostics?.log(
+                level: .info,
+                category: .transfer,
+                message: "chunk accepted",
+                metadata: [
+                    "chunkSeq": "\(envelope.sequence)",
+                    "byteSize": "\(envelope.byteSize)",
+                ]
+            )
             NotificationCenter.default.post(
                 name: .akamemoInboxAcceptedChunk,
                 object: nil
@@ -164,6 +185,21 @@ actor PhoneInboxService {
             )
             return .rejected("processingFailed")
         }
+    }
+
+    private func logRejection(
+        _ code: String,
+        envelope: ChunkTransferEnvelope
+    ) async {
+        await diagnostics?.log(
+            level: .warning,
+            category: .transfer,
+            message: "chunk rejected",
+            metadata: [
+                "errorCode": code,
+                "chunkSeq": "\(envelope.sequence)",
+            ]
+        )
     }
 
     private func durationMatches(fileURL: URL, expectedMs: Int) -> Bool {

@@ -43,6 +43,7 @@ actor TranscriptionService {
     private let provider: any TranscriptionProvider
     private let applicationSupport: URL
     private let indexer: TranscriptIndexer?
+    private let diagnostics: AppDiagnostics?
     private let fileManager = FileManager.default
     private let logger = Logger(
         subsystem: "com.ariakage.AkaMemo",
@@ -54,12 +55,14 @@ actor TranscriptionService {
         store: TranscriptStore,
         provider: any TranscriptionProvider,
         applicationSupport: URL,
-        indexer: TranscriptIndexer? = nil
+        indexer: TranscriptIndexer? = nil,
+        diagnostics: AppDiagnostics? = nil
     ) {
         self.store = store
         self.provider = provider
         self.applicationSupport = applicationSupport
         self.indexer = indexer
+        self.diagnostics = diagnostics
     }
 
     func runDueTasks(now: Date = Date()) async -> RunSummary {
@@ -142,6 +145,17 @@ actor TranscriptionService {
         logger.info(
             "transcription run: processed \(summary.processed, privacy: .public), succeeded \(summary.succeeded, privacy: .public), failed \(summary.failed, privacy: .public), skipped \(summary.skipped, privacy: .public)"
         )
+        await diagnostics?.log(
+            level: summary.failed > 0 ? .warning : .info,
+            category: .transcription,
+            message: "transcription run",
+            metadata: [
+                "count": "\(summary.processed)",
+                "succeeded": "\(summary.succeeded)",
+                "failed": "\(summary.failed)",
+                "dropped": "\(summary.skipped)",
+            ]
+        )
         return summary
     }
 
@@ -176,6 +190,15 @@ actor TranscriptionService {
             )
             logger.info(
                 "transcription failed with \(code, privacy: .public), attempt \(attempts, privacy: .public)"
+            )
+            await diagnostics?.log(
+                level: .warning,
+                category: .transcription,
+                message: "transcription failed",
+                metadata: [
+                    "errorCode": code,
+                    "attempt": "\(attempts)",
+                ]
             )
         } catch {
             logger.error(

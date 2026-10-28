@@ -16,6 +16,7 @@ actor DeletionService {
     private let applicationSupport: URL
     private let index: SQLiteSearchIndex?
     private let sender: (any DeletionCommandSending)?
+    private let diagnostics: AppDiagnostics?
     private let fileManager = FileManager.default
     private let logger = Logger(
         subsystem: "com.ariakage.AkaMemo",
@@ -26,12 +27,14 @@ actor DeletionService {
         store: DeletionStore,
         applicationSupport: URL,
         index: SQLiteSearchIndex?,
-        sender: (any DeletionCommandSending)?
+        sender: (any DeletionCommandSending)?,
+        diagnostics: AppDiagnostics? = nil
     ) {
         self.store = store
         self.applicationSupport = applicationSupport
         self.index = index
         self.sender = sender
+        self.diagnostics = diagnostics
     }
 
     func deleteChunk(_ chunkID: UUID) async throws {
@@ -67,36 +70,52 @@ actor DeletionService {
         sessionID: UUID?,
         reason: String
     ) async throws {
-        let plan = try await store.prepareDeletion(
-            scope: scope,
-            entityID: entityID,
-            sessionID: sessionID,
-            reason: reason
-        )
-        try removeFiles(for: plan)
-        if let index {
-            switch scope {
-            case .chunk:
-                if let entityID {
-                    try await index.deleteChunk(entityID)
-                }
-            case .session:
-                if let sessionID {
-                    try await index.deleteSession(sessionID)
-                }
-            case .all:
-                // Scoped per session so an entry that arrived after the
-                // epoch is not removed from the index.
-                for sessionID in plan.sessionIDs {
-                    try await index.deleteSession(sessionID)
+        do {
+            let plan = try await store.prepareDeletion(
+                scope: scope,
+                entityID: entityID,
+                sessionID: sessionID,
+                reason: reason
+            )
+            try removeFiles(for: plan)
+            if let index {
+                switch scope {
+                case .chunk:
+                    if let entityID {
+                        try await index.deleteChunk(entityID)
+                    }
+                case .session:
+                    if let sessionID {
+                        try await index.deleteSession(sessionID)
+                    }
+                case .all:
+                    // Scoped per session so an entry that arrived after the
+                    // epoch is not removed from the index.
+                    for sessionID in plan.sessionIDs {
+                        try await index.deleteSession(sessionID)
+                    }
                 }
             }
-        }
-        try await store.completeDeletion(plan)
-        if sender?.sendDeletion(plan.command) != true {
-            logger.info(
-                "deletion command queued for later delivery, scope \(scope.rawValue, privacy: .public)"
+            try await store.completeDeletion(plan)
+            if sender?.sendDeletion(plan.command) != true {
+                logger.info(
+                    "deletion command queued for later delivery, scope \(scope.rawValue, privacy: .public)"
+                )
+            }
+            await diagnostics?.log(
+                level: .info,
+                category: .storage,
+                message: "deletion completed",
+                metadata: ["scope": scope.rawValue]
             )
+        } catch {
+            await diagnostics?.log(
+                level: .error,
+                category: .storage,
+                message: "deletion failed",
+                metadata: ["scope": scope.rawValue, "errorCode": "deleteFailed"]
+            )
+            throw error
         }
     }
 

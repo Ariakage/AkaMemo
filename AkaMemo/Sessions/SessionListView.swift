@@ -6,12 +6,14 @@ struct SessionListView: View {
     let transcription: TranscriptionCoordinator?
     let search: SearchCoordinator?
     let deletion: DeletionCoordinator?
+    let diagnostics: AppDiagnostics?
 
     @Query(sort: \ReceivedChunkRecord.startedAt, order: .forward)
     private var chunks: [ReceivedChunkRecord]
     @Query private var transcripts: [TranscriptRecord]
     @State private var pendingDeletion: PendingDeletion?
     @State private var deletionError: String?
+    @State private var showDiagnostics = false
 
     private var sessions: [SessionSummary] {
         SessionAggregator.group(chunks.map(\.summary))
@@ -69,6 +71,14 @@ struct SessionListView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Menu {
+                    Button {
+                        showDiagnostics = true
+                    } label: {
+                        Label(
+                            "diagnostics.title",
+                            systemImage: "doc.text.magnifyingglass"
+                        )
+                    }
                     Button(role: .destructive) {
                         pendingDeletion = .all
                     } label: {
@@ -103,6 +113,18 @@ struct SessionListView: View {
                 },
                 secondaryButton: .cancel(Text("deletion.cancel"))
             )
+        }
+        .sheet(isPresented: $showDiagnostics) {
+            NavigationStack {
+                DiagnosticsView(diagnostics: diagnostics)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("common.close") {
+                                showDiagnostics = false
+                            }
+                        }
+                    }
+            }
         }
     }
 

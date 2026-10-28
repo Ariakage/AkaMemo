@@ -36,6 +36,18 @@
 		AA0200000000000000000005 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000005 /* Localizable.xcstrings */; };
 		AA0200000000000000000006 /* ChunkRecoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000007 /* ChunkRecoveryService.swift */; };
 		AA0200000000000000000007 /* ChunkRecoveryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000008 /* ChunkRecoveryServiceTests.swift */; };
+		AA0200000000000000000008 /* WatchTransferQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000009 /* WatchTransferQueue.swift */; };
+		AA0200000000000000000009 /* WatchConnectivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA010000000000000000000A /* WatchConnectivityService.swift */; };
+		AB0200000000000000000001 /* ReceivedChunkRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000001 /* ReceivedChunkRecord.swift */; };
+		AB0200000000000000000002 /* MemoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000002 /* MemoryStore.swift */; };
+		AB0200000000000000000003 /* PhoneInboxService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000003 /* PhoneInboxService.swift */; };
+		AB0200000000000000000004 /* PhoneConnectivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000004 /* PhoneConnectivityService.swift */; };
+		AB0200000000000000000005 /* PhoneAppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000005 /* PhoneAppModel.swift */; };
+		AB0200000000000000000006 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000006 /* Localizable.xcstrings */; };
+		AB0200000000000000000007 /* PhoneInboxServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000008 /* PhoneInboxServiceTests.swift */; };
+		AB0400000000000000000001 /* AkaMemoCore in Frameworks */ = {isa = PBXBuildFile; productRef = AB0300000000000000000001 /* AkaMemoCore */; };
+		AB0400000000000000000002 /* AkaMemoCore in Frameworks */ = {isa = PBXBuildFile; productRef = AB0300000000000000000002 /* AkaMemoCore */; };
+		AC0200000000000000000001 /* WatchTransferQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0100000000000000000001 /* WatchTransferQueueTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,6 +115,16 @@
 		AA0100000000000000000005 /* Localizable.xcstrings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		AA0100000000000000000007 /* ChunkRecoveryService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChunkRecoveryService.swift; sourceTree = "<group>"; };
 		AA0100000000000000000008 /* ChunkRecoveryServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChunkRecoveryServiceTests.swift; sourceTree = "<group>"; };
+		AA0100000000000000000009 /* WatchTransferQueue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchTransferQueue.swift; sourceTree = "<group>"; };
+		AA010000000000000000000A /* WatchConnectivityService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchConnectivityService.swift; sourceTree = "<group>"; };
+		AB0100000000000000000001 /* ReceivedChunkRecord.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReceivedChunkRecord.swift; sourceTree = "<group>"; };
+		AB0100000000000000000002 /* MemoryStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MemoryStore.swift; sourceTree = "<group>"; };
+		AB0100000000000000000003 /* PhoneInboxService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhoneInboxService.swift; sourceTree = "<group>"; };
+		AB0100000000000000000004 /* PhoneConnectivityService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhoneConnectivityService.swift; sourceTree = "<group>"; };
+		AB0100000000000000000005 /* PhoneAppModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhoneAppModel.swift; sourceTree = "<group>"; };
+		AB0100000000000000000006 /* Localizable.xcstrings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		AB0100000000000000000008 /* PhoneInboxServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhoneInboxServiceTests.swift; sourceTree = "<group>"; };
+		AC0100000000000000000001 /* WatchTransferQueueTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchTransferQueueTests.swift; sourceTree = "<group>"; };
 		035009F8ABC8D75D57319119 /* BatteryActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryActivityAttributes.swift; sourceTree = "<group>"; };
 		0FC4CD7E510620FBA8E0CBE9 /* BatteryLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryLiveActivity.swift; sourceTree = "<group>"; };
 		129933E21C58719BC3844183 /* AkaMemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AkaMemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -134,6 +156,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DE6ABA214729569FBBC73E2 /* Foundation.framework in Frameworks */,
+				AB0400000000000000000002 /* AkaMemoCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,6 +165,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8B8E14F7A88DD1E22570308C /* Foundation.framework in Frameworks */,
+				AB0400000000000000000001 /* AkaMemoCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,12 +210,22 @@
 			path = Recording;
 			sourceTree = "<group>";
 		};
+		AA010000000000000000000B /* Transfer */ = {
+			isa = PBXGroup;
+			children = (
+				AA0100000000000000000009 /* WatchTransferQueue.swift */,
+				AA010000000000000000000A /* WatchConnectivityService.swift */,
+			);
+			path = Transfer;
+			sourceTree = "<group>";
+		};
 		09B8D6ED3BF3763A37B49D6D /* AkaMemoWatch */ = {
 			isa = PBXGroup;
 			children = (
 				0161CC0AAB68F9692BED6EB2 /* AkaMemoWatchApp.swift */,
 				F290C70C9CA1F3F91F0C1806 /* ContentView.swift */,
 				AA0100000000000000000006 /* Recording */,
+				AA010000000000000000000B /* Transfer */,
 				4DC9C1D39D7FBEE766BDF18A /* Assets.xcassets */,
 				AA0100000000000000000005 /* Localizable.xcstrings */,
 				66BAF0B7620CAFBE7EE9537E /* Info.plist */,
@@ -221,6 +255,7 @@
 			children = (
 				8E0E0E14E0641AEBB86988EF /* AkaMemoWatchTests.swift */,
 				AA0100000000000000000008 /* ChunkRecoveryServiceTests.swift */,
+				AC0100000000000000000001 /* WatchTransferQueueTests.swift */,
 			);
 			path = AkaMemoWatchTests;
 			sourceTree = "<group>";
@@ -237,6 +272,7 @@
 			isa = PBXGroup;
 			children = (
 				2530B973040C23AEDCE79B0B /* AkaMemoTests.swift */,
+				AB0100000000000000000008 /* PhoneInboxServiceTests.swift */,
 			);
 			path = AkaMemoTests;
 			sourceTree = "<group>";
@@ -276,12 +312,26 @@
 			);
 			sourceTree = "<group>";
 		};
+		AB0100000000000000000007 /* Inbox */ = {
+			isa = PBXGroup;
+			children = (
+				AB0100000000000000000001 /* ReceivedChunkRecord.swift */,
+				AB0100000000000000000002 /* MemoryStore.swift */,
+				AB0100000000000000000003 /* PhoneInboxService.swift */,
+				AB0100000000000000000004 /* PhoneConnectivityService.swift */,
+			);
+			path = Inbox;
+			sourceTree = "<group>";
+		};
 		E77D0E4D19AC1E93A1A5E2DD /* AkaMemo */ = {
 			isa = PBXGroup;
 			children = (
 				32115F4D9BDE2DD944805D7F /* AkaMemoApp.swift */,
 				4326AA9B406DCEA79207CC9F /* ContentView.swift */,
+				AB0100000000000000000005 /* PhoneAppModel.swift */,
+				AB0100000000000000000007 /* Inbox */,
 				E1F22C4A920E3D53BEBA0A61 /* Assets.xcassets */,
+				AB0100000000000000000006 /* Localizable.xcstrings */,
 				A1B0CB5A4A6D4CC7F527531B /* Info.plist */,
 				DEAEB04003F7905F64D509B2 /* AkaMemo.entitlements */,
 			);
@@ -354,6 +404,9 @@
 				EA17546AD03FBDE708B60C95 /* PBXTargetDependency */,
 			);
 			name = AkaMemoTests;
+			packageProductDependencies = (
+				AB0300000000000000000001 /* AkaMemoCore */,
+			);
 			productName = AkaMemoTests;
 			productReference = B91090CBA3B1742A303B4613 /* AkaMemoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -396,6 +449,9 @@
 				491FE213D12FE609A9CE7D12 /* PBXTargetDependency */,
 			);
 			name = AkaMemoWatchTests;
+			packageProductDependencies = (
+				AB0300000000000000000002 /* AkaMemoCore */,
+			);
 			productName = AkaMemoWatchTests;
 			productReference = 4B80987585ED4A2DB88BBF15 /* AkaMemoWatchTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -449,6 +505,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				67B81798BD0AE7969B216E74 /* Assets.xcassets in Resources */,
+				AB0200000000000000000006 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -482,6 +539,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				468F44D560E436F9FAEC0BFB /* AkaMemoTests.swift in Sources */,
+				AB0200000000000000000007 /* PhoneInboxServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -502,6 +560,11 @@
 				8DCB9C0938F7868F692271A7 /* AkaMemoApp.swift in Sources */,
 				4234A700CE131EE63006F470 /* ContentView.swift in Sources */,
 				AC12BC73AD51EA12159B248A /* BatteryActivityAttributes.swift in Sources */,
+				AB0200000000000000000001 /* ReceivedChunkRecord.swift in Sources */,
+				AB0200000000000000000002 /* MemoryStore.swift in Sources */,
+				AB0200000000000000000003 /* PhoneInboxService.swift in Sources */,
+				AB0200000000000000000004 /* PhoneConnectivityService.swift in Sources */,
+				AB0200000000000000000005 /* PhoneAppModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -511,6 +574,7 @@
 			files = (
 				8EDCD8D0E690F6E7740A89BA /* AkaMemoWatchTests.swift in Sources */,
 				AA0200000000000000000007 /* ChunkRecoveryServiceTests.swift in Sources */,
+				AC0200000000000000000001 /* WatchTransferQueueTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -525,6 +589,8 @@
 				AA0200000000000000000003 /* RecordingViewModel.swift in Sources */,
 				AA0200000000000000000004 /* WatchPaths.swift in Sources */,
 				AA0200000000000000000006 /* ChunkRecoveryService.swift in Sources */,
+				AA0200000000000000000008 /* WatchTransferQueue.swift in Sources */,
+				AA0200000000000000000009 /* WatchConnectivityService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -973,6 +1039,16 @@
 			productName = AkaMemoCore;
 		};
 		D6FEE4F074C8182595A104D0 /* AkaMemoCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 885C296B74E75FA1D89ECE8D /* XCLocalSwiftPackageReference "Packages/AkaMemoCore" */;
+			productName = AkaMemoCore;
+		};
+		AB0300000000000000000001 /* AkaMemoCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 885C296B74E75FA1D89ECE8D /* XCLocalSwiftPackageReference "Packages/AkaMemoCore" */;
+			productName = AkaMemoCore;
+		};
+		AB0300000000000000000002 /* AkaMemoCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 885C296B74E75FA1D89ECE8D /* XCLocalSwiftPackageReference "Packages/AkaMemoCore" */;
 			productName = AkaMemoCore;

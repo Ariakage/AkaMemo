@@ -6,12 +6,23 @@ import WatchKit
 @Observable
 final class RecordingViewModel {
     private let engine: RecordingEngine
+    private let connectivity: WatchConnectivityService?
     private(set) var snapshot = RecordingSnapshot()
     private(set) var now = Date()
     private(set) var batteryLevel: Double?
 
-    init(engine: RecordingEngine = RecordingEngine()) {
-        self.engine = engine
+    init() {
+        do {
+            let root = try WatchPaths.applicationSupport()
+            let queue = WatchTransferQueue(appSupportRoot: root)
+            let service = WatchConnectivityService(queue: queue)
+            self.engine = RecordingEngine(transferQueue: queue)
+            self.connectivity = service
+            service.activate()
+        } catch {
+            self.engine = RecordingEngine()
+            self.connectivity = nil
+        }
     }
 
     var elapsed: TimeInterval {

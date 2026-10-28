@@ -40,6 +40,7 @@ actor RecordingEngine {
     private let healthEvaluator = RecordingHealthEvaluator.standard
     private let chunkPolicy = ChunkPolicy.standard
     private let autoRecoveryEnabled = true
+    private let transferQueue: WatchTransferQueue?
 
     private var state: RecordingEngineState = .idle
     private var session: RecordingSession?
@@ -69,6 +70,10 @@ actor RecordingEngine {
     private var healthTask: Task<Void, Never>?
     private var heartbeatTask: Task<Void, Never>?
     private var notificationTasks: [Task<Void, Never>] = []
+
+    init(transferQueue: WatchTransferQueue? = nil) {
+        self.transferQueue = transferQueue
+    }
 
     // MARK: - Public API
 
@@ -108,6 +113,7 @@ actor RecordingEngine {
                     "recovery: sessions \(summary.sessionsScanned, privacy: .public), recovered \(summary.recoveredChunks, privacy: .public), rebuilt \(summary.rebuiltSidecars, privacy: .public), quarantined \(summary.quarantinedChunks, privacy: .public)"
                 )
             }
+            await transferQueue?.enqueueSealedChunksNotInQueue()
         } catch {
             logger.error(
                 "pending chunk recovery failed: \(String(describing: error), privacy: .public)"
@@ -384,6 +390,26 @@ actor RecordingEngine {
         currentSession.lastAudioBufferAt = Date()
         currentSession.updatedAt = Date()
         self.session = currentSession
+
+        if let transferQueue {
+            let envelope = ChunkTransferEnvelope(
+                chunkID: metadata.chunkID,
+                sessionID: metadata.sessionID,
+                sessionStartedAtMs: metadata.sessionStartedAtMs,
+                sequence: metadata.sequence,
+                startedAtMs: metadata.startedAtMs,
+                durationMs: metadata.durationMs,
+                byteSize: metadata.byteSize,
+                checksumSHA256: metadata.checksumSHA256,
+                formatVersion: metadata.formatVersion,
+                sampleRate: metadata.sampleRate,
+                channels: metadata.channels,
+                bitRate: metadata.bitRate,
+                relativePath: metadata.relativePath
+            )
+            await transferQueue.enqueue(envelope)
+        }
+
         logger.info(
             "sealed chunk \(chunk.sequence, privacy: .public) reason \(reason.rawValue, privacy: .public)"
         )

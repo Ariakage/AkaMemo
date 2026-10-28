@@ -145,11 +145,31 @@
 | --- | --- | --- |
 | `id` | UUID | 主键 |
 | `transcriptID` | UUID | 外键 → Transcript |
+| `chunkID` | UUID | 外键 → AudioChunk（冗余，供索引与跳转） |
+| `sessionID` | UUID | 外键 → RecordingSession（冗余，供分组与检索） |
 | `startMs` | Int64 | **绝对** Unix 毫秒（UTC），便于全局检索排序 |
 | `endMs` | Int64 | 绝对 Unix 毫秒 |
 | `text` | String | 片段文本 |
 | `confidence` | Double? | 0–1，引擎不提供则为 nil |
 | `isFinal` | Bool | 是否为最终结果 |
+
+### TranscriptionTask（iPhone 转写队列）
+
+持久化队列，保证应用重启或崩溃后可以继续。实现为 SwiftData 实体。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `taskID` | UUID | 主键 |
+| `chunkID` / `sessionID` | UUID | 任务对应的分片与会话 |
+| `providerID` / `providerVersion` | String | 幂等键的一部分；引擎升级后生成新任务 |
+| `state` | String | `queued` / `running` / `failed` / `ready` |
+| `attemptCount` | Int | 已失败次数；达到上限后置 `failed`，等待手动重试 |
+| `nextAttemptAt` | Date | 退避后的下次可执行时间 |
+| `lastErrorCode` | String? | 错误码，不含音频或文本内容 |
+| `createdAt` / `updatedAt` | Date | 审计字段 |
+
+- 启动时会把遗留的 `running` 重置为 `queued`，避免崩溃后任务永久卡住。
+- 同一 `chunkID + providerID + providerVersion` 只保留一条任务与一条成功的 Transcript。
 
 > 播放定位：`chunkOffsetMs = segment.startMs - chunk.startedAt.timeIntervalSince1970 * 1000`。
 

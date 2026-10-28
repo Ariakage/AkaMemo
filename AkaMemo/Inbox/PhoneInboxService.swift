@@ -121,6 +121,10 @@ actor PhoneInboxService {
                 return .rejected("persistenceFailed")
             }
 
+            NotificationCenter.default.post(
+                name: .akamemoInboxAcceptedChunk,
+                object: nil
+            )
             return .accepted
         } catch {
             logger.error(
@@ -191,4 +195,11 @@ actor PhoneInboxService {
             overwrite: true
         )
     }
+}
+
+extension Notification.Name {
+    /// Posted after a chunk is verified and stored. Carries no user content.
+    static let akamemoInboxAcceptedChunk = Notification.Name(
+        "AkaMemo.inboxAcceptedChunk"
+    )
 }

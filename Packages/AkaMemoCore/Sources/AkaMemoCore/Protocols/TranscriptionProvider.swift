@@ -3,10 +3,18 @@ import Foundation
 public struct TranscriptionOptions: Sendable, Codable, Equatable {
     public var language: String?
     public var prefersOnDevice: Bool
+    /// Absolute Unix milliseconds of the first audio frame. Providers use it
+    /// to return segment timestamps that are absolute, not file-relative.
+    public var startedAtMs: Int64?
 
-    public init(language: String? = nil, prefersOnDevice: Bool = true) {
+    public init(
+        language: String? = nil,
+        prefersOnDevice: Bool = true,
+        startedAtMs: Int64? = nil
+    ) {
         self.language = language
         self.prefersOnDevice = prefersOnDevice
+        self.startedAtMs = startedAtMs
     }
 }
 

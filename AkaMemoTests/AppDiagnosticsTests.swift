@@ -86,6 +86,39 @@ final class AppDiagnosticsTests: XCTestCase {
         XCTAssertTrue(sawJSONL)
     }
 
+    func testIngestWatchEntriesMergesIntoSnapshotAndExport() async {
+        let diagnostics = AppDiagnostics(
+            root: root,
+            subsystem: "test",
+            defaultsSuiteName: suiteName
+        )
+        let entries = [
+            LogEntry(
+                level: .info,
+                category: .recording,
+                message: "watch event",
+                metadata: ["state": "recording"],
+                source: .watch
+            ),
+            LogEntry(
+                level: .warning,
+                category: .storage,
+                message: "watch warning",
+                metadata: ["state": "warning"],
+                source: .watch
+            ),
+        ]
+
+        await diagnostics.ingest(entries)
+
+        let snapshot = await diagnostics.snapshot()
+        XCTAssertEqual(snapshot.map(\.source), [.watch, .watch])
+        XCTAssertEqual(snapshot.map(\.message), ["watch event", "watch warning"])
+        let export = await diagnostics.exportJSONL()
+        XCTAssertTrue(export.contains("watch event"))
+        XCTAssertTrue(export.contains("\"source\":\"watch\""))
+    }
+
     func testClearRemovesBuffer() async {
         let diagnostics = AppDiagnostics(
             root: root,

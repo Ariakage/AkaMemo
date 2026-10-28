@@ -79,6 +79,35 @@ actor AppDiagnostics {
         }
     }
 
+    /// Merges a batch forwarded by the Watch. Entries were already sanitized
+    /// on the Watch and share the iPhone buffer, stream and JSONL file.
+    func ingest(_ entries: [LogEntry]) async {
+        guard !entries.isEmpty else {
+            return
+        }
+        for entry in entries {
+            buffer.append(entry)
+            for continuation in continuations.values {
+                continuation.yield(entry)
+            }
+        }
+        do {
+            for entry in entries {
+                try await fileLog.append(entry)
+            }
+        } catch {
+            buffer.append(
+                LogEntry(
+                    level: .warning,
+                    category: .diagnostics,
+                    message: "file log write failed",
+                    metadata: ["errorCode": "writeFailed"],
+                    source: .iphone
+                )
+            )
+        }
+    }
+
     func snapshot() -> [LogEntry] {
         buffer.entries
     }

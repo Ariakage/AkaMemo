@@ -235,4 +235,40 @@ final class PhoneInboxServiceTests: XCTestCase {
         let storedCount = try await environment.store.count()
         XCTAssertEqual(storedCount, 0)
     }
+
+    func testReceivedChunkSummaryMapsStoredFields() {
+        let chunkID = UUID()
+        let sessionID = UUID()
+        let startedAt = Date(timeIntervalSince1970: 1_700_000_000)
+        let record = ReceivedChunkRecord(
+            chunkID: chunkID,
+            sessionID: sessionID,
+            sessionStartedAt: startedAt.addingTimeInterval(-10),
+            sequence: 3,
+            startedAt: startedAt,
+            durationMs: 60_000,
+            byteSize: 1_234,
+            checksumSHA256: String(repeating: "a", count: 64),
+            formatVersion: 1,
+            sampleRate: 44_100,
+            channels: 2,
+            bitRate: 96_000,
+            relativePath: "audio/2026/10/28/session/0003-chunk.m4a",
+            receivedAt: startedAt
+        )
+
+        let summary = record.summary
+
+        XCTAssertEqual(summary.chunkID, chunkID)
+        XCTAssertEqual(summary.sessionID, sessionID)
+        XCTAssertEqual(summary.sequence, 3)
+        XCTAssertEqual(summary.startedAtMs, TimeMath.epochMs(startedAt))
+        XCTAssertEqual(
+            summary.sessionStartedAtMs,
+            TimeMath.epochMs(startedAt.addingTimeInterval(-10))
+        )
+        XCTAssertEqual(summary.durationMs, 60_000)
+        XCTAssertEqual(summary.byteSize, 1_234)
+        XCTAssertEqual(summary.relativePath, record.relativePath)
+    }
 }

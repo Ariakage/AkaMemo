@@ -12,7 +12,7 @@ final class PhoneAppModel {
     init() {
         do {
             let container = try ModelContainer(for: ReceivedChunkRecord.self)
-            let root = try Self.applicationSupportDirectory()
+            let root = try PhonePaths.applicationSupport()
             let store = MemoryStore(modelContainer: container)
             let inbox = PhoneInboxService(store: store, applicationSupport: root)
             let service = PhoneConnectivityService(
@@ -27,20 +27,5 @@ final class PhoneAppModel {
             self.connectivity = nil
             self.setupFailed = true
         }
-    }
-
-    private static func applicationSupportDirectory() throws -> URL {
-        let base = try FileManager.default.url(
-            for: .applicationSupportDirectory,
-            in: .userDomainMask,
-            appropriateFor: nil,
-            create: true
-        )
-        let root = base.appending(path: "AkaMemo", directoryHint: .isDirectory)
-        try FileManager.default.createDirectory(
-            at: root,
-            withIntermediateDirectories: true
-        )
-        return root
     }
 }

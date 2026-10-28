@@ -8,7 +8,10 @@ import WatchKit
 final class RecordingViewModel {
     private let engine: RecordingEngine
     private let connectivity: WatchConnectivityService?
+    private let batteryMonitor: WatchBatteryMonitor?
     private(set) var snapshot = RecordingSnapshot()
+    private(set) var batteryWarning: String?
+    private(set) var batteryMonitoringUnavailable = false
     private(set) var now = Date()
     private(set) var batteryLevel: Double?
 
@@ -31,6 +34,7 @@ final class RecordingViewModel {
             )
             self.engine = RecordingEngine(transferQueue: queue)
             self.connectivity = service
+            self.batteryMonitor = WatchBatteryMonitor(transport: service)
             Task {
                 await handler.setStopSessionHandler {
                     [weak self] sessionID, epochMs in
@@ -44,6 +48,7 @@ final class RecordingViewModel {
         } catch {
             self.engine = RecordingEngine()
             self.connectivity = nil
+            self.batteryMonitor = nil
         }
     }
 
@@ -119,12 +124,69 @@ final class RecordingViewModel {
     }
 
     func refresh() async {
-        let level = WKInterfaceDevice.current().batteryLevel
-        let normalized: Double? = level >= 0 ? Double(level) : nil
+        let device = WKInterfaceDevice.current()
+        device.isBatteryMonitoringEnabled = true
+        let rawLevel = device.batteryLevel
+        let normalized: Double? = rawLevel >= 0 ? Double(rawLevel) : nil
         await engine.updateBatteryLevel(normalized)
         snapshot = await engine.currentSnapshot()
         batteryLevel = normalized
+        batteryMonitoringUnavailable = normalized == nil
+
+        if let batteryMonitor {
+            let evaluation = await batteryMonitor.evaluate(
+                level: normalized,
+                batteryState: chargeState(device.batteryState),
+                sessionID: snapshot.sessionID,
+                stateVersion: snapshot.stateVersion,
+                recordingState: recordingStateName(snapshot.state),
+                now: Date()
+            )
+            batteryWarning = warningKey(for: evaluation.band)
+            if evaluation.shouldPlayAlertHaptic {
+                device.play(.notification)
+            }
+            if evaluation.shouldStopRecording {
+                await engine.stop()
+                snapshot = await engine.currentSnapshot()
+                batteryWarning = "battery.warning.3"
+            }
+        }
         now = Date()
+    }
+
+    private func chargeState(
+        _ state: WKInterfaceDeviceBatteryState
+    ) -> BatteryChargeState {
+        switch state {
+        case .charging: .charging
+        case .full: .full
+        case .unplugged: .unplugged
+        default: .unknown
+        }
+    }
+
+    private func recordingStateName(_ state: RecordingEngineState) -> String {
+        switch state {
+        case .idle: "idle"
+        case .preparing: "preparing"
+        case .recording: "recording"
+        case .paused: "paused"
+        case .recovering: "recovering"
+        case .interrupted: "interrupted"
+        case .finalizing: "finalizing"
+        case .failed: "failed"
+        }
+    }
+
+    private func warningKey(for band: BatteryBand?) -> String? {
+        switch band {
+        case .advisory: "battery.warning.20"
+        case .low: "battery.warning.10"
+        case .critical: "battery.warning.5"
+        case .shutdown: "battery.warning.3"
+        case .normal, .none: nil
+        }
     }
 
     func start() async {

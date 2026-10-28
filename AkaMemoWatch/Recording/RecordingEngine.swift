@@ -89,7 +89,8 @@ actor RecordingEngine {
             batteryLevel: batteryLevel,
             error: lastError,
             totalGapMs: totalGapMs,
-            interruptionCount: session?.interruptionCount ?? 0
+            interruptionCount: session?.interruptionCount ?? 0,
+            stateVersion: lastStateVersion ?? 0
         )
     }
 

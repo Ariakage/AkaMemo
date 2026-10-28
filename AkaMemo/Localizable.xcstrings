@@ -17,6 +17,118 @@
         }
       }
     },
+    "battery.banner.low": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Watch battery is low. Recording continues; charge now."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Watch 电量低，录音仍在继续，请尽快充电。"
+          }
+        }
+      }
+    },
+    "battery.banner.notificationsOff": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications are off; low-battery alerts will not appear."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通知已关闭，不会收到低电量提醒。"
+          }
+        }
+      }
+    },
+    "battery.banner.stopped": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Watch battery reached 3%. Recording was paused and saved."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Watch 电量 3%，录音已暂停并保存。"
+          }
+        }
+      }
+    },
+    "battery.notification.body.3": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recording was paused and saved. Charge now."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录音已暂停并保存。请尽快充电。"
+          }
+        }
+      }
+    },
+    "battery.notification.body.5": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recording is still running. Charge now, or open AkaMemo to stop recording."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录音仍在继续。请尽快充电，或打开 AkaMemo 停止录音。"
+          }
+        }
+      }
+    },
+    "battery.notification.title.3": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Watch battery is 3%"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Watch 电量仅 3%"
+          }
+        }
+      }
+    },
+    "battery.notification.title.5": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Watch battery is 5%"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Watch 电量仅 5%"
+          }
+        }
+      }
+    },
     "common.close": {
       "localizations": {
         "en": {

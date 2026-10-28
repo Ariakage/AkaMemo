@@ -14,6 +14,17 @@ struct ContentView: View {
                         .foregroundStyle(.red)
                         .multilineTextAlignment(.center)
                 }
+                if model.batteryMonitoringUnavailable {
+                    Text("battery.unavailable")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                } else if let warning = model.batteryWarning {
+                    Text(LocalizedStringKey(warning))
+                        .font(.caption2)
+                        .foregroundStyle(.orange)
+                        .multilineTextAlignment(.center)
+                }
                 controls
                 if model.snapshot.state == .idle {
                     Text("recording.hint.foreground")

@@ -1,342 +1,422 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "app.name" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AkaMemo"
+  "sourceLanguage": "en",
+  "strings": {
+    "app.name": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AkaMemo"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AkaMemo"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AkaMemo"
           }
         }
       }
     },
-    "recording.chunks" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saved chunks"
+    "battery.unavailable": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Battery monitoring unavailable"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已保存分片"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "电量监测不可用"
           }
         }
       }
     },
-    "recording.elapsed" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recording duration"
+    "battery.warning.10": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Battery 10%. Charge as soon as possible."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "录音时长"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "电量 10%，建议尽快充电。"
           }
         }
       }
     },
-    "recording.error.audio" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Could not start recording. Try again."
+    "battery.warning.20": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Battery 20%. Charging recommended; recording continues."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无法启动录音，请重试。"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "电量 20%，建议充电，录音继续。"
           }
         }
       }
     },
-    "recording.error.generic" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Something went wrong."
+    "battery.warning.3": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Battery 3%. Recording paused and saved."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "录音出现问题。"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "电量 3%，录音已暂停并保存。"
           }
         }
       }
     },
-    "recording.error.permission" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Microphone access is required. Allow it in Settings."
+    "battery.warning.5": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Battery 5%. Recording continues; charge now."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "没有麦克风权限，请在设置中允许。"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "电量 5%，录音继续，请尽快充电。"
           }
         }
       }
     },
-    "recording.error.storage" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Could not save the recording. Check storage."
+    "recording.chunks": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved chunks"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无法保存录音，请检查存储空间。"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已保存分片"
           }
         }
       }
     },
-    "recording.hint.foreground" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start in the app; continues when locked."
+    "recording.continue": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue Recording"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "前台开始；锁屏后可继续。"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "继续录音"
           }
         }
       }
     },
-    "recording.pause" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pause"
+    "recording.elapsed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recording duration"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暂停"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录音时长"
           }
         }
       }
     },
-    "recording.resume" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Resume"
+    "recording.error.audio": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not start recording. Try again."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "继续"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法启动录音，请重试。"
           }
         }
       }
     },
-    "recording.continue" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continue Recording"
+    "recording.error.generic": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Something went wrong."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "继续录音"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录音出现问题。"
           }
         }
       }
     },
-    "recording.start" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start Recording"
+    "recording.error.permission": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Microphone access is required. Allow it in Settings."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开始录音"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有麦克风权限，请在设置中允许。"
           }
         }
       }
     },
-    "recording.state.failed" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recording failed"
+    "recording.error.storage": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not save the recording. Check storage."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "录音失败"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法保存录音，请检查存储空间。"
           }
         }
       }
     },
-    "recording.state.finalizing" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saving"
+    "recording.hint.foreground": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start in the app; continues when locked."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正在保存"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "前台开始；锁屏后可继续。"
           }
         }
       }
     },
-    "recording.state.idle" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ready"
+    "recording.pause": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "准备录音"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂停"
           }
         }
       }
     },
-    "recording.state.interrupted" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recording interrupted"
+    "recording.resume": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resume"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "录音已中断"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "继续"
           }
         }
       }
     },
-    "recording.state.paused" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Paused"
+    "recording.start": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start Recording"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已暂停"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开始录音"
           }
         }
       }
     },
-    "recording.state.preparing" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preparing"
+    "recording.state.failed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recording failed"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正在准备"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录音失败"
           }
         }
       }
     },
-    "recording.state.recording" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recording"
+    "recording.state.finalizing": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saving"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "录音中"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在保存"
           }
         }
       }
     },
-    "recording.state.recovering" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recovering automatically"
+    "recording.state.idle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ready"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正在自动恢复"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "准备录音"
           }
         }
       }
     },
-    "recording.stop" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stop"
+    "recording.state.interrupted": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recording interrupted"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "停止"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录音已中断"
+          }
+        }
+      }
+    },
+    "recording.state.paused": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paused"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已暂停"
+          }
+        }
+      }
+    },
+    "recording.state.preparing": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparing"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在准备"
+          }
+        }
+      }
+    },
+    "recording.state.recording": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recording"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录音中"
+          }
+        }
+      }
+    },
+    "recording.state.recovering": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recovering automatically"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在自动恢复"
+          }
+        }
+      }
+    },
+    "recording.stop": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止"
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

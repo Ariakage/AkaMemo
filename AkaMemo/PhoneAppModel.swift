@@ -11,6 +11,7 @@ final class PhoneAppModel {
     let search: SearchCoordinator?
     let deletion: DeletionCoordinator?
     let diagnostics: AppDiagnostics?
+    let battery: BatteryAlertCoordinator?
     private let connectivity: PhoneConnectivityService?
     #if DEBUG
         private let store: MemoryStore?
@@ -38,10 +39,19 @@ final class PhoneAppModel {
                 deletionStore: deletionStore,
                 diagnostics: diagnostics
             )
+            let batteryCoordinator = BatteryAlertCoordinator(
+                notifier: BatteryNotificationService(),
+                activity: BatteryLiveActivityController()
+            )
             let service = PhoneConnectivityService(
                 inbox: inbox,
                 applicationSupport: root,
-                deletionStore: deletionStore
+                deletionStore: deletionStore,
+                batteryEventHandler: { event in
+                    Task { @MainActor in
+                        await batteryCoordinator.handle(event)
+                    }
+                }
             )
             let transcriptStore = TranscriptStore(modelContainer: container)
             let searchIndex = try? SQLiteSearchIndex(
@@ -75,6 +85,7 @@ final class PhoneAppModel {
             )
             self.deletion = DeletionCoordinator(service: deletionService)
             self.diagnostics = diagnostics
+            self.battery = batteryCoordinator
             self.connectivity = service
             #if DEBUG
                 self.store = store
@@ -99,6 +110,7 @@ final class PhoneAppModel {
             self.search = nil
             self.deletion = nil
             self.diagnostics = nil
+            self.battery = nil
             self.connectivity = nil
             #if DEBUG
                 self.store = nil

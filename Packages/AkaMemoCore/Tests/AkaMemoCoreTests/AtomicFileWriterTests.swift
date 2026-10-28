@@ -67,6 +67,20 @@ final class AtomicFileWriterTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: first.url), original)
     }
 
+    func testWriteCanAtomicallyReplaceMutableState() async throws {
+        let directory = try makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let writer = AtomicFileWriter(directory: directory)
+        let name = "manifest.json"
+        _ = try await writer.write(Data("first".utf8), fileName: name)
+
+        let replacement = Data("second".utf8)
+        let result = try await writer.write(replacement, fileName: name, overwrite: true)
+
+        XCTAssertEqual(try Data(contentsOf: result.url), replacement)
+        XCTAssertEqual(result.checksumSHA256, AtomicFileWriter.sha256Hex(replacement))
+    }
+
     func testWriteJSONSortsKeysAndUsesMilliseconds() async throws {
         let directory = try makeTemporaryDirectory()
         defer { try? FileManager.default.removeItem(at: directory) }

@@ -34,15 +34,21 @@ public actor AtomicFileWriter {
     /// Writes `data` to `fileName` through a `.part` file and returns the
     /// sealed file's size and SHA-256 checksum.
     ///
-    /// Throws `WriteError.destinationAlreadyExists` instead of overwriting a
-    /// sealed chunk, so a repeated finalize cannot corrupt an earlier one.
-    public func write(_ data: Data, fileName: String) throws -> WrittenFile {
+    /// By default a sealed destination is never overwritten, so a repeated
+    /// finalize cannot corrupt an earlier chunk. Pass `overwrite: true` for
+    /// mutable state such as `manifest.json` or a health snapshot.
+    public func write(
+        _ data: Data,
+        fileName: String,
+        overwrite: Bool = false
+    ) throws -> WrittenFile {
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
 
         let finalURL = directory.appending(path: fileName)
         let partURL = directory.appending(path: fileName + ChunkFileSuffix.part.rawValue)
+        let destinationExists = fileManager.fileExists(atPath: finalURL.path)
 
-        guard !fileManager.fileExists(atPath: finalURL.path) else {
+        guard !destinationExists || overwrite else {
             throw WriteError.destinationAlreadyExists(fileName)
         }
         if fileManager.fileExists(atPath: partURL.path) {
@@ -54,7 +60,11 @@ public actor AtomicFileWriter {
 
         let checksum = Self.sha256Hex(data)
         do {
-            try fileManager.moveItem(at: partURL, to: finalURL)
+            if destinationExists {
+                _ = try fileManager.replaceItemAt(finalURL, withItemAt: partURL)
+            } else {
+                try fileManager.moveItem(at: partURL, to: finalURL)
+            }
         } catch {
             try? fileManager.removeItem(at: partURL)
             throw error
@@ -67,13 +77,14 @@ public actor AtomicFileWriter {
     /// Encodes a JSON sidecar with sorted keys and writes it atomically.
     public func writeJSON<T: Encodable & Sendable>(
         _ value: T,
-        fileName: String
+        fileName: String,
+        overwrite: Bool = false
     ) throws -> WrittenFile {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         encoder.dateEncodingStrategy = .millisecondsSince1970
         let data = try encoder.encode(value)
-        return try write(data, fileName: fileName)
+        return try write(data, fileName: fileName, overwrite: overwrite)
     }
 
     public nonisolated static func sha256Hex(_ data: Data) -> String {

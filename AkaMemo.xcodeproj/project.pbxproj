@@ -29,6 +29,11 @@
 		C17D9F281A4186C40A5D4EFE /* AkaMemoWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0161CC0AAB68F9692BED6EB2 /* AkaMemoWatchApp.swift */; };
 		E7ABD694D9BD4238E7CE4D75 /* BatteryActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035009F8ABC8D75D57319119 /* BatteryActivityAttributes.swift */; };
 		F55B6CA57DAED82E7C9787AF /* AkaMemoCore in Frameworks */ = {isa = PBXBuildFile; productRef = D6FEE4F074C8182595A104D0 /* AkaMemoCore */; };
+		AA0200000000000000000001 /* RecordingEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000001 /* RecordingEngine.swift */; };
+		AA0200000000000000000002 /* RecordingTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000002 /* RecordingTypes.swift */; };
+		AA0200000000000000000003 /* RecordingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000003 /* RecordingViewModel.swift */; };
+		AA0200000000000000000004 /* WatchPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000004 /* WatchPaths.swift */; };
+		AA0200000000000000000005 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000005 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +94,11 @@
 
 /* Begin PBXFileReference section */
 		0161CC0AAB68F9692BED6EB2 /* AkaMemoWatchApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AkaMemoWatchApp.swift; sourceTree = "<group>"; };
+		AA0100000000000000000001 /* RecordingEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingEngine.swift; sourceTree = "<group>"; };
+		AA0100000000000000000002 /* RecordingTypes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingTypes.swift; sourceTree = "<group>"; };
+		AA0100000000000000000003 /* RecordingViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingViewModel.swift; sourceTree = "<group>"; };
+		AA0100000000000000000004 /* WatchPaths.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchPaths.swift; sourceTree = "<group>"; };
+		AA0100000000000000000005 /* Localizable.xcstrings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		035009F8ABC8D75D57319119 /* BatteryActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryActivityAttributes.swift; sourceTree = "<group>"; };
 		0FC4CD7E510620FBA8E0CBE9 /* BatteryLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatteryLiveActivity.swift; sourceTree = "<group>"; };
 		129933E21C58719BC3844183 /* AkaMemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AkaMemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -160,12 +170,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AA0100000000000000000006 /* Recording */ = {
+			isa = PBXGroup;
+			children = (
+				AA0100000000000000000001 /* RecordingEngine.swift */,
+				AA0100000000000000000002 /* RecordingTypes.swift */,
+				AA0100000000000000000003 /* RecordingViewModel.swift */,
+				AA0100000000000000000004 /* WatchPaths.swift */,
+			);
+			path = Recording;
+			sourceTree = "<group>";
+		};
 		09B8D6ED3BF3763A37B49D6D /* AkaMemoWatch */ = {
 			isa = PBXGroup;
 			children = (
 				0161CC0AAB68F9692BED6EB2 /* AkaMemoWatchApp.swift */,
 				F290C70C9CA1F3F91F0C1806 /* ContentView.swift */,
+				AA0100000000000000000006 /* Recording */,
 				4DC9C1D39D7FBEE766BDF18A /* Assets.xcassets */,
+				AA0100000000000000000005 /* Localizable.xcstrings */,
 				66BAF0B7620CAFBE7EE9537E /* Info.plist */,
 			);
 			path = AkaMemoWatch;
@@ -411,6 +434,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				79DD4A2A31389951A512ABF8 /* Assets.xcassets in Resources */,
+				AA0200000000000000000005 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -489,6 +513,10 @@
 			files = (
 				C17D9F281A4186C40A5D4EFE /* AkaMemoWatchApp.swift in Sources */,
 				54B9DC46046EBCDE9E84B871 /* ContentView.swift in Sources */,
+				AA0200000000000000000001 /* RecordingEngine.swift in Sources */,
+				AA0200000000000000000002 /* RecordingTypes.swift in Sources */,
+				AA0200000000000000000003 /* RecordingViewModel.swift in Sources */,
+				AA0200000000000000000004 /* WatchPaths.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

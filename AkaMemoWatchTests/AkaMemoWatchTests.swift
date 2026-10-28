@@ -29,4 +29,22 @@ final class AkaMemoWatchTests: XCTestCase {
 
         XCTAssertEqual(decoded, snapshot)
     }
+
+    @MainActor
+    func testRecordingSettingsDefaultOnAndPersist() {
+        let suite = "akamemo.watch.settings.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        let settings = WatchRecordingSettings(defaults: defaults)
+        XCTAssertTrue(settings.autoResume)
+        XCTAssertTrue(settings.silentResume)
+
+        settings.setAutoResume(false)
+        settings.setSilentResume(false)
+
+        let reloaded = WatchRecordingSettings(defaults: defaults)
+        XCTAssertFalse(reloaded.autoResume)
+        XCTAssertFalse(reloaded.silentResume)
+    }
 }

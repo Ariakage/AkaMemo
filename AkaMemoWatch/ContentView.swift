@@ -1,13 +1,21 @@
+import AkaMemoCore
 import SwiftUI
 
 struct ContentView: View {
     @State private var model = RecordingViewModel()
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         ScrollView {
             VStack(spacing: 8) {
                 header
                 timer
+                if let seconds = model.recoveryNoticeSeconds {
+                    Text("recovery.notice.gap \(seconds)")
+                        .font(.caption2)
+                        .foregroundStyle(.green)
+                        .multilineTextAlignment(.center)
+                }
                 if let error = model.errorMessage {
                     Text(error)
                         .font(.footnote)
@@ -45,20 +53,94 @@ struct ContentView: View {
                     )
                 )
                 .font(.caption2)
+                if let pending = model.pendingRecovery {
+                    recoveryPrompt(for: pending)
+                }
                 controls
-                if model.snapshot.state == .idle {
+                if model.snapshot.state == .idle,
+                    model.pendingRecovery == nil
+                {
                     Text("recording.hint.foreground")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
+                settings
             }
             .padding(.horizontal, 4)
         }
         .task {
             await model.recoverPendingChunks()
+            model.checkPendingRecovery()
             await model.observe()
         }
+        .onChange(of: scenePhase) { _, phase in
+            model.setForeground(phase == .active)
+        }
+    }
+
+    @ViewBuilder
+    private func recoveryPrompt(for info: InterruptedSessionInfo) -> some View {
+        VStack(spacing: 4) {
+            Text("recovery.pending.title")
+                .font(.caption2)
+                .foregroundStyle(.orange)
+                .multilineTextAlignment(.center)
+            Text("recovery.pending.saved \(info.sealedChunkCount)")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            if let seconds = model.resumeCountdownSeconds {
+                Text("recovery.pending.countdown \(seconds)")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Button("recovery.pending.cancel") {
+                    model.cancelResumeCountdown()
+                }
+                .buttonStyle(.bordered)
+            } else {
+                Button {
+                    Task { await model.resumePendingSession() }
+                } label: {
+                    Label(
+                        "recovery.pending.resume",
+                        systemImage: "play.fill"
+                    )
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.green)
+
+                Button("recovery.pending.ignore") {
+                    Task { await model.ignorePendingRecovery() }
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+    }
+
+    private var settings: some View {
+        VStack(spacing: 2) {
+            Divider()
+            Toggle(
+                "settings.autoResume",
+                isOn: Binding(
+                    get: { model.autoResumeEnabled },
+                    set: { model.setAutoResumeEnabled($0) }
+                )
+            )
+            Toggle(
+                "settings.silentResume",
+                isOn: Binding(
+                    get: { model.silentResumeEnabled },
+                    set: { model.setSilentResumeEnabled($0) }
+                )
+            )
+            Text("settings.silentResume.footnote")
+                .font(.system(size: 10))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .font(.caption2)
     }
 
     private var header: some View {
@@ -124,14 +206,16 @@ struct ContentView: View {
     private var controls: some View {
         switch model.snapshot.state {
         case .idle, .failed:
-            Button {
-                Task { await model.start() }
-            } label: {
-                Label("recording.start", systemImage: "record.circle")
-                    .frame(maxWidth: .infinity)
+            if model.pendingRecovery == nil {
+                Button {
+                    Task { await model.start() }
+                } label: {
+                    Label("recording.start", systemImage: "record.circle")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.red)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.red)
 
         case .preparing:
             ProgressView()

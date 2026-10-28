@@ -82,6 +82,7 @@
 		AD0200000000000000000093 /* RecordingStatusBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0100000000000000000093 /* RecordingStatusBannerView.swift */; };
 		AA0200000000000000000016 /* WatchStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000016 /* WatchStorage.swift */; };
 		AA0200000000000000000017 /* WatchHealthPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000017 /* WatchHealthPublisher.swift */; };
+		AA0200000000000000000018 /* WatchRecordingSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000018 /* WatchRecordingSettings.swift */; };
 		AA0200000000000000000013 /* WatchBatteryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000013 /* WatchBatteryMonitor.swift */; };
 		AA0200000000000000000014 /* LocationRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000014 /* LocationRecorder.swift */; };
 		AB0200000000000000000008 /* SimulatorFixtureSeederTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0100000000000000000009 /* SimulatorFixtureSeederTests.swift */; };
@@ -212,6 +213,7 @@
 		AD0100000000000000000093 /* RecordingStatusBannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingStatusBannerView.swift; sourceTree = "<group>"; };
 		AA0100000000000000000016 /* WatchStorage.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchStorage.swift; sourceTree = "<group>"; };
 		AA0100000000000000000017 /* WatchHealthPublisher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchHealthPublisher.swift; sourceTree = "<group>"; };
+		AA0100000000000000000018 /* WatchRecordingSettings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchRecordingSettings.swift; sourceTree = "<group>"; };
 		AA0100000000000000000013 /* WatchBatteryMonitor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchBatteryMonitor.swift; sourceTree = "<group>"; };
 		AA0100000000000000000014 /* LocationRecorder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocationRecorder.swift; sourceTree = "<group>"; };
 		AB0100000000000000000009 /* SimulatorFixtureSeederTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SimulatorFixtureSeederTests.swift; sourceTree = "<group>"; };
@@ -311,6 +313,7 @@
 				AA0100000000000000000013 /* WatchBatteryMonitor.swift */,
 				AA0100000000000000000016 /* WatchStorage.swift */,
 				AA0100000000000000000017 /* WatchHealthPublisher.swift */,
+				AA0100000000000000000018 /* WatchRecordingSettings.swift */,
 			);
 			path = Recording;
 			sourceTree = "<group>";
@@ -870,6 +873,7 @@
 				AA0200000000000000000013 /* WatchBatteryMonitor.swift in Sources */,
 				AA0200000000000000000016 /* WatchStorage.swift in Sources */,
 				AA0200000000000000000017 /* WatchHealthPublisher.swift in Sources */,
+				AA0200000000000000000018 /* WatchRecordingSettings.swift in Sources */,
 				AA0200000000000000000014 /* LocationRecorder.swift in Sources */,
 				AA0200000000000000000008 /* WatchTransferQueue.swift in Sources */,
 				AA0200000000000000000009 /* WatchConnectivityService.swift in Sources */,

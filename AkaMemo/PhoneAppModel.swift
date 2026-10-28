@@ -82,11 +82,12 @@ final class PhoneAppModel {
                 },
                 activationHandler: {
                     Task { @MainActor in
-                        settingsModel.publishLocationSetting()
+                        settingsModel.publishSettings()
                     }
                 }
             )
             settingsModel.attach(sender: service)
+            settingsModel.attachResumeSender(service)
             let transcriptStore = TranscriptStore(modelContainer: container)
             let searchIndex = try? SQLiteSearchIndex(
                 databaseURL: root.appending(path: "index/search.sqlite")

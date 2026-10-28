@@ -11,6 +11,7 @@ final class RecordingWatchdog {
         case interrupted
         case stale
         case storage
+        case paused
     }
 
     struct Banner: Equatable {
@@ -21,6 +22,7 @@ final class RecordingWatchdog {
             case .interrupted: "recording.banner.interrupted"
             case .stale: "recording.banner.stale"
             case .storage: "recording.banner.storage"
+            case .paused: "recording.banner.paused"
             }
         }
     }
@@ -91,6 +93,10 @@ final class RecordingWatchdog {
                 banner = Banner(kind: .interrupted)
             }
             await notifyInterruptedIfNeeded(now: now)
+        case "paused":
+            if !isStorageCritical(event) {
+                banner = Banner(kind: .paused)
+            }
         default:
             if !isStorageCritical(event) {
                 banner = nil

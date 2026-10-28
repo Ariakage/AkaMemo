@@ -164,6 +164,26 @@ final class RecordingWatchdogTests: XCTestCase {
         await watchdog.clear()
     }
 
+    func testPausedShowsBannerAndClearsOnResume() async {
+        let (watchdog, notifier) = makeWatchdog()
+        await watchdog.handle(
+            event(state: "paused", at: start, version: 2)
+        )
+        XCTAssertEqual(watchdog.banner?.kind, .paused)
+        let interruptedWhenPaused = await notifier.interrupted()
+        XCTAssertEqual(interruptedWhenPaused, 0)
+
+        await watchdog.handle(
+            event(
+                state: "recording",
+                at: start.addingTimeInterval(1),
+                version: 3
+            )
+        )
+        XCTAssertNil(watchdog.banner)
+        await watchdog.clear()
+    }
+
     func testClearCancelsAllPendingNotifications() async {
         let (watchdog, notifier) = makeWatchdog()
         await watchdog.handle(

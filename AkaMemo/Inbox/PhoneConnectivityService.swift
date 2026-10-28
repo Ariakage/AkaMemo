@@ -7,7 +7,7 @@ import WatchConnectivity
 /// confirmations. Files are moved out of the system Inbox before any
 /// verification work starts.
 final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionCommandSending,
-    LocationSettingSending, @unchecked Sendable
+    LocationSettingSending, ResumeSettingsSending, @unchecked Sendable
 {
     private let inbox: PhoneInboxService
     private let deletionStore: DeletionStore?
@@ -341,6 +341,32 @@ final class PhoneConnectivityService: NSObject, WCSessionDelegate, DeletionComma
         } catch {
             logger.error(
                 "location setting context failed: \(String(describing: error), privacy: .public)"
+            )
+            return false
+        }
+    }
+
+    nonisolated func sendResumeSettings(
+        _ command: ResumeSettingsCommand
+    ) -> Bool {
+        guard WCSession.isSupported() else {
+            return false
+        }
+        let session = WCSession.default
+        guard session.activationState == .activated,
+            let payload = try? command.jsonString()
+        else {
+            return false
+        }
+        do {
+            try session.updateApplicationContext([
+                "type": "resumeSettings",
+                ResumeSettingsCommand.metadataKey: payload,
+            ])
+            return true
+        } catch {
+            logger.error(
+                "resume setting context failed: \(String(describing: error), privacy: .public)"
             )
             return false
         }

@@ -18,6 +18,7 @@ struct SessionListView: View {
     @State private var deletionError: String?
     @State private var showDiagnostics = false
     @State private var showSettings = false
+    @State private var didAutoOpenSettings = false
 
     private var sessions: [SessionSummary] {
         SessionAggregator.group(chunks.map(\.summary))
@@ -163,9 +164,26 @@ struct SessionListView: View {
                 secondaryButton: .cancel(Text("deletion.cancel"))
             )
         }
+        .onAppear {
+            #if DEBUG
+                if !didAutoOpenSettings,
+                    ProcessInfo.processInfo.arguments.contains(
+                        "-AkaMemoOpenSettings"
+                    )
+                {
+                    didAutoOpenSettings = true
+                    showSettings = true
+                }
+            #endif
+        }
         .sheet(isPresented: $showSettings) {
             if let settings {
-                SettingsView(settings: settings)
+                SettingsView(
+                    settings: settings,
+                    diagnostics: diagnostics,
+                    deletion: deletion,
+                    recordingWatchdog: recordingWatchdog
+                )
             }
         }
         .sheet(isPresented: $showDiagnostics) {
